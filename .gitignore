@@ -2,6 +2,7 @@
 .idea/
 /README_SPIGOT.md
 /PLANNED_FEATURES.md
+/RELEASE.md
 
 *.iml
 *.ipr
