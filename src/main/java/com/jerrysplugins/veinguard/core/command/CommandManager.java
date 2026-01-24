@@ -160,7 +160,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     .replace("{website}", plugin.getPluginWebsite());
 
             if (isConsole) {
-                plugin.getLog().log(Level.INFO, replaced);
+                plugin.getLog().log(Level.NONE, replaced);
             } else {
                 sender.sendMessage(replaced);
             }

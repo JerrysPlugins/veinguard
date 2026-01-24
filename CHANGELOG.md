@@ -5,8 +5,11 @@
 * Separated suspect report creation into new class BlockReport.
 * Separated alert logic out of all other classes, all alert functionality now lies in AlertManager.
 * Command overhauled into CommandManager with sub command class for each sub command.
-* Removed all original 'veinguard-usage-command' messages and replaced with 'veinguard-command-usage' that is completed via '{usage}' variable.
+* Removed all original 'veinguard-usage-command' messages and replaced with 'command-usage' that is completed via '{usage}' variable.
 * New config option 'staff-join-violation-alert' that notifies staff upon joining the server with how many players currently have a block violation. Requires permission 'veinguard.notify'
+* Fix for Discord webhook not being hot reloadable.
+* Implemented asynchronous cleanup task that removes any block break entries older than the check interval + 2 minutes. Runs every 15 minutes.
+* Multiple small bug fixes.
 * Major clean up of code.
 
 ## v1.1.1-BETA

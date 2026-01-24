@@ -1,6 +1,7 @@
 package com.jerrysplugins.veinguard.core.common;
 
 import com.jerrysplugins.veinguard.VeinGuard;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -8,6 +9,8 @@ import org.bukkit.entity.Player;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerTracker {
 
@@ -31,6 +34,8 @@ public class PlayerTracker {
 
         this.mutedPlayers = new ArrayList<>();
         this.mutedStaff = new ArrayList<>();
+
+        scheduleCleanupTaskAsync();
     }
 
     public void recordBreak(Player suspect, Material material, Location location) {
@@ -41,7 +46,7 @@ public class PlayerTracker {
                 blockBreakHistory.computeIfAbsent(uuid, k -> new EnumMap<>(Material.class));
 
         Deque<Long> timestamps =
-                suspectHistory.computeIfAbsent(material, k -> new ArrayDeque<>());
+                suspectHistory.computeIfAbsent(material, k -> new ConcurrentLinkedDeque<>());
 
         timestamps.addLast(currentTimeMs);
         cleanupOldEntries(timestamps, currentTimeMs);
@@ -79,6 +84,24 @@ public class PlayerTracker {
             }
             return count;
         });
+    }
+
+    public void scheduleCleanupTaskAsync() {
+        long delayTicks = 15L * 60L * 20L;
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+            long currentTimeMs = System.currentTimeMillis();
+            long expirationTimeMs = configOptions.getCheckIntervalMs() + TimeUnit.MINUTES.toMillis(2);
+
+            for (Map<Material, Deque<Long>> materialMap : blockBreakHistory.values()) {
+                for (Deque<Long> deque : materialMap.values()) {
+                    while (!deque.isEmpty() && currentTimeMs - deque.peekFirst() > expirationTimeMs) {
+                        deque.removeFirst();
+                    }
+                }
+            }
+
+        }, delayTicks, delayTicks);
     }
 
     private void cleanupOldEntries(Deque<Long> timestamps, long currentTimeMs) {

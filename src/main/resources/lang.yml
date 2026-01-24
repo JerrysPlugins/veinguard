@@ -70,22 +70,15 @@ toggle-alerts-others-not-staff: "&b{player} &cdoesn't have permission to receive
 help:
   - "&7---- < &b&lVein&c&lGuard &r&7Help > &7----"
   - "&b/veinguard &8(&7Alias&f: &7/vg&8) &7- Base command."
-  - "&3/vg check <Player> [Page] &7- View a player's block break report."
-  - "&b/vg help &7- View this help page."
+  - "&3/vg check <Player> [Page] &7- View a player's block report."
+  - "&b/vg help &7- View this command help page."
   - "&3/vg mute <Player> &7- Mute a player's alerts."
   - "&b/vg reload &7- Reload the plugin and configuration files."
-  - "&3/vg reset <Player> &7- Reset a player's report and block history."
-  - "&b/vg resetall &7- Reset all players' reports and block history."
-  - "&3/vg toggle-alerts &7- Toggle alerts off for yourself."
+  - "&3/vg reset <Player> &7- Reset a player's block history."
+  - "&b/vg resetall &7- Reset all players block history."
+  - "&3/vg toggle-alerts &7- Toggle alerts for yourself."
   - "&b/vg unmute <Player> &7- Unmute a player's alerts."
   - "&7-----------------------------------"
-help-command:
-  - "&7---- < &b&lVein&c&lGuard &r&7Help > &7----"
-  - "&3Command&f: &7{command}"
-  - "&bDescription&f: &7{description}"
-  - "&3Permission&f: &7{permission}"
-  - "&bUsage&f: &7{usage}"
-  - "&7----------------------------------"
 
 # -----------------------------------------------------------------------------
 # Info Message
@@ -105,5 +98,6 @@ plugin-info:
 # -----------------------------------------------------------------------------
 command-usage: "&cUsage: /veinguard {usage}"
 
-# DO NOT CHANGE
+# DO NOT CHANGE – Used internally to track lang config compatibility.
+# Modifying this value may cause the plugin to fail loading or reset your configuration.
 lang-version: 1

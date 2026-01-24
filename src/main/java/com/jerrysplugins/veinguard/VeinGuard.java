@@ -69,7 +69,7 @@ public final class VeinGuard extends JavaPlugin {
 
         loadMetrics();
 
-        getLog().log(Level.SUCCESS, "Successfully started "
+        getLog().log(Level.SUCCESS, "Successfully enabled "
                 + pluginName + ", v"
                 + pluginVersion + ", by "
                 + pluginAuthors);
@@ -79,12 +79,9 @@ public final class VeinGuard extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getLog().log(Level.INFO, "Shutting down "
-                + pluginName + ", v"
-                + pluginVersion + ", by "
-                + pluginAuthors);
         playerTracker.shutdown();
         configOptions.shutdown();
+        getLog().log(Level.INFO, "Plugin disabled. Goodbye!");
     }
 
     public boolean reload() {
@@ -92,6 +89,8 @@ public final class VeinGuard extends JavaPlugin {
         try {
             configFile.reloadConfig();
             langFile.reloadConfig();
+            alertManager.getDiscordWebhook().reload();
+            configOptions.reload();
             return true;
         } catch (Exception e) {
             getLog().log(Level.ERROR, "There was an error while reloading!", e);

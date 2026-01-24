@@ -3,48 +3,48 @@
 
 ## VeinGuard
 
-**⚠️ NOTICE: This plugin is in beta. There may be bugs or issues, and not all planned features have been implemented yet. Join our [Discord](https://discord.gg/sW7zu4RXmD) for support, announcements and to report bugs.**
+**⚠️ NOTICE: Not all planned features have been implemented yet! Join our [Discord](https://discord.gg/sW7zu4RXmD) for support and announcements.**
 
-**VeinGuard** is a lightweight Anti-Xray plugin designed to help server staff identify potential x-rayers by identifying suspicious mining behavior. The plugin monitors block break activity in real time and tracks specific blocks defined in the configuration.
+**VeinGuard** is a lightweight plugin that helps server staff detect potential x-rayers. It tracks block breaks in real time for blocks defined in the configuration.
 
-When a player breaks a tracked block, the action is recorded in memory. If the player exceeds the configured number of breaks for that block within the defined parameters, VeinGuard automatically alerts staff members. Alerts can be delivered through in-game notifications, console notifications or a discord webhook, allowing staff to respond quickly.
+When a player exceeds the configured break limits, VeinGuard alerts staff via in-game messages, console logs, or a Discord webhook, enabling quick responses.
 
-VeinGuard is designed to be simple and configurable, making it easy for server owners to moderate potential X-ray abuse without impacting server performance.
+VeinGuard is simple, configurable, and designed to moderate X-ray abuse without impacting server performance.
+
 
 ---
 
 ## Features
 
 ### Core Detection
-- Tracks player block-break activity
-- Time-based detection window (e.g. blocks broken within the last X minutes)
-- Supports tracking of all Minecraft block types
-- Configurable break thresholds per block/material
-- Per-block alert cooldowns to prevent repeated notifications
+- Tracks player block-break activity in real time
+- Time-based detection windows (e.g., blocks broken within X minutes)
+- Supports all Minecraft block types
+- Configurable break thresholds per block
+- Per-block cooldowns to prevent repeated alerts
 
 ### Alerts & Notifications
-- In-game staff alert messages
-- Console alert logging
-- Discord webhook support for external notifications
-- Execute configurable commands when an alert is triggered
-- Toggleable alerts for individual staff members
-- Per-player mute system to suppress alerts
+- In-game staff messages
+- Console logging
+- Discord webhook notifications
+- Execute configurable commands on alerts
+- Toggleable alerts for individual staff
+- Per-player mute system for suppressing alerts
 
-### Reporting
-- Detailed player reports showing block counts and alert thresholds
-- Clear visual distinction between normal activity and violations
-- Paginated reports for easier viewing of large datasets
+### Reports
+- Detailed player reports with block counts and threshold indicators
+- Clear highlighting of violation blocks
+- Paginated reports for large datasets
 
 ### Configuration & Control
 - Ignore players in Creative mode
-- Ignore block breaks above a configurable Y-level
-- Ignore block breaks performed with specific tools
+- Ignore blocks broken above a configurable Y-level
+- Ignore breaks with specific tools
 - Disable tracking in selected worlds
 - Permission-based bypass for trusted players
 
 ### Administration
-- Hot-reload support for configuration and language files
-
+- Hot-reload support for config and language files
 
 ---
 
@@ -53,7 +53,7 @@ VeinGuard is designed to be simple and configurable, making it easy for server o
 
 ## Planned Features
 
-VeinGuard is actively developed and currently in **beta**.  
+VeinGuard is actively developed.  
 The features listed below are either in progress or planned for future releases.
 
 ### Localization & Accessibility
@@ -95,14 +95,6 @@ The features listed below are either in progress or planned for future releases.
 
 ---
 
-### Completed / Already Implemented
-- Automatic configuration updates between versions
-- Update checker for new plugin releases
-- bStats metrics for anonymous usage insights
-- Console command functionality
-
----
-
 </details>
 
 
@@ -113,18 +105,20 @@ The features listed below are either in progress or planned for future releases.
 
 ### Permissions
 
-> Grant the permission `veinguard.admin` to provide access to all staff-related commands and notifications.
+> Grant the permission `veinguard.admin` to provide access to all features.
 
 > Grant the permission `veinguard.mod` to your moderators. This permission grants the following permissions: `veinguard.notify` `veinguard.bypass` `veinguard.command` `veinguard.command.check` `veinguard.command.help` `veinguard.command.toggle-alerts`
 
-- **`veinguard.command`**  
-  Allows access to the `/veinguard` (`/vg`) command.
+You are also free to ignore ^ these permissions and configure them as you please!
 
 - **`veinguard.notify`**  
-  Receives in-game X-ray alert notifications when suspicious mining activity is detected.
+  Receives in-game alert notifications when suspicious mining activity is detected.
 
 - **`veinguard.bypass`**  
   Exempts the player from all VeinGuard block tracking and detection checks.
+
+- **`veinguard.update`**  
+  Allows the player to receive VeinGuard update notifications.
 
 ---
 
@@ -133,6 +127,10 @@ The features listed below are either in progress or planned for future releases.
 - **/veinguard** or **/vg**
     - Permission: `veinguard.command`
     - Displays general plugin information and how to view plugin help.
+
+- **/veinguard help**
+  - Permission: `veinguard.help`
+  - Displays help message for plugin commands and features.
 
 ### Player Commands
 
@@ -149,9 +147,9 @@ The features listed below are either in progress or planned for future releases.
     - Permission: `veinguard.command.mute`
     - Temporarily mute alert notifications for a specific suspect player. This will mute notifications for players with the permission `veinguard.notify`
 
-- **/vg toggle-alerts or /vg toggle-alerts \<player\>**
-    - Permission: `veinguard.command.toggle-alerts` and `veinguard.command.toggle-alerts.others`
-    - Toggle all notifications for yourself or a specific player.
+- **/vg toggle-alerts**
+    - Permission: `veinguard.command.toggle-alerts`
+    - Toggle all alert notifications for yourself.
 
 - **/vg unmute \<player\>**
     - Permission: `veinguard.command.unmute`
@@ -199,6 +197,11 @@ ignore-creative-mode: true
 # Set to 320 to track blocks at all Y-levels.
 ignore-above-y-level: 64
 
+# Number of tracked block entries to display per page when using '/veinguard check <Player>'.
+# If the player has more entries than fit on one page, you can view additional pages with:
+# '/veinguard check <Player> <PageNumber>'
+player-report-page-entries: 7
+
 # If true, staff alert messages for suspicious block breaking
 # will also be sent to the server console.
 # Set too false to disable console notifications.
@@ -209,6 +212,11 @@ send-alerts-to-console: true
 # Set too false to disable in-game staff notifications.
 send-alerts-to-staff: true
 
+# If true, Sends a notification to staff members when they join the
+# server, showing the number of players currently flagged for violations.
+# Requires the player to have the 'veinguard.notify' permission.
+staff-join-violation-alert: false
+
 # List of console commands to execute when a player triggers a VeinGuard alert.
 # These commands run immediately after an alert is fired.
 #
@@ -217,16 +225,16 @@ send-alerts-to-staff: true
 #
 # Example:
 #   alert-commands:
-#     - 'vg msg {player} &cYou were fined $500 for possibly x-raying!'
-#     - 'eco take {player} 500'
+#   - 'vg msg {player} &cYou were fined $500 for possibly x-raying!'
+#   - 'eco take {player} 500'
 #
 # Leave this list empty to disable command execution on alerts.
 alert-commands: {}
 
-# Number of tracked block entries to display per page when using '/veinguard check <Player>'.
-# If the player has more entries than fit on one page, you can view additional pages with:
-# '/veinguard check <Player> <PageNumber>'
-player-report-page-entries: 7
+# Optional Discord webhook embed for staff alert notifications.
+# Alerts will only be sent if a valid webhook URL is provided.
+# Leave empty ("") to disable.
+discord-webhook-url: ""
 
 # Tools that should be ignored by VeinGuard.
 # Block breaks performed while holding these items will not be tracked.
@@ -286,8 +294,16 @@ tracked-blocks:
   - RAW_COPPER_BLOCK:5:"Raw Copper Block"
   - RAW_GOLD_BLOCK:5:"Raw Gold Block"
 
-# DO NOT CHANGE / THIS WILL BREAK YOUR CONFIG
+# Determines whether players with the 'veinguard.update' permission or server operators
+# receive an in-game notification upon joining if a newer version of VeinGuard is available.
+show-update-notice: true
+
+# DO NOT CHANGE – Used internally to track config compatibility.
+# Modifying this value may cause the plugin to fail loading or reset your configuration.
 config-version: 1
+
+# Enables additional debug logging for troubleshooting and development purposes.
+# Should typically remain disabled on production servers.
 debug-mode: false
 ```
 </details>
@@ -315,15 +331,16 @@ plugin-prefix: "&c&lV&b&lG &r&7> &r"
 no-permission: "&cYou don't have permission!"
 player-not-found: "&cPlayer &b{player} &cwas not found!"
 in-game-only: "This command can only be used by in-game players!"
-new-version: "&bVein&cGuard &7update available! &8(&7Current&f: &c{oldVersion}&7, &7Latest&f: &b{newVersion}&8)"
+new-version: "&bVein&cGuard &3update available! &8(&7Current&f: &c{oldVersion}&7, &7Latest&f: &b{newVersion}&8)"
 
 # -----------------------------------------------------------------------------
-# Staff Notifications
+# Staff Messages
 # -----------------------------------------------------------------------------
 staff-notify: "&b{player} &cbroke &3{count} &b{material} &cin the last &b{time} &cminutes!"
+staff-join-notify: "&cThere are &b{count} &cplayers with block violations!"
 
 # -----------------------------------------------------------------------------
-# Reports
+# Report Message
 # -----------------------------------------------------------------------------
 report-header: "&7---- < &c&lVein&b&lGuard &r&7Report / &3{player} &7> ----"
 report-material-normal: "&7{material}&f: &8(&b{count}&7/&3{threshold}&8)"
@@ -340,7 +357,7 @@ reload-failed: "&cPlugin reload failed! Check the console for details."
 reload-success: "&aPlugin and configuration files reloaded successfully!"
 
 # -----------------------------------------------------------------------------
-# Reload Messages
+# Reset Messages
 # -----------------------------------------------------------------------------
 reset-player: "&b{player} &ablock break data has been reset!"
 reset-all: "&aAll player block break data has been reset!"
@@ -364,22 +381,23 @@ toggle-alerts-self-not-staff: "&cYou do not have permission to receive alerts!"
 toggle-alerts-others-not-staff: "&b{player} &cdoesn't have permission to receive alerts!"
 
 # -----------------------------------------------------------------------------
-# Help Messages
+# Help Message
 # -----------------------------------------------------------------------------
 help:
   - "&7---- < &b&lVein&c&lGuard &r&7Help > &7----"
-  - "&b/veinguard, /vg &7- Base command."
-  - "&3/vg check <Player> &7- View a player's X-ray report."
+  - "&b/veinguard &8(&7Alias&f: &7/vg&8) &7- Base command."
+  - "&3/vg check <Player> [Page] &7- View a player's block break report."
   - "&b/vg help &7- View this help page."
-  - "&b/vg mute <Player> &7- Mute a player's X-ray alerts."
-  - "&3/vg reload &7- Reload the plugin and configuration files."
-  - "&b/vg reset <Player> &7- Reset a player's X-ray report and block history."
-  - "&3/vg resetall &7- Reset all players' X-ray reports and block history."
-  - "&b/vg unmute <Player> &7- Unmute a player's X-ray alerts."
+  - "&3/vg mute <Player> &7- Mute a player's alerts."
+  - "&b/vg reload &7- Reload the plugin and configuration files."
+  - "&3/vg reset <Player> &7- Reset a player's report and block history."
+  - "&b/vg resetall &7- Reset all players' reports and block history."
+  - "&3/vg toggle-alerts &7- Toggle alerts off for yourself."
+  - "&b/vg unmute <Player> &7- Unmute a player's alerts."
   - "&7-----------------------------------"
 
 # -----------------------------------------------------------------------------
-# Info Messages
+# Info Message
 # -----------------------------------------------------------------------------
 plugin-info:
   - "&7---- < &b&lVein&c&lGuard &r&7Information > &7----"
@@ -392,20 +410,12 @@ plugin-info:
   - "&7---------------------------------"
 
 # -----------------------------------------------------------------------------
-# Usage Messages
+# Usage Message
 # -----------------------------------------------------------------------------
-veinguard-usage: "&cUsage: /veinguard <check|help|mute|reset|resetall|reload|unmute>"
-veinguard-usage-check: "&cUsage: /veinguard check <Player>"
-veinguard-usage-help: "&cUsage: /veinguard help"
-veinguard-usage-msg: "&cUsage: /veinguard msg <Player> <Message>"
-veinguard-usage-mute: "&cUsage: /veinguard mute <Player>"
-veinguard-usage-reset: "&cUsage: /veinguard reset <Player>"
-veinguard-usage-resetall: "&cUsage: /veinguard resetall"
-veinguard-usage-reload: "&cUsage: /veinguard reload"
-veinguard-usage-toggle-alerts: "&cUsage: /veinguard toggle-alerts 'or' toggle-alerts <Player>"
-veinguard-usage-unmute: "&cUsage: /veinguard unmute <Player>"
+command-usage: "&cUsage: /veinguard {usage}"
 
-# DO NOT CHANGE
+# DO NOT CHANGE – Used internally to track lang config compatibility.
+# Modifying this value may cause the plugin to fail loading or reset your configuration.
 lang-version: 1
 ```
 </details>

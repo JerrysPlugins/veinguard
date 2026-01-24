@@ -1,6 +1,7 @@
 package com.jerrysplugins.veinguard.core.util;
 
 public enum UpdateType {
+
     RELEASE(""),
     BETA("-BETA"),
     ALPHA("-ALPHA"),

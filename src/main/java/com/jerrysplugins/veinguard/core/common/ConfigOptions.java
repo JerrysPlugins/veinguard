@@ -2,7 +2,6 @@ package com.jerrysplugins.veinguard.core.common;
 
 import com.jerrysplugins.veinguard.VeinGuard;
 import com.jerrysplugins.veinguard.core.util.logger.Level;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -80,6 +79,7 @@ public class ConfigOptions {
         loadIgnoredTools(config);
         loadTrackedBlocks(config);
         loadDisabledWorlds(config);
+        loadAlertCommands(config);
     }
 
     private void loadIgnoredTools(FileConfiguration config) {
@@ -138,6 +138,13 @@ public class ConfigOptions {
         }
     }
 
+    private void loadAlertCommands(FileConfiguration config) {
+        for (String commandEntry : config.getStringList("alert-commands")) {
+            if (commandEntry == null || commandEntry.isBlank()) continue;
+            alertCommands.add(commandEntry);
+        }
+    }
+
     private String getFallbackMaterialName(Material material) {
         String[] words = material.name().toUpperCase().split("_");
         StringBuilder nameBuilder = new StringBuilder();
@@ -153,21 +160,21 @@ public class ConfigOptions {
         alertCommands.clear();
     }
 
-    public Map<Material, Integer> getTrackedBlocks() { return this.trackedBlocks; }
+    //public Map<Material, Integer> getTrackedBlocks() { return this.trackedBlocks; }
     public int getBreakThreshold(Material material) {
         return trackedBlocks.getOrDefault(material, 1);
     }
     public boolean isTrackedMaterial(Material material) { return this.trackedBlocks.containsKey(material); }
 
-    public Map<Material, String> getPrettyNames() { return this.prettyNames; }
+    //public Map<Material, String> getPrettyNames() { return this.prettyNames; }
     public String getPrettyName(Material material) {
         return prettyNames.getOrDefault(material, getFallbackMaterialName(material));
     }
 
-    public Set<String> getDisabledWorlds() { return this.disabledWorlds; }
+    //public Set<String> getDisabledWorlds() { return this.disabledWorlds; }
     public boolean isWorldDisabled(World world) { return this.disabledWorlds.contains(world.getName()); }
 
-    public Set<Material> getIgnoredTools() { return this.ignoredTools; }
+    //public Set<Material> getIgnoredTools() { return this.ignoredTools; }
     public boolean isIgnoredTool(Material material) {
         return ignoredTools.contains(material);
     }
@@ -177,7 +184,7 @@ public class ConfigOptions {
     public int getCheckIntervalMinutes() { return this.checkIntervalMinutes; }
     public long getCheckIntervalMs() { return this.checkIntervalMs; }
 
-    public int getAlertCooldownSeconds() { return this.alertCooldownSeconds; }
+    //public int getAlertCooldownSeconds() { return this.alertCooldownSeconds; }
     public long getAlertCooldownMs() { return this.alertCooldownMs; }
 
     public boolean isIgnoreCreative() { return this.ignoreCreative; }

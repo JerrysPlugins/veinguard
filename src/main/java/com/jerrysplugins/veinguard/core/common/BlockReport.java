@@ -77,7 +77,7 @@ public class BlockReport {
 
         String header = plugin.getLocale().getMessage("report-header", sendToPlayer)
                 .replace("{player}", suspect.getName());
-        if(sendToPlayer) playerSender.accept(null, header); else consoleSender.accept(Level.INFO, header);
+        if(sendToPlayer) playerSender.accept(null, header); else consoleSender.accept(Level.NONE, header);
 
         if(reportMessages.isEmpty()) {
             String none = plugin.getLocale().getMessage("report-none", sendToPlayer)
@@ -90,8 +90,8 @@ public class BlockReport {
                 playerSender.accept(null, none);
                 playerSender.accept(null, footer);
             } else {
-                consoleSender.accept(Level.INFO, none);
-                consoleSender.accept(Level.INFO, footer);
+                consoleSender.accept(Level.NONE, none);
+                consoleSender.accept(Level.NONE, footer);
             }
             return;
         }
@@ -101,13 +101,13 @@ public class BlockReport {
 
         for (int i = startIndex; i < endIndex; i++) {
             if(sendToPlayer) playerSender.accept(null, reportMessages.get(i));
-            else consoleSender.accept(Level.INFO, reportMessages.get(i));
+            else consoleSender.accept(Level.NONE, reportMessages.get(i));
         }
 
         String footer = plugin.getLocale().getMessage("report-footer", sendToPlayer)
                 .replace("{page}", String.valueOf(page))
                 .replace("{totalPages}", String.valueOf(totalPages));
         if(sendToPlayer) playerSender.accept(null, footer);
-        else consoleSender.accept(Level.INFO, footer);
+        else consoleSender.accept(Level.NONE, footer);
     }
 }

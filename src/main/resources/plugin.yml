@@ -1,5 +1,5 @@
 name: VeinGuard
-version: '1.1.2-EXPERIMENTAL'
+version: '1.1.2'
 main: com.jerrysplugins.veinguard.VeinGuard
 api-version: '1.21'
 prefix: VeinGuard
