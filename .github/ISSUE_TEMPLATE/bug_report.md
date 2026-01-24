@@ -1,38 +1,34 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: Bug Report
+about: Create a bug report to help us resolve issues.
 title: ''
-labels: ''
-assignees: ''
+labels: bug
+assignees: JerrysPlugins
 
 ---
 
 **Describe the bug**
 A clear and concise description of what the bug is.
 
-**To Reproduce**
+**Reproduce:**
 Steps to reproduce the behavior:
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-**Expected behavior**
+**Expected Behavior:**
 A clear and concise description of what you expected to happen.
 
-**Screenshots**
+**Screenshots:**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+**Version Information:**
+- VeinGuard Version: [e.g. 1.1.0-BETA]
+- Java Version: [e.g. JDK 1.18]
+- Minecraft Version: [e.g. 1.21.11]
+- Minecraft Server Type: [e.g. Spigot, Paper, Purpur etc.]
+- Server Type Version: [e.g. Paper-1.21.11-24, Spigot-1.21.11 etc.]
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
+**Additional Context:**
 Add any other context about the problem here.

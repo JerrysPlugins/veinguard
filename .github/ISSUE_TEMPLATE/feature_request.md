@@ -1,9 +1,9 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: Feature Request
+about: Suggest an idea/feature for the VeinGuard plugin.
 title: ''
-labels: ''
-assignees: ''
+labels: enhancement
+assignees: JerrysPlugins
 
 ---
 
@@ -13,8 +13,8 @@ A clear and concise description of what the problem is. Ex. I'm always frustrate
 **Describe the solution you'd like**
 A clear and concise description of what you want to happen.
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+**Describe why this would benefit VeinGuard:**
+A clear description of why this would benefit VeinGuard and the servers that use it.
 
 **Additional context**
 Add any other context or screenshots about the feature request here.
