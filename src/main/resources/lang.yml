@@ -18,13 +18,13 @@ in-game-only: "This command can only be used by in-game players!"
 new-version: "&bVein&cGuard &3update available! &8(&7Current&f: &c{oldVersion}&7, &7Latest&f: &b{newVersion}&8)"
 
 # -----------------------------------------------------------------------------
-# Staff Notifications
+# Staff Messages
 # -----------------------------------------------------------------------------
 staff-notify: "&b{player} &cbroke &3{count} &b{material} &cin the last &b{time} &cminutes!"
 staff-join-notify: "&cThere are &b{count} &cplayers with block violations!"
 
 # -----------------------------------------------------------------------------
-# Reports
+# Report Message
 # -----------------------------------------------------------------------------
 report-header: "&7---- < &c&lVein&b&lGuard &r&7Report / &3{player} &7> ----"
 report-material-normal: "&7{material}&f: &8(&b{count}&7/&3{threshold}&8)"
@@ -41,7 +41,7 @@ reload-failed: "&cPlugin reload failed! Check the console for details."
 reload-success: "&aPlugin and configuration files reloaded successfully!"
 
 # -----------------------------------------------------------------------------
-# Reload Messages
+# Reset Messages
 # -----------------------------------------------------------------------------
 reset-player: "&b{player} &ablock break data has been reset!"
 reset-all: "&aAll player block break data has been reset!"
@@ -65,12 +65,12 @@ toggle-alerts-self-not-staff: "&cYou do not have permission to receive alerts!"
 toggle-alerts-others-not-staff: "&b{player} &cdoesn't have permission to receive alerts!"
 
 # -----------------------------------------------------------------------------
-# Help Messages
+# Help Message
 # -----------------------------------------------------------------------------
 help:
   - "&7---- < &b&lVein&c&lGuard &r&7Help > &7----"
   - "&b/veinguard &8(&7Alias&f: &7/vg&8) &7- Base command."
-  - "&3/vg check <Player> &7- View a player's X-ray report."
+  - "&3/vg check <Player> [Page] &7- View a player's block break report."
   - "&b/vg help &7- View this help page."
   - "&3/vg mute <Player> &7- Mute a player's alerts."
   - "&b/vg reload &7- Reload the plugin and configuration files."
@@ -79,9 +79,16 @@ help:
   - "&3/vg toggle-alerts &7- Toggle alerts off for yourself."
   - "&b/vg unmute <Player> &7- Unmute a player's alerts."
   - "&7-----------------------------------"
+help-command:
+  - "&7---- < &b&lVein&c&lGuard &r&7Help > &7----"
+  - "&3Command&f: &7{command}"
+  - "&bDescription&f: &7{description}"
+  - "&3Permission&f: &7{permission}"
+  - "&bUsage&f: &7{usage}"
+  - "&7----------------------------------"
 
 # -----------------------------------------------------------------------------
-# Info Messages
+# Info Message
 # -----------------------------------------------------------------------------
 plugin-info:
   - "&7---- < &b&lVein&c&lGuard &r&7Information > &7----"
@@ -94,18 +101,9 @@ plugin-info:
   - "&7---------------------------------"
 
 # -----------------------------------------------------------------------------
-# Usage Messages
+# Usage Message
 # -----------------------------------------------------------------------------
-veinguard-usage: "&cUsage: /veinguard <check|help|mute|reset|resetall|reload|unmute>"
-veinguard-usage-check: "&cUsage: /veinguard check <Player>"
-veinguard-usage-help: "&cUsage: /veinguard help"
-veinguard-usage-msg: "&cUsage: /veinguard msg <Player> <Message>"
-veinguard-usage-mute: "&cUsage: /veinguard mute <Player>"
-veinguard-usage-reset: "&cUsage: /veinguard reset <Player>"
-veinguard-usage-resetall: "&cUsage: /veinguard resetall"
-veinguard-usage-reload: "&cUsage: /veinguard reload"
-veinguard-usage-toggle-alerts: "&cUsage: /veinguard toggle-alerts 'or' toggle-alerts <Player>"
-veinguard-usage-unmute: "&cUsage: /veinguard unmute <Player>"
+command-usage: "&cUsage: /veinguard {usage}"
 
 # DO NOT CHANGE
 lang-version: 1

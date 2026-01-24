@@ -1,9 +1,11 @@
 ## v1.1.2 (Stable Release)
 * This version marks the end of BETA, release is considered stable.
-* Complete re-write of plugin Logger and logger levels.
+* Complete re-write of plugin Logger.
 * Separated command dispatching into new class CommandDispatcher.
 * Separated suspect report creation into new class BlockReport.
 * Separated alert logic out of all other classes, all alert functionality now lies in AlertManager.
+* Command overhauled into CommandManager with sub command class for each sub command.
+* Removed all original 'veinguard-usage-command' messages and replaced with 'veinguard-command-usage' that is completed via '{usage}' variable.
 * New config option 'staff-join-violation-alert' that notifies staff upon joining the server with how many players currently have a block violation. Requires permission 'veinguard.notify'
 * Major clean up of code.
 

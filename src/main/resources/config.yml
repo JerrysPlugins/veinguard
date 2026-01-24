@@ -1,15 +1,3 @@
-# =====================================================
-#                    VeinGuard
-# -----------------------------------------------------
-# Version: 1.1.2
-# Author: JerrysPlugins
-#
-# Description:
-# Advanced anti-xray detection plugin that analyzes
-# block mining behavior to flag suspicious patterns
-# and alert staff in real time.
-# =====================================================
-
 # Time window (in minutes) used to evaluate block break activity.
 # VeinGuard will count how many tracked blocks a player breaks within this period.
 # Example: A value of 5 means "blocks broken in the last 5 minutes".

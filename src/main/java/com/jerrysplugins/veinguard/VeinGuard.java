@@ -1,6 +1,6 @@
 package com.jerrysplugins.veinguard;
 
-import com.jerrysplugins.veinguard.core.command.CommandVeinguard;
+import com.jerrysplugins.veinguard.core.command.CommandManager;
 import com.jerrysplugins.veinguard.core.common.AlertManager;
 import com.jerrysplugins.veinguard.core.common.BlockReport;
 import com.jerrysplugins.veinguard.core.common.ConfigOptions;
@@ -133,7 +133,7 @@ public final class VeinGuard extends JavaPlugin {
         try {
             new BlockBreakListener(this);
             new StaffJoinListener(this);
-            new CommandVeinguard(this);
+            new CommandManager(this);
             return true;
         } catch (Exception e) {
             getLog().log(Level.ERROR, "There was an error while registering listeners or commands!", e);

@@ -46,7 +46,7 @@ public class PlayerTracker {
         timestamps.addLast(currentTimeMs);
         cleanupOldEntries(timestamps, currentTimeMs);
 
-        int breakThreshold = plugin.getConfigOptions().getBreakThreshold(material);
+        int breakThreshold = configOptions.getBreakThreshold(material);
         if (timestamps.size() < breakThreshold) return;
 
         if (isOnCooldown(uuid, material, currentTimeMs)) return;
@@ -69,7 +69,7 @@ public class PlayerTracker {
 
                     cleanupOldEntries(timestamps, currentTimeMs);
 
-                    int breakThreshold = plugin.getConfigOptions().getBreakThreshold(material);
+                    int breakThreshold = configOptions.getBreakThreshold(material);
 
                     if (timestamps.size() >= breakThreshold) {
                         count++;
