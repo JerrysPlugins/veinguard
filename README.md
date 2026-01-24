@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/jerrysplugins/veinguard?display_name=release&label=Latest" alt="Latest Release Badge">
+</p>
+
 ![Main Banner](https://cdn.modrinth.com/data/cached_images/d8a1778b57bbf5a02072fd5f1b561889a00bb5f1.png)
 ![Chat Notification](https://cdn.modrinth.com/data/zIQ58sDz/images/207283f03412dfb7523cad97c091542e54e589bc.png)
 
