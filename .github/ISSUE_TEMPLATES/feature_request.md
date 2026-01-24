@@ -1,5 +1,5 @@
 ---
-name: Feature Request
+name: Feature Request/Suggestion
 about: Suggest an idea for the VeinGuard plugin.
 title: ''
 labels: enhancement
