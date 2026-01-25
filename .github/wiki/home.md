@@ -14,4 +14,12 @@ This wiki will explain the functionality of the plugin as well as information on
 
 
 # Open Source & License
-This plugin is open source and licensed under the MIT license.
+
+VeinGuard is fully open source and released under the [MIT License](https://opensource.org/licenses/MIT).
+
+You are free to:
+- View, modify, and use the source code for personal or server use.
+- Create your own private versions of the plugin.
+- Redistribute the plugin, including modified versions, as long as you include the original copyright notice and license.
+
+All official updates and releases are managed by the original author.
