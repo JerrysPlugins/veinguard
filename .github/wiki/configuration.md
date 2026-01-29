@@ -20,6 +20,35 @@ Proper configuration ensures accurate tracking, alerts, and reporting of suspici
 
 ---
 
+## Alert Sound
+
+VeinGuard can optionally play a configurable sound to staff members when an alert is triggered.  
+The sound is only played for players with the `veinguard.notify` permission and if staff alerts are enabled.
+
+### Configuration Example
+
+    alert-sound:
+      enabled: true
+      sound: ENTITY_EXPERIENCE_ORB_PICKUP
+      volume: 1.0
+      pitch: 1.0
+
+### Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `enabled` | Enables or disables the alert sound. | `true` |
+| `sound` | Bukkit sound to play when an alert is triggered. Must be a valid `Sound` enum. | `ENTITY_EXPERIENCE_ORB_PICKUP` |
+| `volume` | Volume of the alert sound (0.0 – 1.0+). | `1.0` |
+| `pitch` | Pitch of the alert sound (0.5 – 2.0). | `1.0` |
+
+### Notes
+
+- Sound values are case-insensitive.
+- Invalid or missing sounds fall back to `ENTITY_EXPERIENCE_ORB_PICKUP`.
+
+---
+
 ## Alert Commands
 
 | Option | Description | Default |
@@ -84,40 +113,106 @@ All options are explained in the sections above.
 
 ```yaml
 # Time window (in minutes) used to evaluate block break activity.
+# VeinGuard will count how many tracked blocks a player breaks within this period.
+# Example: A value of 5 means "blocks broken in the last 5 minutes".
 blocks-broken-in-last-minutes: 5
 
 # Cooldown (in seconds) between alerts for the same player and block type.
+# This prevents alert spam if a player continues mining after an alert is triggered.
 alert-cooldown-seconds: 45
 
-# Ignore block breaks by players in Creative mode.
+# If enabled, block breaks by players in CREATIVE mode will be ignored.
+# Recommended to keep enabled to avoid false positives from staff or builders.
 ignore-creative-mode: true
 
 # Blocks broken above this Y-level will not be tracked.
+# Useful for ignoring surface mining and focusing on underground activity.
+# Set to 320 to track blocks at all Y-levels.
 ignore-above-y-level: 64
 
-# Number of tracked block entries to display per page in '/veinguard check <Player>'.
+# Number of tracked block entries to display per page when using '/veinguard check <Player>'.
+# If the player has more entries than fit on one page, you can view additional pages with:
+# '/veinguard check <Player> <PageNumber>'
 player-report-page-entries: 7
 
-# Alerts configuration
+# If true, staff alert messages for suspicious block breaking
+# will also be sent to the server console.
+# Set too false to disable console notifications.
 send-alerts-to-console: true
+
+# If true, alert messages for suspicious block breaking
+# will be sent to in-game staff players with the 'veinguard.notify' permission.
+# Set too false to disable in-game staff notifications.
 send-alerts-to-staff: true
+
+# If true, sends a notification to staff members when they join the
+# server, showing the number of players currently flagged for violations.
+# Requires the player to have the 'veinguard.notify' permission.
 staff-join-violation-alert: false
 
-# Commands to execute when a player triggers a VeinGuard alert
+# If enabled, sends the configured sound to any player with the
+# 'veinguard.notify' permission upon an alert being triggered.
+
+# Sound must be a valid Bukkit sound.
+# - Visit this site for a list of valid sounds:
+#   https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+#
+# volume: Change the volume of the alert sound.
+# pitch: Change the pitch of the alert sound.
+alert-sound:
+  enabled: true
+  sound: ENTITY_EXPERIENCE_ORB_PICKUP
+  volume: 1.0
+  pitch: 1.0
+
+# List of console commands to execute when a player triggers a VeinGuard alert.
+# These commands run immediately after an alert is fired.
+#
+# Commands are executed from the server console.
+# Use {player} as a placeholder for the flagged player's name.
+#
+# Example:
+#   alert-commands:
+#   - 'vg msg {player} &cYou were fined $500 for possibly x-raying!'
+#   - 'eco take {player} 500'
+#
+# Leave this list empty to disable command execution on alerts.
 alert-commands: {}
 
-# Optional Discord webhook for staff alert notifications
+# Optional Discord webhook embed for staff alert notifications.
+# Alerts will only be sent if a valid webhook URL is provided.
+# Leave empty ("") to disable.
 discord-webhook-url: ""
 
-# Tools to ignore for block tracking
+# Tools that should be ignored by VeinGuard.
+# Block breaks performed while holding these items will not be tracked.
+# Values must be valid Bukkit material names.
+# - Visit this site for a list of valid materials:
+#   https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 ignored-tools:
   - WOODEN_HOE
 
-# Worlds where VeinGuard tracking is disabled
+# List of worlds where VeinGuard tracking should be completely disabled.
+# World names are case-sensitive.
 disabled-worlds:
   - test_world
 
-# Tracked blocks and alert thresholds
+# Defines which blocks VeinGuard should track and their alert thresholds.
+#
+# Format:
+#   MATERIAL:AMOUNT:"Pretty Name"
+#
+# - MATERIAL must be a valid Bukkit material name.
+# - AMOUNT is how many times the block can be broken within the configured time window
+#   before staff are alerted.
+# - Pretty Name is required and is used in alerts and reports for better readability.
+#
+# - Visit this site for a list of valid materials:
+#   https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+#
+# Example:
+#   'DIAMOND_ORE:15:"Diamond Ore"'
+#   Alerts staff when a player breaks 15 or more Diamond Ore blocks within the time window.
 tracked-blocks:
   - DIAMOND_ORE:15:"Diamond Ore"
   - EMERALD_ORE:5:"Emerald Ore"
@@ -149,11 +244,15 @@ tracked-blocks:
   - RAW_COPPER_BLOCK:5:"Raw Copper Block"
   - RAW_GOLD_BLOCK:5:"Raw Gold Block"
 
-# Update notifications
+# Determines whether players with the 'veinguard.update' permission or server operators
+# receive an in-game notification upon joining if a newer version of VeinGuard is available.
 show-update-notice: true
 
-# Internal config version (do not change)
+# DO NOT CHANGE – Used internally to track config compatibility.
+# Modifying this value may cause the plugin to fail loading or reset your configuration.
 config-version: 1
 
-# Debug mode for troubleshooting
+# Enables additional debug logging for troubleshooting and development purposes.
+# Should typically remain disabled on production servers.
 debug-mode: false
+```

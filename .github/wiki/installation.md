@@ -8,10 +8,9 @@ This guide explains how to install **VeinGuard** on **Spigot**, **Paper**, or **
 
 Before installing VeinGuard, ensure the following:
 
-- Your server is running **Minecraft 1.21 or newer**.
+- Your server is running **Minecraft 1.17 or newer**.
 - You have **Spigot**, **Paper**, or **Bukkit** installed.
 - You have access to your server’s `plugins` folder and permission to restart the server.
-- Java 21+ is recommended for best performance and compatibility.
 
 ---
 
@@ -35,8 +34,8 @@ Before installing VeinGuard, ensure the following:
         - Permissions defaults
     - Save your changes when finished.
 
-5. **Restart the Server (Optional)**
-    - If you made changes to `config.yml`, restart the server to apply them.
+5. **Restart the Server or Reload (Optional)**
+    - If you made changes to `config.yml`, you can use '/vg reload' or restart the server to apply them.
 
 ---
 
@@ -45,7 +44,7 @@ Before installing VeinGuard, ensure the following:
 After starting the server:
 
 - Check your server console for VeinGuard initialization messages.
-- Use `/veinguard help` or `/vg help` in-game to verify that commands are working.
+- Use `/veinguard` or `/vg help` in-game to verify that commands are working.
 - Ensure that no errors appear in the console related to VeinGuard or missing dependencies.
 
 ---

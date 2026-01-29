@@ -7,7 +7,6 @@ You may encounter bugs, unexpected behavior, or compatibility issues with certai
 
 ## Common Causes
 
-- Using Minecraft versions older than **1.21** (VeinGuard 1.1.2+ supports 1.21+ only).
 - Running an unsupported server wrapper or outdated Spigot/Paper/Bukkit version.
 - Conflicts with other plugins that modify block breaking or player events.
 

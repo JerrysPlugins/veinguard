@@ -1,3 +1,26 @@
+## v1.1.3
+* Added new configurable alert sound that will play when an alert is triggered. Player must have permission 'veinguard.notify' to receive. Sound and options configurable in config.yml
+* Added compatibility with the following Minecraft versions: 1.17.x, 1.18.x, 1.19.x, 1.20.x, 1.21.x
+* Removed original update available message and replaced with new update message list in lang.yml.
+* New lang version '5'.
+* New config version '5'.
+* Downgraded Java version to Java 16.
+* Downgraded Spigot API version to 1.17.
+* VeinGuard has been tested and is confirmed to work with the following versions: 1.17.x, 1.18.x, 1.19.x, 1.20.x, 1.21.x
+* Added new configurable alert sound that will play a sound for any player with permission 'veinguard.notify' when an alert is triggered.
+* Added new class VersionComparison, that compares semantical versions.
+* Added new enum VersionStatus that returns UP_TO_DATE, AHEAD or BEHIND depending on if version is ahead, behind or equal to the latest version.
+* Added new enum BuildType to determine what build type a version is.
+* Added new logging in the UpdateChecker.
+* Cleaned up code in UpdateChecker.
+* Cleaned up code in AlertManager.
+* Moved .yml configuration file creation from onEnable to onLoad for logger to check if 'debug-mode' is true in config.
+* Removed 'com.jerrysplugins.veinguard.core.' package, all files now nested in 'com.jerrysplugins.veinguard'
+* Renamed 'com.jerrysplugins.veinguard.common' to 'com.jerrysplugins.veinguard.core'
+* Removed 'new-version' message from lang. Replaced with message list 'update'.
+* New lang version '5.
+* New config version '5'.
+
 ## v1.1.2 (Stable Release)
 * This version marks the end of BETA, release is considered stable.
 * Complete re-write of plugin Logger.

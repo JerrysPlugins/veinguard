@@ -1,8 +1,10 @@
 # User-specific stuff
 .idea/
+oldjars/
 /README_SPIGOT.md
-/PLANNED_FEATURES.md
+/TODO.md
 /RELEASE.md
+/CHANGELOG.md
 
 *.iml
 *.ipr

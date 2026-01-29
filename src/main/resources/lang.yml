@@ -15,7 +15,6 @@ plugin-prefix: "&c&lV&b&lG &r&7> &r"
 no-permission: "&cYou don't have permission!"
 player-not-found: "&cPlayer &b{player} &cwas not found!"
 in-game-only: "This command can only be used by in-game players!"
-new-version: "&bVein&cGuard &3update available! &8(&7Current&f: &c{oldVersion}&7, &7Latest&f: &b{newVersion}&8)"
 
 # -----------------------------------------------------------------------------
 # Staff Messages
@@ -92,6 +91,16 @@ plugin-info:
   - " "
   - "&3Use '&b/vg help&3' for help with commands."
   - "&7---------------------------------"
+
+# -----------------------------------------------------------------------------
+# Update Message
+# -----------------------------------------------------------------------------
+update:
+  - "&7---- < &b&lVein&c&lGuard &r&7Update > &7----"
+  - "&7A new update for VeinGuard is available!"
+  - "&8(&bCurrent&f: &7{oldVersion}&8) &8(&bLatest&f: &6{newVersion}&8)"
+  - "&7Download &b@ &7Spigot, Modrinth or Github!"
+  - "&7-----------------------------"
 
 # -----------------------------------------------------------------------------
 # Usage Message

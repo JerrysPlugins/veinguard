@@ -52,7 +52,7 @@ Each command requires the appropriate permission to execute. Permissions should 
 **Permission:** `veinguard.command`
 
 **Description:**  
-Displays basic plugin information and provides guidance on how to access VeinGuard help commands.
+Displays basic plugin information.
 
 ---
 

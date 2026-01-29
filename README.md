@@ -31,6 +31,7 @@ VeinGuard is simple, configurable, and designed to moderate X-ray abuse without 
 - In-game staff messages
 - Console logging
 - Discord webhook notifications
+- Configurable in-game sound upon alert trigger
 - Execute configurable commands on alerts
 - Toggleable alerts for individual staff
 - Per-player mute system for suppressing alerts
@@ -51,56 +52,6 @@ VeinGuard is simple, configurable, and designed to moderate X-ray abuse without 
 - Hot-reload support for config and language files
 
 ---
-
-<details>
-<summary><strong>Planned Features</strong></summary>
-
-## Planned Features
-
-VeinGuard is actively developed.  
-The features listed below are either in progress or planned for future releases.
-
-### Localization & Accessibility
-- **Multi-language support** via locale-based language files (e.g. `en_us.yml`)
-- Easy switching of plugin language through configuration
-
-### Staff Tools & Patrol System
-- **Spectator Patrol Mode** (`/vg patrol <start|stop|pause|resume>`)
-    - Automatically places staff into spectator mode
-    - Teleports staff between online players at a configurable interval
-    - Ensures every online player is visited once per patrol cycle
-    - Configurable delay between teleports
-    - Boss bar countdown showing time until next teleport
-    - Visual paused state when patrol is paused
-
-### Detection Improvements
-- **Confidence Scoring System**
-    - Calculates how likely a player is to be using X-ray
-    - Based on mining patterns, thresholds, and historical data
-    - Used to better prioritize alerts and reports
-- **Ore Vein Detection**
-    - Distinguishes between natural ore veins and suspicious isolated mining
-    - Reduces false positives from legitimate mining activity
-
-### GUI & Usability
-- **In-game Management GUI**
-    - View player block-break reports
-    - Teleport directly to players from reports
-    - Manage alerts, mutes, and plugin settings
-    - Designed for fast staff interaction without commands
-
-### Integrations & Persistence
-- **WorldGuard Integration**
-    - Custom WorldGuard flag to enable or disable VeinGuard per region
-- **Data Persistence**
-    - Retain block-break history and mute states across server restarts
-- **Discord Enhancements**
-    - Rich Discord embed support for webhook alerts
-
----
-
-</details>
-
 
 <details>
 <summary><strong>Commands & Permissions</strong></summary>
@@ -216,10 +167,25 @@ send-alerts-to-console: true
 # Set too false to disable in-game staff notifications.
 send-alerts-to-staff: true
 
-# If true, Sends a notification to staff members when they join the
+# If true, sends a notification to staff members when they join the
 # server, showing the number of players currently flagged for violations.
 # Requires the player to have the 'veinguard.notify' permission.
 staff-join-violation-alert: false
+
+# If enabled, sends the configured sound to any player with the
+# 'veinguard.notify' permission upon an alert being triggered.
+
+# Sound must be a valid Bukkit sound.
+# - Visit this site for a list of valid sounds:
+#   https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+#
+# volume: Change the volume of the alert sound.
+# pitch: Change the pitch of the alert sound.
+alert-sound:
+  enabled: true
+  sound: ENTITY_EXPERIENCE_ORB_PICKUP
+  volume: 1.0
+  pitch: 1.0
 
 # List of console commands to execute when a player triggers a VeinGuard alert.
 # These commands run immediately after an alert is fired.
@@ -243,6 +209,8 @@ discord-webhook-url: ""
 # Tools that should be ignored by VeinGuard.
 # Block breaks performed while holding these items will not be tracked.
 # Values must be valid Bukkit material names.
+# - Visit this site for a list of valid materials:
+#   https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 ignored-tools:
   - WOODEN_HOE
 
@@ -335,7 +303,6 @@ plugin-prefix: "&c&lV&b&lG &r&7> &r"
 no-permission: "&cYou don't have permission!"
 player-not-found: "&cPlayer &b{player} &cwas not found!"
 in-game-only: "This command can only be used by in-game players!"
-new-version: "&bVein&cGuard &3update available! &8(&7Current&f: &c{oldVersion}&7, &7Latest&f: &b{newVersion}&8)"
 
 # -----------------------------------------------------------------------------
 # Staff Messages
@@ -390,13 +357,13 @@ toggle-alerts-others-not-staff: "&b{player} &cdoesn't have permission to receive
 help:
   - "&7---- < &b&lVein&c&lGuard &r&7Help > &7----"
   - "&b/veinguard &8(&7Alias&f: &7/vg&8) &7- Base command."
-  - "&3/vg check <Player> [Page] &7- View a player's block break report."
-  - "&b/vg help &7- View this help page."
+  - "&3/vg check <Player> [Page] &7- View a player's block report."
+  - "&b/vg help &7- View this command help page."
   - "&3/vg mute <Player> &7- Mute a player's alerts."
   - "&b/vg reload &7- Reload the plugin and configuration files."
-  - "&3/vg reset <Player> &7- Reset a player's report and block history."
-  - "&b/vg resetall &7- Reset all players' reports and block history."
-  - "&3/vg toggle-alerts &7- Toggle alerts off for yourself."
+  - "&3/vg reset <Player> &7- Reset a player's block history."
+  - "&b/vg resetall &7- Reset all players block history."
+  - "&3/vg toggle-alerts &7- Toggle alerts for yourself."
   - "&b/vg unmute <Player> &7- Unmute a player's alerts."
   - "&7-----------------------------------"
 
@@ -414,6 +381,16 @@ plugin-info:
   - "&7---------------------------------"
 
 # -----------------------------------------------------------------------------
+# Update Message
+# -----------------------------------------------------------------------------
+update:
+  - "&7---- < &b&lVein&c&lGuard &r&7Update > &7----"
+  - "&7A new update for VeinGuard is available!"
+  - "&8(&bCurrent&f: &7{oldVersion}&8) &8(&bLatest&f: &6{newVersion}&8)"
+  - "&7Download &b@ &7Spigot, Modrinth or Github!"
+  - "&7-----------------------------"
+
+# -----------------------------------------------------------------------------
 # Usage Message
 # -----------------------------------------------------------------------------
 command-usage: "&cUsage: /veinguard {usage}"
@@ -423,6 +400,12 @@ command-usage: "&cUsage: /veinguard {usage}"
 lang-version: 1
 ```
 </details>
+
+## VeinGuard Plugin Wiki
+
+Explore the full **VeinGuard Wiki** for detailed information about the plugin, including commands, permissions, configuration options, installation guides, and more.
+
+[Visit the VeinGuard Wiki](https://github.com/JerrysPlugins/veinguard/wiki)
 
 ## Report Issues/Bugs
 
