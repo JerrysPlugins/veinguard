@@ -107,7 +107,7 @@ tracked-blocks:
 
 ## Full Config File
 
-Below is the **complete default `config.yml`** for VeinGuard version 1.1.2.  
+Below is the **complete default `config.yml`** for VeinGuard version 1.1.3.  
 You can copy this as a reference when configuring your server.  
 All options are explained in the sections above.
 
