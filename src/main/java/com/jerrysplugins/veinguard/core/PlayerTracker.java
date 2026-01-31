@@ -58,7 +58,7 @@ public class PlayerTracker {
 
         setCooldown(uuid, material, currentTimeMs);
 
-        plugin.getAlertManager().sendAlert(suspect, material, timestamps.size(), location);
+        plugin.getAlertManager().sendAlert(suspect, material, location, timestamps.size());
     }
 
     public CompletableFuture<Integer> getPlayersInViolationAsync() {

@@ -1,4 +1,4 @@
-package com.jerrysplugins.veinguard.core;
+package com.jerrysplugins.veinguard.core.alert;
 
 import com.jerrysplugins.veinguard.VeinGuard;
 import com.jerrysplugins.veinguard.util.logger.Level;

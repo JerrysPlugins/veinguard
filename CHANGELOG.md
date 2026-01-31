@@ -1,9 +1,17 @@
+## v1.1.4
+* Added action-bar alert message.
+* Added config option 'alert-delivery' to switch between alert message delivery types.
+* Added class 'ActionBarQueue' for handling of queueing action bar message alerts and sending.
+* Added class 'VGUtils' for commonly used global methods.
+* Added enum 'AlertDelivery' for switching between alert delivery types.
+* Added new package 'com.jerrysplugins.veinguard.core.alert' for housing of alert handling classes.
+* Added language key 'staff-notify-action-bar' for action bar alert messages.
+* Changed language key 'staff-notify' to 'staff-notify-chat'.
+* Re-do of config.yml to have smaller description comments and better organization.
+* Removed config option 'send-alerts-to-staff' in favor of new 'alert-delivery' option.
+* Removed CommandDispatcher class. Refactored method's into AlertManager.
+
 ## v1.1.3
-* Added new configurable alert sound that will play when an alert is triggered. Player must have permission 'veinguard.notify' to receive. Sound and options configurable in config.yml
-* Added compatibility with the following Minecraft versions: 1.17.x, 1.18.x, 1.19.x, 1.20.x, 1.21.x
-* Removed original update available message and replaced with new update message list in lang.yml.
-* New lang version '5'.
-* New config version '5'.
 * Downgraded Java version to Java 16.
 * Downgraded Spigot API version to 1.17.
 * VeinGuard has been tested and is confirmed to work with the following versions: 1.17.x, 1.18.x, 1.19.x, 1.20.x, 1.21.x

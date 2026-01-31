@@ -1,7 +1,7 @@
 package com.jerrysplugins.veinguard;
 
 import com.jerrysplugins.veinguard.command.CommandManager;
-import com.jerrysplugins.veinguard.core.AlertManager;
+import com.jerrysplugins.veinguard.core.alert.AlertManager;
 import com.jerrysplugins.veinguard.core.BlockReport;
 import com.jerrysplugins.veinguard.core.ConfigOptions;
 import com.jerrysplugins.veinguard.core.PlayerTracker;
@@ -30,10 +30,10 @@ public final class VeinGuard extends JavaPlugin {
     private AlertManager alertManager;
     private BlockReport blockReport;
     @SuppressWarnings("FieldCanBeLocal")
-    private final int CONFIG_VERSION = 5;
+    private final int CONFIG_VERSION = 6;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final int LANG_VERSION = 5;
+    private final int LANG_VERSION = 6;
 
     private String pluginName;
     private String pluginVersion;
@@ -56,8 +56,6 @@ public final class VeinGuard extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
-        checkForUpdates();
 
         pluginName = getDescription().getName();
         pluginVersion = getDescription().getVersion();
@@ -82,10 +80,13 @@ public final class VeinGuard extends JavaPlugin {
                 + pluginName + ", v"
                 + pluginVersion + ", by "
                 + pluginAuthors);
+
+        checkForUpdates();
     }
 
     @Override
     public void onDisable() {
+        getAlertManager().getActionBarQueue().shutdown();
         playerTracker.shutdown();
         configOptions.shutdown();
         getLog().log(Level.INFO, "Plugin disabled. Goodbye!");

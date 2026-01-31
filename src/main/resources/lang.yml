@@ -19,7 +19,8 @@ in-game-only: "This command can only be used by in-game players!"
 # -----------------------------------------------------------------------------
 # Staff Messages
 # -----------------------------------------------------------------------------
-staff-notify: "&b{player} &cbroke &3{count} &b{material} &cin the last &b{time} &cminutes!"
+staff-notify-chat: "&b{player} &cbroke &3{count} &b{material} &cin the last &b{time} &cminutes!"
+staff-notify-action-bar:  "&b{player} &cbroke &3{count} &b{material} &cin the last &b{time} &cminutes!"
 staff-join-notify: "&cThere are &b{count} &cplayers with block violations!"
 
 # -----------------------------------------------------------------------------

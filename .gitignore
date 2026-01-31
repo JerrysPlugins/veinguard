@@ -1,6 +1,7 @@
 # User-specific stuff
 .idea/
 oldjars/
+other/
 /README_SPIGOT.md
 /TODO.md
 /RELEASE.md

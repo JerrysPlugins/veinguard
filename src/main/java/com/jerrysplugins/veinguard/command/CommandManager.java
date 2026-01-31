@@ -2,6 +2,7 @@ package com.jerrysplugins.veinguard.command;
 
 import com.jerrysplugins.veinguard.VeinGuard;
 import com.jerrysplugins.veinguard.command.subcommand.*;
+import com.jerrysplugins.veinguard.util.VGUtils;
 import com.jerrysplugins.veinguard.util.logger.Level;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
@@ -134,9 +135,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         String message = plugin.getLocale().getMessage(key, !isConsole);
 
         if (placeholders != null) {
-            for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-                message = message.replace(entry.getKey(), entry.getValue());
-            }
+            message = VGUtils.applyPlaceholders(message, placeholders);
         }
 
         if (isConsole) {
@@ -148,7 +147,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         String pluginPrefix = plugin.getLocale().getMessage("plugin-prefix", true);
         player.sendMessage(pluginPrefix + message);
     }
-
 
     private void sendPluginInfo(CommandSender sender, boolean isConsole) {
         List<String> lines = plugin.getLocale().getListMessage("plugin-info", !isConsole);

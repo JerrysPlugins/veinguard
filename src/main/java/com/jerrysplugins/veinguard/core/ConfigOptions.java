@@ -1,6 +1,7 @@
 package com.jerrysplugins.veinguard.core;
 
 import com.jerrysplugins.veinguard.VeinGuard;
+import com.jerrysplugins.veinguard.core.alert.AlertDeliveryType;
 import com.jerrysplugins.veinguard.util.logger.Level;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -32,8 +33,9 @@ public class ConfigOptions {
 
     private int maxReportPageEntries;
 
-    private boolean sendAlertsConsole;
-    private boolean sendAlertsStaff;
+    private boolean sendAlertConsole;
+    private AlertDeliveryType alertDeliveryType;
+
     private boolean staffJoinViolationAlert;
 
     private boolean alertSoundEnabled;
@@ -75,8 +77,9 @@ public class ConfigOptions {
 
         maxReportPageEntries = config.getInt("player-report-page-entries", 7);
 
-        sendAlertsConsole = config.getBoolean("send-alerts-to-console", true);
-        sendAlertsStaff = config.getBoolean("send-alerts-to-staff", true);
+        sendAlertConsole = config.getBoolean("send-alerts-to-console", true);
+        parseAlertDeliveryType(config);
+
         staffJoinViolationAlert = config.getBoolean("staff-join-violation-alert", false);
 
         alertSoundEnabled = config.getBoolean("alert-sound.enabled", true);
@@ -148,8 +151,19 @@ public class ConfigOptions {
 
     private void loadAlertCommands(FileConfiguration config) {
         for (String commandEntry : config.getStringList("alert-commands")) {
-            if (commandEntry == null || commandEntry.isBlank()) continue;
+            if (commandEntry == null || commandEntry.isBlank() || commandEntry.startsWith("examplecmd")) continue;
             alertCommands.add(commandEntry);
+        }
+    }
+
+    private void parseAlertDeliveryType(FileConfiguration config) {
+        String type = config.getString("alert-delivery");
+        try {
+            alertDeliveryType = AlertDeliveryType.valueOf(type);
+        } catch (IllegalArgumentException e) {
+            plugin.getLog().log(Level.WARN, "Invalid alert-delivery type '" + type + "' in config.yml! " +
+                    "Defaulting to CHAT.");
+            alertDeliveryType = AlertDeliveryType.CHAT;
         }
     }
 
@@ -215,8 +229,8 @@ public class ConfigOptions {
 
     public int getMaxReportPageEntries() { return this.maxReportPageEntries; }
 
-    public boolean isSendAlertsConsole() { return this.sendAlertsConsole; }
-    public boolean isSendAlertsStaff() { return this.sendAlertsStaff; }
+    public boolean isSendAlertConsole() { return this.sendAlertConsole; }
+    public AlertDeliveryType getAlertDeliveryType() { return this.alertDeliveryType; }
     public boolean isStaffJoinViolationAlert() { return this.staffJoinViolationAlert; }
 
     public boolean isAlertSoundEnabled() { return this.alertSoundEnabled; }
