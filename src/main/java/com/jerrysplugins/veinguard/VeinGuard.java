@@ -29,6 +29,7 @@ public final class VeinGuard extends JavaPlugin {
     private PlayerTracker playerTracker;
     private AlertManager alertManager;
     private BlockReport blockReport;
+
     @SuppressWarnings("FieldCanBeLocal")
     private final int CONFIG_VERSION = 6;
 
