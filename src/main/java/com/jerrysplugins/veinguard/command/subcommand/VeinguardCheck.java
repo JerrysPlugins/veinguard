@@ -1,8 +1,15 @@
+/*
+ * Copyright (c) 2026 JerrysPlugins
+ * SPDX‑License‑Identifier: MIT
+ * Licensed under the MIT License (see LICENSE file)
+ * DO NOT REMOVE: This header must remain in all source files.
+ */
 package com.jerrysplugins.veinguard.command.subcommand;
 
 import com.jerrysplugins.veinguard.VeinGuard;
 import com.jerrysplugins.veinguard.command.CommandManager;
-import com.jerrysplugins.veinguard.command.SubCommand;
+import com.jerrysplugins.veinguard.command.ISubCommand;
+import com.jerrysplugins.veinguard.core.page.BlockReport;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -10,12 +17,15 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Map;
 
-public class VeinguardCheck implements SubCommand {
+public class VeinguardCheck implements ISubCommand {
 
     private final VeinGuard plugin;
 
+    private final BlockReport blockReport;
+
     public VeinguardCheck(VeinGuard plugin) {
         this.plugin = plugin;
+        this.blockReport = new BlockReport(plugin);
     }
 
     @Override
@@ -31,6 +41,11 @@ public class VeinguardCheck implements SubCommand {
     @Override
     public String getPermission() {
         return "veinguard.command.check";
+    }
+
+    @Override
+    public List<String> getSubPermissions() {
+        return null;
     }
 
     @Override
@@ -60,7 +75,7 @@ public class VeinguardCheck implements SubCommand {
         int page = 1;
 
         if (args.length == 3) {
-            int totalPages = plugin.getBlockReport().getPlayerReportPages(target);
+            int totalPages = blockReport.getTotalPages(target);
             try {
                 page = Integer.parseInt(args[2]);
                 if (page < 1 || page > totalPages) {
@@ -74,9 +89,9 @@ public class VeinguardCheck implements SubCommand {
         }
 
         if (isConsole) {
-            plugin.getBlockReport().sendConsoleReport(target, page);
+            blockReport.sendConsoleReport(target, page);
         } else {
-            plugin.getBlockReport().sendPlayerReport((Player) sender, target, page);
+            blockReport.sendPlayerReport((Player) sender, target, page);
         }
     }
 
@@ -94,7 +109,7 @@ public class VeinguardCheck implements SubCommand {
             Player target = Bukkit.getPlayerExact(args[1]);
             if (target == null) return List.of();
 
-            int totalPages = plugin.getBlockReport().getPlayerReportPages(target);
+            int totalPages = blockReport.getTotalPages(target);
 
             List<String> pages = new java.util.ArrayList<>();
             pages.add("<Page #>");

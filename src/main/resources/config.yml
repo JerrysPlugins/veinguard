@@ -1,7 +1,5 @@
 #########################################################
 # VeinGuard - Configuration File & Options
-#
-# Description: Monitors block mining and alerts staff to possible X-ray usage.
 # Version: 1.1.4
 #
 # Useful Links:
@@ -20,24 +18,32 @@ config-version: 1
 # Tracking Settings
 # ===========================
 
-# Time window (minutes) to track/count broken tracked blocks.
+# Time window in minutes to count block break thresholds for alerting.
 blocks-broken-in-last-minutes: 5
 
-# Cooldown (seconds) between alerts for the same player and block type.
-alert-cooldown-seconds: 45
+# Determines how the alert cooldown is calculated:
+#   BLOCK - separate cooldown for each block type
+#   ALERT - single cooldown for all alerts per player
+alert-cooldown-type: BLOCK
 
-# Ignore players in CREATIVE mode.
+# Cooldown in seconds between alerts, based on the alert-cooldown-type setting.
+alert-cooldown-seconds: 30
+
+# Whether to ignore players in CREATIVE mode when tracking block breaks.
 ignore-creative-mode: true
 
-# Ignore block breaks above this Y level.
+# Maximum Y-level to track block breaks. Blocks above this level are ignored.
 ignore-above-y-level: 64
 
 # ===========================
-# Player Reports
+# Command Pagination
 # ===========================
 
-# Entries per page in '/veinguard check <Player> [page]'
+# Maximum number of entries per page when running '/vg check <player> [page]'.
 player-report-page-entries: 7
+
+# Maximum number of entries per page in the '/vg tracked-blocks list' command.
+tracked-blocks-page-entries: 7
 
 # ===========================
 # Alert Settings
@@ -46,23 +52,29 @@ player-report-page-entries: 7
 # Determines if alert messages are sent to the console.
 send-alerts-to-console: true
 
-# How alert messages are delivered to staff members: CHAT, ACTION_BAR or NONE.
-alert-delivery: CHAT
+# Method to deliver alerts to staff:
+#   CHAT - sends a chat message
+#   ACTION_BAR - displays in the action bar
+#   NONE - disables staff alerts
+alert-delivery-type: CHAT
 
-# Notify staff with amount of players that have a violation upon joining.
+# Notify staff with the total number of players currently violating thresholds when they join.
 staff-join-violation-alert: false
 
-# Plays the configured Bukkit sound to players with 'veinguard.notify' when an alert triggers.
-# Must be a valid Bukkit sound: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+# Sound settings for alert notifications.
+# Requires a valid Bukkit sound: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
 alert-sound:
   enabled: true
   sound: ENTITY_EXPERIENCE_ORB_PICKUP
   volume: 1.0
   pitch: 1.0
 
-# A list of commands to run when an alert is triggered.
-# Placeholders: {player} = player | {block} = block | {count} = total broken | {world}, {x}, {y}, {z} = coordinates
-
+# Commands executed when an alert is triggered.
+# Placeholders:
+#   {player} - player name
+#   {block}  - block type
+#   {count}  - total broken blocks
+#   {world}, {x}, {y}, {z} - block coordinates
 alert-commands:
   - 'examplecmd msg {player} &bStop xraying!'
   - 'examplecmd broadcast &b{player} might be xraying!'
@@ -74,12 +86,12 @@ discord-webhook-url: ""
 # Tracking Exceptions
 # ===========================
 
-# A list of tools that will not track block breaks.
+# List of tools that are ignored when tracking block breaks.
 # Must be a valid Bukkit material: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 ignored-tools:
   - WOODEN_HOE
 
-# A list of worlds that block break tracking should be disabled in.
+# Worlds in which block break tracking is disabled.
 disabled-worlds:
   - test_world
 
@@ -138,7 +150,7 @@ tracked-blocks:
 # Update & Debug
 # ===========================
 
-# Send a message on join when a new version is available. Must have 'veinguard.update' permission.
+# Show a message to players with 'veinguard.update' permission when a new version is available.
 show-update-notice: true
 
 # Leave this disabled.

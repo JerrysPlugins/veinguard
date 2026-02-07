@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 JerrysPlugins
+ * SPDX‑License‑Identifier: MIT
+ * Licensed under the MIT License (see LICENSE file)
+ * DO NOT REMOVE: This header must remain in all source files.
+ */
 package com.jerrysplugins.veinguard.core.alert;
 
 import com.jerrysplugins.veinguard.VeinGuard;
@@ -23,7 +29,7 @@ public class ActionBarQueue {
     private volatile String activeMessage = null;
     private volatile long messageEndTime = 0L;
 
-    private static final long MESSAGE_DURATION_MS = 6000L;
+    private static final long MESSAGE_DURATION_MS = 5000L;
     private static final long CLIENT_FADE_MS = 1500L;
     private static final long GAP_MS = 1200L;
 
@@ -45,7 +51,7 @@ public class ActionBarQueue {
                 plugin,
                 this::tickAsync,
                 1L,
-                10L
+                25L
         );
     }
 

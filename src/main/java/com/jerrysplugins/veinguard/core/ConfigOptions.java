@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 JerrysPlugins
+ * SPDX‑License‑Identifier: MIT
+ * Licensed under the MIT License (see LICENSE file)
+ * DO NOT REMOVE: This header must remain in all source files.
+ */
 package com.jerrysplugins.veinguard.core;
 
 import com.jerrysplugins.veinguard.VeinGuard;
@@ -24,6 +30,7 @@ public class ConfigOptions {
     private int checkIntervalMinutes;
     private long checkIntervalMs;
 
+    private CooldownType cooldownType;
     private int alertCooldownSeconds;
     private long alertCooldownMs;
 
@@ -32,6 +39,7 @@ public class ConfigOptions {
     private int ignoreAboveY;
 
     private int maxReportPageEntries;
+    private int maxTrackedListPageEntries;
 
     private boolean sendAlertConsole;
     private AlertDeliveryType alertDeliveryType;
@@ -56,7 +64,7 @@ public class ConfigOptions {
     }
 
     public void reload() {
-        FileConfiguration config = plugin.getConfig();
+        FileConfiguration config = plugin.getVGConfig();
 
         trackedBlocks.clear();
         prettyNames.clear();
@@ -68,6 +76,7 @@ public class ConfigOptions {
         checkIntervalMinutes = config.getInt("blocks-broken-in-last-minutes", 5);
         checkIntervalMs = checkIntervalMinutes * 60L * 1000L;
 
+        parseCooldownType(config);
         alertCooldownSeconds = config.getInt("alert-cooldown-seconds", 45);
         alertCooldownMs = alertCooldownSeconds * 1000L;
 
@@ -76,6 +85,7 @@ public class ConfigOptions {
         ignoreAboveY = config.getInt("ignore-above-y-level", 64);
 
         maxReportPageEntries = config.getInt("player-report-page-entries", 7);
+        maxTrackedListPageEntries = config.getInt("tracked-blocks-page-entries", 7);
 
         sendAlertConsole = config.getBoolean("send-alerts-to-console", true);
         parseAlertDeliveryType(config);
@@ -157,13 +167,24 @@ public class ConfigOptions {
     }
 
     private void parseAlertDeliveryType(FileConfiguration config) {
-        String type = config.getString("alert-delivery");
+        String type = config.getString("alert-delivery-type");
         try {
             alertDeliveryType = AlertDeliveryType.valueOf(type);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException ignored) {
             plugin.getLog().log(Level.WARN, "Invalid alert-delivery type '" + type + "' in config.yml! " +
                     "Defaulting to CHAT.");
             alertDeliveryType = AlertDeliveryType.CHAT;
+        }
+    }
+
+    private void parseCooldownType(FileConfiguration config) {
+        String type = config.getString("alert-cooldown-type");
+        try {
+            cooldownType = CooldownType.valueOf(type);
+        } catch (IllegalArgumentException ignored) {
+            plugin.getLog().log(Level.WARN, "Invalid alert-cooldown-type type '" + type + "' in config.yml! " +
+                    "Defaulting to PER_BLOCK.");
+            cooldownType = CooldownType.BLOCK;
         }
     }
 
@@ -193,6 +214,31 @@ public class ConfigOptions {
         return nameBuilder.toString().trim();
     }
 
+    public void addOrUpdateTrackedBlock(Material material, int threshold, String prettyName) {
+        trackedBlocks.put(material, threshold);
+        prettyNames.put(material, prettyName);
+
+        String configEntry = material.name() + ":" + threshold + ":\"" + prettyName + "\"";
+
+        List<String> list = plugin.getVGConfig().getStringList("tracked-blocks");
+        list.removeIf(entry -> entry.startsWith(material.name() + ":"));
+        list.add(configEntry);
+
+        plugin.getVGConfig().set("tracked-blocks", list);
+        plugin.getConfigFile().saveConfig();
+    }
+
+    public void removeTrackedBlock(Material material) {
+        trackedBlocks.remove(material);
+        prettyNames.remove(material);
+
+        List<String> list = plugin.getVGConfig().getStringList("tracked-blocks");
+        list.removeIf(entry -> entry.startsWith(material.name() + ":"));
+
+        plugin.getVGConfig().set("tracked-blocks", list);
+        plugin.getConfigFile().saveConfig();
+    }
+
     public void shutdown() {
         trackedBlocks.clear();
         prettyNames.clear();
@@ -201,11 +247,13 @@ public class ConfigOptions {
         alertCommands.clear();
     }
 
+    public Map<Material, Integer> getTrackedBlocks() { return this.trackedBlocks; }
     public int getBreakThreshold(Material material) {
         return trackedBlocks.getOrDefault(material, 1);
     }
     public boolean isTrackedMaterial(Material material) { return this.trackedBlocks.containsKey(material); }
 
+    public Map<Material, String> getPrettyNames() { return this.prettyNames; }
     public String getPrettyName(Material material) {
         return prettyNames.getOrDefault(material, getFallbackMaterialName(material));
     }
@@ -221,6 +269,7 @@ public class ConfigOptions {
     public int getCheckIntervalMinutes() { return this.checkIntervalMinutes; }
     public long getCheckIntervalMs() { return this.checkIntervalMs; }
 
+    public CooldownType getCooldownType() { return this.cooldownType; }
     public long getAlertCooldownMs() { return this.alertCooldownMs; }
 
     public boolean isIgnoreCreative() { return this.ignoreCreative; }
@@ -228,6 +277,7 @@ public class ConfigOptions {
     public int getIgnoreAboveY() { return this.ignoreAboveY; }
 
     public int getMaxReportPageEntries() { return this.maxReportPageEntries; }
+    public int getMaxTrackedListPageEntries() { return this.maxTrackedListPageEntries; }
 
     public boolean isSendAlertConsole() { return this.sendAlertConsole; }
     public AlertDeliveryType getAlertDeliveryType() { return this.alertDeliveryType; }

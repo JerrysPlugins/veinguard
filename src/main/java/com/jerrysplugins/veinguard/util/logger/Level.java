@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 JerrysPlugins
+ * SPDX‑License‑Identifier: MIT
+ * Licensed under the MIT License (see LICENSE file)
+ * DO NOT REMOVE: This header must remain in all source files.
+ */
 package com.jerrysplugins.veinguard.util.logger;
 
 public enum Level {
@@ -16,16 +22,5 @@ public enum Level {
 
     Level(int severityId) {
         this.severityId = severityId;
-    }
-
-    public int getSeverityId() {
-        return this.severityId;
-    }
-
-    public static Level fromSeverityId(int severityId) {
-        for (Level level : values()) {
-            if(level.severityId == severityId) return level;
-        }
-        return null;
     }
 }

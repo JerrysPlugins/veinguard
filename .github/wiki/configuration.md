@@ -5,197 +5,391 @@ Proper configuration ensures accurate tracking, alerts, and reporting of suspici
 
 ---
 
-## General Settings
+# VeinGuard Configuration Options (Top-Level)
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `blocks-broken-in-last-minutes` | Time window (in minutes) to evaluate block break activity. Example: 5 means "blocks broken in the last 5 minutes". | `5` |
-| `alert-cooldown-seconds` | Cooldown (in seconds) between alerts for the same player and block type. Prevents alert spam. | `45` |
-| `ignore-creative-mode` | If `true`, block breaks by players in **Creative mode** are ignored. Recommended to avoid false positives. | `true` |
-| `ignore-above-y-level` | Blocks broken above this Y-level are ignored. Useful for focusing on underground mining. | `64` |
-| `player-report-page-entries` | Number of tracked block entries displayed per page in `/veinguard check <player>`. | `7` |
-| `send-alerts-to-console` | If `true`, alert messages are sent to the server console as well as in-game staff. | `true` |
-| `send-alerts-to-staff` | If `true`, in-game staff with `veinguard.notify` will receive alerts. | `true` |
-| `staff-join-violation-alert` | If `true`, staff will see a notification on join showing the number of flagged players. Requires `veinguard.notify`. | `false` |
+| Option                        | Description                                                                                                                    | Default / Example Value                                                       |
+|-------------------------------|--------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| config-version                | Internal version of the config file. Do not change.                                                                            | 1                                                                             |
+| blocks-broken-in-last-minutes | Time window in minutes to count block breaks for alert thresholds.                                                             | 5                                                                             |
+| alert-cooldown-type           | Determines how alert cooldown is applied: `BLOCK` (per block type) or `ALERT` (per player).                                    | BLOCK                                                                         |
+| alert-cooldown-seconds        | Cooldown in seconds between alerts, based on alert-cooldown-type.                                                              | 30                                                                            |
+| ignore-creative-mode          | Ignore players in CREATIVE mode when tracking block breaks.                                                                    | true                                                                          |
+| ignore-above-y-level          | Maximum Y-level to track block breaks; blocks above are ignored.                                                               | 64                                                                            |
+| player-report-page-entries    | Max number of entries per page for `/vg check <player> [page]`.                                                                | 7                                                                             |
+| tracked-blocks-page-entries   | Max number of entries per page for `/vg tracked-blocks list`.                                                                  | 7                                                                             |
+| send-alerts-to-console        | Send alert messages to the console.                                                                                            | true                                                                          |
+| alert-delivery-type           | How alerts are delivered to staff: `CHAT`, `ACTION_BAR`, or `NONE`.                                                            | CHAT                                                                          |
+| staff-join-violation-alert    | Notify staff of current violations when they join.                                                                             | false                                                                         |
+| alert-sound                   | Configures a sound to play for staff when an alert triggers. Includes sub-options for enabling, sound type, volume, and pitch. | `enabled: true, sound: ENTITY_EXPERIENCE_ORB_PICKUP, volume: 1.0, pitch: 1.0` |
+| discord-webhook-url           | Optional Discord webhook URL to send alerts; leave blank to disable.                                                           | ""                                                                            |
+| ignored-tools                 | List of tools to ignore when tracking block breaks.                                                                            | WOODEN_HOE                                                                    |
+| disabled-worlds               | Worlds where block break tracking is disabled.                                                                                 | test_world                                                                    |
+| tracked-blocks                | Defines blocks to track and alert thresholds. Format: `MATERIAL:AMOUNT:"Pretty Name"`.                                         | See config list                                                               |
+| show-update-notice            | Show message to players with `veinguard.update` when a new version is available.                                               | true                                                                          |
+| debug-mode                    | Enable debug logging. Keep false for production.                                                                               | false                                                                         |
 
----
 
-## Alert Sound
-
-VeinGuard can optionally play a configurable sound to staff members when an alert is triggered.  
-The sound is only played for players with the `veinguard.notify` permission and if staff alerts are enabled.
-
-### Configuration Example
-
-    alert-sound:
-      enabled: true
-      sound: ENTITY_EXPERIENCE_ORB_PICKUP
-      volume: 1.0
-      pitch: 1.0
-
-### Options
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `enabled` | Enables or disables the alert sound. | `true` |
-| `sound` | Bukkit sound to play when an alert is triggered. Must be a valid `Sound` enum. | `ENTITY_EXPERIENCE_ORB_PICKUP` |
-| `volume` | Volume of the alert sound (0.0 – 1.0+). | `1.0` |
-| `pitch` | Pitch of the alert sound (0.5 – 2.0). | `1.0` |
-
-### Notes
-
-- Sound values are case-insensitive.
-- Invalid or missing sounds fall back to `ENTITY_EXPERIENCE_ORB_PICKUP`.
 
 ---
 
-## Alert Commands
+## blocks-broken-in-last-minutes
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `alert-commands` | List of console commands executed when a player triggers an alert. Use `{player}` as a placeholder. Example: `vg msg {player} &cWarning!` | `{}` |
-| `discord-webhook-url` | Optional Discord webhook for sending staff alert notifications. Leave empty (`""`) to disable. | `""` |
+**Description:**  
+This setting defines the **time window (in minutes)** that VeinGuard uses to evaluate how many blocks a player has broken. The plugin counts the number of blocks broken within this period to determine if a player exceeds the alert thresholds defined in `tracked-blocks`.
 
----
-
-## Tools & Worlds
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `ignored-tools` | Tools that VeinGuard ignores when tracking blocks. Values must be valid Bukkit material names. | `[WOODEN_HOE]` |
-| `disabled-worlds` | Worlds where VeinGuard tracking is completely disabled. World names are case-sensitive. | `[test_world]` |
-
----
-
-## Tracked Blocks
-
-VeinGuard tracks specific blocks and triggers alerts when a player breaks more than a set amount within the configured time window.
-
-### Config Option
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `tracked-blocks` | List of blocks VeinGuard monitors. Staff are alerted when a player breaks more than the configured amount within the time window. | Predefined list of ores, ancient debris, spawners, and raw metal blocks (see example below) |
-
----
-
-### Value Format
-
-| Field | Description | Example |
-|-------|-------------|---------|
-| `MATERIAL` | Bukkit material name of the block to track. Must match exactly. | `DIAMOND_ORE` |
-| `AMOUNT` | Maximum number of blocks that can be broken within the configured time window before triggering an alert. | `15` |
-| `Pretty Name` | Friendly name shown in staff alerts and reports for readability. | `"Diamond Ore"` |
-
-### How to Add Entries
-
-Each entry in `tracked-blocks` follows this **placeholder format**:
-
-| Config Entry | Description |
-|-------------|-------------|
-| `MATERIAL:AMOUNT:"Pretty Name"` | Replace `MATERIAL` with a valid Bukkit material name, `AMOUNT` with the number of blocks that triggers an alert, and `"Pretty Name"` with the friendly name shown in alerts and reports. |
-
-**Example Entry:**
-
+**Default Value:**
 ```yaml
-tracked-blocks:
-  - DIAMOND_ORE:15:"Diamond Ore"
-  - EMERALD_ORE:5:"Emerald Ore"
+blocks-broken-in-last-minutes: 5
+```
+
+---
+
+## alert-cooldown-type
+
+**Description:**  
+This setting determines **how VeinGuard calculates the cooldown between alerts** for a player. It controls whether cooldowns are tracked **per block type** or **per player across all alerts**.
+
+**Options:**
+- `BLOCK` — Each block type has its own separate cooldown. Alerts for different block types are independent.
+- `ALERT` — A single cooldown applies to all alerts for a player, regardless of block type.
+
+**Default Value:**
+```yaml
+alert-cooldown-type: BLOCK
+```
+
+---
+
+## alert-cooldown-seconds
+
+**Description:**  
+This setting defines the **cooldown time in seconds between alert notifications** for a player. The cooldown behavior depends on the `alert-cooldown-type` setting:
+
+- If `BLOCK` is selected, the cooldown applies **separately to each block type**.
+- If `ALERT` is selected, the cooldown applies **to all alerts for the player** regardless of block type.
+
+**Default Value:**
+```yaml
+alert-cooldown-seconds: 30
+```
+
+---
+
+## ignore-creative-mode
+
+**Description:**  
+This setting determines whether VeinGuard **ignores players in CREATIVE mode** when tracking block breaks.
+- `true` — Players in CREATIVE mode are not monitored and cannot trigger alerts.
+- `false` — Creative mode players are tracked like any other player.
+
+**Default Value:**
+```yaml
+ignore-creative-mode: true
+```
+
+---
+
+## ignore-above-y-level
+
+**Description:**  
+This setting defines the **maximum Y-level** at which VeinGuard tracks block breaks.
+- Blocks broken **above this level** are ignored and will not contribute to alerts.
+- Useful for ignoring surface mining or creative landscaping that could trigger false positives.
+
+**Default Value:**
+```yaml
+ignore-above-y-level: 64
+```
+
+---
+
+## player-report-page-entries
+
+**Description:**  
+This setting defines the **maximum number of entries displayed per page** when running the command `/vg check <player> [page]`.
+- Helps keep player reports readable by splitting large lists of block breaks across multiple pages.
+
+**Default Value:**
+```yaml
+player-report-page-entries: 7
+```
+
+---
+
+## tracked-blocks-page-entries
+
+**Description:**  
+This setting defines the **maximum number of entries displayed per page** when running the command `/vg tracked-blocks list`.
+- Useful for keeping the list of tracked blocks readable if your server monitors many block types.
+
+**Default Value:**
+```yaml
+tracked-blocks-page-entries: 7
+```
+
+---
+
+## send-alerts-to-console
+
+**Description:**  
+This setting controls whether VeinGuard **sends alert messages to the server console**.
+- `true` — All alerts will appear in the console in addition to any staff notifications.
+- `false` — Alerts will only be sent to staff according to `alert-delivery-type` and other settings.
+
+**Default Value:**
+```yaml
+send-alerts-to-console: true
+```
+
+---
+
+## alert-delivery-type
+
+**Description:**  
+This setting determines **how VeinGuard delivers alert notifications to staff**.
+
+**Options:**
+- `CHAT` — Sends alerts as chat messages to staff members.
+- `ACTION_BAR` — Displays alerts in the action bar above the player’s hotbar.
+    - Action bar messages are **queued**, with each message lasting **5 seconds** before the next one is displayed to prevent overlapping.
+- `NONE` — Disables staff notifications entirely.
+
+**Default Value:**
+```yaml
+alert-delivery-type: CHAT
+```
+
+---
+
+## staff-join-violation-alert
+
+**Description:**  
+This setting determines whether staff members are **notified of players currently violating block break thresholds** when they join the server.
+- `true` — Staff will receive a notification listing the number of players currently in violation.
+- `false` — No notifications are sent on staff join.
+
+**Default Value:**
+```yaml
+staff-join-violation-alert: false
+```
+
+---
+
+## alert-sound
+
+**Description:**  
+This setting controls the **sound notification** that plays for staff when an alert is triggered.  
+It has the following nested sub-options:
+
+- `enabled` — Whether the alert sound is active.
+    - `true` to play the sound on alerts.
+    - `false` to disable the sound entirely.
+- `sound` — The **Bukkit sound** to play.
+    - Must be a valid Bukkit sound: [Bukkit Sounds](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html)
+- `volume` — The **volume** of the sound (default `1.0`).
+- `pitch` — The **pitch** of the sound (default `1.0`).
+
+**Default Values:**
+```yaml
+alert-sound:
+  enabled: true
+  sound: ENTITY_EXPERIENCE_ORB_PICKUP
+  volume: 1.0
+  pitch: 1.0
+```
+
+---
+
+## discord-webhook-url
+
+**Description:**  
+This setting allows you to **send VeinGuard alert notifications to a Discord channel** via a webhook.
+- Enter a valid Discord webhook URL to enable alerts.
+- Leave blank (`""`) to disable Discord notifications.
+
+**Default Value:**
+```yaml
+discord-webhook-url: ""
+```
+
+---
+
+## ignored-tools
+
+**Description:**  
+This setting defines a **list of tools that VeinGuard will ignore** when tracking block breaks.
+- Any block broken with a tool listed here will **not contribute to alert thresholds**.
+- Tools must use **valid Bukkit material names**.
+
+**Default Value:**
+```yaml
+ignored-tools:
+  - WOODEN_HOE
+```
+
+---
+
+## disabled-worlds
+
+**Description:**  
+This setting defines a **list of worlds in which block break tracking is disabled**.
+- VeinGuard will **ignore all block break activity** in the worlds listed here.
+- Useful for test worlds, creative builds, or areas where monitoring is not needed.
+
+**Default Value:**
+```yaml
+disabled-worlds:
+  - test_world
+```
+
+---
+
+## tracked-blocks
+
+**Description:**  
+This setting defines **which blocks VeinGuard tracks** and the **alert thresholds** for each.  
+Each entry consists of three parts: the block type, the alert threshold, and a readable name for reports.
+
+**Parts Explained:**
+- `MATERIAL` — The **exact Bukkit material name** of the block to track.
+    - Must be valid: see [Bukkit Materials](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html)
+    - Example: `DIAMOND_ORE`, `NETHER_QUARTZ_ORE`, `AMETHYST_BLOCK`
+
+- `AMOUNT` — The **number of blocks a player can break** within the time window (`blocks-broken-in-last-minutes`) **before an alert is triggered**.
+    - Example: `15` means that breaking 15 or more blocks of this type within the configured time triggers an alert.
+
+- `"Pretty Name"` — A **human-readable name** used in staff alerts and reports.
+    - Example: `"Diamond Ore"` or `"Ancient Debris"`
+    - Quotes are required if the name contains spaces.
+
+### Example Entry
+```yaml
+DIAMOND_ORE:15:"Diamond Ore"
+```
+
+---
+
+## show-update-notice
+
+**Description:**  
+This setting controls whether VeinGuard **notifies players with the `veinguard.update` permission** when a new plugin version is available.
+- `true` — Players with the permission will see an update message on join.
+- `false` — No update messages are shown.
+
+**Default Value:**
+```yaml
+show-update-notice: true
 ```
 
 ---
 
 ## Full Config File
 
-Below is the **complete default `config.yml`** for VeinGuard version 1.1.3.  
+Below is the **complete default `config.yml`** for VeinGuard version 1.1.4.  
 You can copy this as a reference when configuring your server.  
 All options are explained in the sections above.
 
 ```yaml
-# Time window (in minutes) used to evaluate block break activity.
-# VeinGuard will count how many tracked blocks a player breaks within this period.
-# Example: A value of 5 means "blocks broken in the last 5 minutes".
+#########################################################
+# VeinGuard - Configuration File & Options
+# Version: 1.1.4
+#
+# Useful Links:
+#   Wiki:       https://github.com/JerrysPlugins/veinguard/wiki
+#   Discord:    https://discord.com/invite/sW7zu4RXmD
+#   Issues:     https://github.com/JerrysPlugins/veinguard/issues
+#   GitHub:     https://github.com/JerrysPlugins/veinguard
+#   Modrinth:   https://modrinth.com/plugin/veinguard
+#   Spigot:     https://www.spigotmc.org/resources/veinguard-antixray-for-1-17-1-21.131871/
+#   Hangar:     https://hangar.papermc.io/JerrysPlugins/VeinGuard
+#########################################################
+# DO NOT CHANGE
+config-version: 1
+
+# ===========================
+# Tracking Settings
+# ===========================
+
+# Time window in minutes to count block break thresholds for alerting.
 blocks-broken-in-last-minutes: 5
 
-# Cooldown (in seconds) between alerts for the same player and block type.
-# This prevents alert spam if a player continues mining after an alert is triggered.
-alert-cooldown-seconds: 45
+# Determines how the alert cooldown is calculated:
+#   BLOCK - separate cooldown for each block type
+#   ALERT - single cooldown for all alerts per player
+alert-cooldown-type: BLOCK
 
-# If enabled, block breaks by players in CREATIVE mode will be ignored.
-# Recommended to keep enabled to avoid false positives from staff or builders.
+# Cooldown in seconds between alerts, based on the alert-cooldown-type setting.
+alert-cooldown-seconds: 30
+
+# Whether to ignore players in CREATIVE mode when tracking block breaks.
 ignore-creative-mode: true
 
-# Blocks broken above this Y-level will not be tracked.
-# Useful for ignoring surface mining and focusing on underground activity.
-# Set to 320 to track blocks at all Y-levels.
+# Maximum Y-level to track block breaks. Blocks above this level are ignored.
 ignore-above-y-level: 64
 
-# Number of tracked block entries to display per page when using '/veinguard check <Player>'.
-# If the player has more entries than fit on one page, you can view additional pages with:
-# '/veinguard check <Player> <PageNumber>'
+# ===========================
+# Command Pagination
+# ===========================
+
+# Maximum number of entries per page when running '/vg check <player> [page]'.
 player-report-page-entries: 7
 
-# If true, staff alert messages for suspicious block breaking
-# will also be sent to the server console.
-# Set too false to disable console notifications.
+# Maximum number of entries per page in the '/vg tracked-blocks list' command.
+tracked-blocks-page-entries: 7
+
+# ===========================
+# Alert Settings
+# ===========================
+
+# Determines if alert messages are sent to the console.
 send-alerts-to-console: true
 
-# If true, alert messages for suspicious block breaking
-# will be sent to in-game staff players with the 'veinguard.notify' permission.
-# Set too false to disable in-game staff notifications.
-send-alerts-to-staff: true
+# Method to deliver alerts to staff:
+#   CHAT - sends a chat message
+#   ACTION_BAR - displays in the action bar
+#   NONE - disables staff alerts
+alert-delivery-type: CHAT
 
-# If true, sends a notification to staff members when they join the
-# server, showing the number of players currently flagged for violations.
-# Requires the player to have the 'veinguard.notify' permission.
+# Notify staff with the total number of players currently violating thresholds when they join.
 staff-join-violation-alert: false
 
-# If enabled, sends the configured sound to any player with the
-# 'veinguard.notify' permission upon an alert being triggered.
-
-# Sound must be a valid Bukkit sound.
-# - Visit this site for a list of valid sounds:
-#   https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
-#
-# volume: Change the volume of the alert sound.
-# pitch: Change the pitch of the alert sound.
+# Sound settings for alert notifications.
+# Requires a valid Bukkit sound: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
 alert-sound:
   enabled: true
   sound: ENTITY_EXPERIENCE_ORB_PICKUP
   volume: 1.0
   pitch: 1.0
 
-# List of console commands to execute when a player triggers a VeinGuard alert.
-# These commands run immediately after an alert is fired.
-#
-# Commands are executed from the server console.
-# Use {player} as a placeholder for the flagged player's name.
-#
-# Example:
-#   alert-commands:
-#   - 'vg msg {player} &cYou were fined $500 for possibly x-raying!'
-#   - 'eco take {player} 500'
-#
-# Leave this list empty to disable command execution on alerts.
-alert-commands: {}
+# Commands executed when an alert is triggered.
+# Placeholders:
+#   {player} - player name
+#   {block}  - block type
+#   {count}  - total broken blocks
+#   {world}, {x}, {y}, {z} - block coordinates
+alert-commands:
+  - 'examplecmd msg {player} &bStop xraying!'
+  - 'examplecmd broadcast &b{player} might be xraying!'
 
-# Optional Discord webhook embed for staff alert notifications.
-# Alerts will only be sent if a valid webhook URL is provided.
-# Leave empty ("") to disable.
+# Optional Discord webhook to send alerts to. Leave blank to disable.
 discord-webhook-url: ""
 
-# Tools that should be ignored by VeinGuard.
-# Block breaks performed while holding these items will not be tracked.
-# Values must be valid Bukkit material names.
-# - Visit this site for a list of valid materials:
-#   https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+# ===========================
+# Tracking Exceptions
+# ===========================
+
+# List of tools that are ignored when tracking block breaks.
+# Must be a valid Bukkit material: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 ignored-tools:
   - WOODEN_HOE
 
-# List of worlds where VeinGuard tracking should be completely disabled.
-# World names are case-sensitive.
+# Worlds in which block break tracking is disabled.
 disabled-worlds:
   - test_world
+
+# ===========================
+# Tracked Blocks & Thresholds
+# ===========================
 
 # Defines which blocks VeinGuard should track and their alert thresholds.
 #
@@ -244,15 +438,13 @@ tracked-blocks:
   - RAW_COPPER_BLOCK:5:"Raw Copper Block"
   - RAW_GOLD_BLOCK:5:"Raw Gold Block"
 
-# Determines whether players with the 'veinguard.update' permission or server operators
-# receive an in-game notification upon joining if a newer version of VeinGuard is available.
+# ===========================
+# Update & Debug
+# ===========================
+
+# Show a message to players with 'veinguard.update' permission when a new version is available.
 show-update-notice: true
 
-# DO NOT CHANGE – Used internally to track config compatibility.
-# Modifying this value may cause the plugin to fail loading or reset your configuration.
-config-version: 1
-
-# Enables additional debug logging for troubleshooting and development purposes.
-# Should typically remain disabled on production servers.
+# Leave this disabled.
 debug-mode: false
 ```
