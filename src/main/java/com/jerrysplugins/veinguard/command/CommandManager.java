@@ -1,7 +1,14 @@
+/*
+ * Copyright (c) 2026 JerrysPlugins
+ * SPDX‑License‑Identifier: MIT
+ * Licensed under the MIT License (see LICENSE file)
+ * DO NOT REMOVE: This header must remain in all source files.
+ */
 package com.jerrysplugins.veinguard.command;
 
 import com.jerrysplugins.veinguard.VeinGuard;
 import com.jerrysplugins.veinguard.command.subcommand.*;
+import com.jerrysplugins.veinguard.util.VGUtils;
 import com.jerrysplugins.veinguard.util.logger.Level;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
@@ -11,7 +18,7 @@ import java.util.*;
 public class CommandManager implements CommandExecutor, TabCompleter {
 
     private final VeinGuard plugin;
-    private final Map<String, SubCommand> subCommands = new HashMap<>();
+    private final Map<String, ISubCommand> subCommands = new HashMap<>();
 
     public CommandManager(VeinGuard plugin) {
         this.plugin = plugin;
@@ -34,11 +41,12 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         register(new VeinguardReload(plugin));
         register(new VeinguardResetall(plugin));
         register(new VeinguardReset(plugin));
-        register(new VeinguardTogglealerts(plugin));
+        register(new VeinguardToggleAlerts(plugin));
+        register(new VeinguardTrackedBlocks(plugin));
         register(new VeinguardUnmute(plugin));
     }
 
-    public void register(SubCommand subCommand) {
+    public void register(ISubCommand subCommand) {
         subCommands.put(subCommand.getName().toLowerCase(), subCommand);
     }
 
@@ -59,13 +67,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        SubCommand sub = subCommands.get(args[0].toLowerCase());
+        ISubCommand sub = subCommands.get(args[0].toLowerCase());
         if (sub == null) {
             sendUsage(sender, null, isConsole);
             return true;
         }
 
-        if (!isConsole && !sender.hasPermission(sub.getPermission()) && !sender.isOp()) {
+        if (!isConsole && !sender.isOp() &&
+                !sender.hasPermission(sub.getPermission()) &&
+                sub.getSubPermissions().stream().noneMatch(sender::hasPermission)) {
+
             sender.sendMessage(pluginPrefix + plugin.getLocale().getMessage("no-permission", true));
             return true;
         }
@@ -73,7 +84,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         sub.execute(this, sender, args, isConsole);
         return true;
     }
-
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
@@ -86,16 +96,29 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
         if (args.length == 1) {
             return subCommands.values().stream()
-                    .filter(sub -> sender.isOp() || sender.hasPermission(sub.getPermission()))
-                    .map(SubCommand::getName)
-                    .filter(name -> name.startsWith(args[0].toLowerCase()))
+                    .filter(sub -> {
+                        if (sender.isOp()) return true;
+                        if (sender.hasPermission(sub.getPermission())) return true;
+
+                        List<String> subPerms = sub.getSubPermissions();
+                        if (subPerms == null) return false;
+
+                        return subPerms.stream()
+                                .anyMatch(sender::hasPermission);
+                    })
+                    .map(ISubCommand::getName)
+                    .filter(name -> name.toLowerCase().startsWith(args[0].toLowerCase()))
                     .toList();
         }
 
-        SubCommand sub = subCommands.get(args[0].toLowerCase());
+        ISubCommand sub = subCommands.get(args[0].toLowerCase());
         if (sub == null) return List.of();
 
-        if (!sender.isOp() && !sender.hasPermission(sub.getPermission())) {
+        boolean hasMainOrSubPerm = sender.isOp()
+                || sender.hasPermission(sub.getPermission())
+                || (sub.getSubPermissions() != null && sub.getSubPermissions().stream().anyMatch(sender::hasPermission));
+
+        if (!hasMainOrSubPerm) {
             return List.of();
         }
 
@@ -107,8 +130,12 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         if (sender.isOp()) return true;
 
         return subCommands.values().stream()
-                .map(SubCommand::getPermission)
-                .anyMatch(sender::hasPermission);
+                .anyMatch(sub -> {
+                    if (sender.hasPermission(sub.getPermission())) return true;
+
+                    List<String> subPerms = sub.getSubPermissions();
+                    return subPerms != null && subPerms.stream().anyMatch(sender::hasPermission);
+                });
     }
 
     public void sendUsage(CommandSender sender, String usage, boolean isConsole) {
@@ -134,9 +161,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         String message = plugin.getLocale().getMessage(key, !isConsole);
 
         if (placeholders != null) {
-            for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-                message = message.replace(entry.getKey(), entry.getValue());
-            }
+            message = VGUtils.applyPlaceholders(message, placeholders);
         }
 
         if (isConsole) {
@@ -148,7 +173,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         String pluginPrefix = plugin.getLocale().getMessage("plugin-prefix", true);
         player.sendMessage(pluginPrefix + message);
     }
-
 
     private void sendPluginInfo(CommandSender sender, boolean isConsole) {
         List<String> lines = plugin.getLocale().getListMessage("plugin-info", !isConsole);

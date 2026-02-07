@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 JerrysPlugins
+ * SPDX‑License‑Identifier: MIT
+ * Licensed under the MIT License (see LICENSE file)
+ * DO NOT REMOVE: This header must remain in all source files.
+ */
 package com.jerrysplugins.veinguard.core;
 
 import com.jerrysplugins.veinguard.VeinGuard;
@@ -19,10 +25,11 @@ public class PlayerTracker {
     private final ConfigOptions configOptions;
 
     private final Map<UUID, Map<Material, Deque<Long>>> blockBreakHistory;
-    private final Map<UUID, Map<Material, Long>> alertCooldowns;
+    private final Map<UUID, Map<Material, Long>> blockAlertCooldowns;
+    private final Set<UUID> alertCooldowns;
 
-    private final List<UUID> mutedPlayers;
-    private final List<UUID> mutedStaff;
+    private final Set<UUID> mutedPlayers;
+    private final Set<UUID> mutedStaff;
 
     public PlayerTracker(VeinGuard plugin) {
         this.plugin = plugin;
@@ -30,20 +37,21 @@ public class PlayerTracker {
         this.configOptions = plugin.getConfigOptions();
 
         this.blockBreakHistory = new ConcurrentHashMap<>();
-        this.alertCooldowns = new ConcurrentHashMap<>();
+        this.blockAlertCooldowns = new ConcurrentHashMap<>();
+        this.alertCooldowns = ConcurrentHashMap.newKeySet();
 
-        this.mutedPlayers = new ArrayList<>();
-        this.mutedStaff = new ArrayList<>();
+        this.mutedPlayers = new HashSet<>();
+        this.mutedStaff = new HashSet<>();
 
         scheduleCleanupTaskAsync();
     }
 
     public void recordBreak(Player suspect, Material material, Location location) {
         long currentTimeMs = System.currentTimeMillis();
-        UUID uuid = suspect.getUniqueId();
+        UUID suspectUUID = suspect.getUniqueId();
 
         Map<Material, Deque<Long>> suspectHistory =
-                blockBreakHistory.computeIfAbsent(uuid, k -> new EnumMap<>(Material.class));
+                blockBreakHistory.computeIfAbsent(suspectUUID, k -> new EnumMap<>(Material.class));
 
         Deque<Long> timestamps =
                 suspectHistory.computeIfAbsent(material, k -> new ConcurrentLinkedDeque<>());
@@ -54,11 +62,19 @@ public class PlayerTracker {
         int breakThreshold = configOptions.getBreakThreshold(material);
         if (timestamps.size() < breakThreshold) return;
 
-        if (isOnCooldown(uuid, material, currentTimeMs)) return;
+        switch (configOptions.getCooldownType()) {
+            case ALERT -> {
+                if(isOnAlertCooldown(suspectUUID)) return;
+                setPerAlertCooldown(suspectUUID);
+            }
 
-        setCooldown(uuid, material, currentTimeMs);
+            case BLOCK -> {
+                if (isOnBlockCooldown(suspectUUID, material, currentTimeMs)) return;
+                setPerBlockCooldown(suspectUUID, material, currentTimeMs);
+            }
+        }
 
-        plugin.getAlertManager().sendAlert(suspect, material, timestamps.size(), location);
+        plugin.getAlertManager().sendAlert(suspect, material, location, timestamps.size());
     }
 
     public CompletableFuture<Integer> getPlayersInViolationAsync() {
@@ -101,6 +117,18 @@ public class PlayerTracker {
                 }
             }
 
+            long blockCooldownMs = configOptions.getAlertCooldownMs();
+            for (Iterator<Map.Entry<UUID, Map<Material, Long>>> it = blockAlertCooldowns.entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry<UUID, Map<Material, Long>> entry = it.next();
+                Map<Material, Long> cooldowns = entry.getValue();
+
+                cooldowns.entrySet().removeIf(matEntry -> currentTimeMs - matEntry.getValue() >= blockCooldownMs);
+
+                if (cooldowns.isEmpty()) {
+                    it.remove();
+                }
+            }
+
         }, delayTicks, delayTicks);
     }
 
@@ -110,28 +138,48 @@ public class PlayerTracker {
         }
     }
 
-    private boolean isOnCooldown(UUID suspectUUID, Material material, long currentTimeMs) {
-        Map<Material, Long> suspectCooldowns = alertCooldowns.get(suspectUUID);
+    private boolean isOnBlockCooldown(UUID suspectUUID, Material material, long currentTimeMs) {
+        Map<Material, Long> suspectCooldowns = blockAlertCooldowns.get(suspectUUID);
         if (suspectCooldowns == null) return false;
+
         Long last = suspectCooldowns.get(material);
-        return last != null && currentTimeMs - last < configOptions.getAlertCooldownMs();
+        if (last == null) return false;
+
+        long elapsed = currentTimeMs - last;
+        if (elapsed >= configOptions.getAlertCooldownMs()) {
+            suspectCooldowns.remove(material);
+            if (suspectCooldowns.isEmpty()) blockAlertCooldowns.remove(suspectUUID);
+            return false;
+        }
+
+        return true;
     }
 
-    private void setCooldown(UUID suspectUUID, Material material, long currentTimeMs) {
-        alertCooldowns.computeIfAbsent(suspectUUID, k ->
+    private void setPerBlockCooldown(UUID suspectUUID, Material material, long currentTimeMs) {
+        blockAlertCooldowns.computeIfAbsent(suspectUUID, k ->
                 new EnumMap<>(Material.class)).put(material, currentTimeMs
         );
+    }
+
+    private boolean isOnAlertCooldown(UUID suspectUUID) {
+        return alertCooldowns.contains(suspectUUID);
+    }
+
+    private void setPerAlertCooldown(UUID suspectUUID) {
+        alertCooldowns.add(suspectUUID);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> alertCooldowns.remove(suspectUUID),
+                configOptions.getAlertCooldownMs() / 50L);
     }
 
     public void resetPlayerData(Player suspect) {
         UUID uuid = suspect.getUniqueId();
         blockBreakHistory.remove(uuid);
-        alertCooldowns.remove(uuid);
+        blockAlertCooldowns.remove(uuid);
     }
 
     public void resetAllData() {
         blockBreakHistory.clear();
-        alertCooldowns.clear();
+        blockAlertCooldowns.clear();
     }
 
     public Map<Material, Deque<Long>> getBlockBreakHistory(UUID suspectUUID) {
@@ -140,7 +188,7 @@ public class PlayerTracker {
 
     public void shutdown() {
         blockBreakHistory.clear();
-        alertCooldowns.clear();
+        blockAlertCooldowns.clear();
         mutedPlayers.clear();
         mutedStaff.clear();
     }

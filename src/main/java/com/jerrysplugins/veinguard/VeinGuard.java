@@ -1,8 +1,13 @@
+/*
+ * Copyright (c) 2026 JerrysPlugins
+ * SPDX‑License‑Identifier: MIT
+ * Licensed under the MIT License (see LICENSE file)
+ * DO NOT REMOVE: This header must remain in all source files.
+ */
 package com.jerrysplugins.veinguard;
 
 import com.jerrysplugins.veinguard.command.CommandManager;
-import com.jerrysplugins.veinguard.core.AlertManager;
-import com.jerrysplugins.veinguard.core.BlockReport;
+import com.jerrysplugins.veinguard.core.alert.AlertManager;
 import com.jerrysplugins.veinguard.core.ConfigOptions;
 import com.jerrysplugins.veinguard.core.PlayerTracker;
 import com.jerrysplugins.veinguard.listener.BlockBreakListener;
@@ -28,12 +33,12 @@ public final class VeinGuard extends JavaPlugin {
     private ConfigOptions configOptions;
     private PlayerTracker playerTracker;
     private AlertManager alertManager;
-    private BlockReport blockReport;
-    @SuppressWarnings("FieldCanBeLocal")
-    private final int CONFIG_VERSION = 5;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final int LANG_VERSION = 5;
+    private final int CONFIG_VERSION = 6;
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private final int LANG_VERSION = 6;
 
     private String pluginName;
     private String pluginVersion;
@@ -43,7 +48,19 @@ public final class VeinGuard extends JavaPlugin {
 
     @Override
     public void onLoad() {
+
         logger = new Logger(this);
+
+        pluginName = getDescription().getName();
+        pluginVersion = getDescription().getVersion();
+        pluginAuthors = String.join(", ", getDescription().getAuthors());
+        pluginDescription = getDescription().getDescription();
+        pluginWebsite = getDescription().getWebsite();
+
+        getLog().log(Level.INFO, "Loading "
+                + pluginName + ", v"
+                + pluginVersion + ", by "
+                + pluginAuthors + ".");
 
         if(!createConfigs()) {
             getLog().log(Level.FATAL, "Critical plugin initialization failure! Plugin is now disabled!");
@@ -57,19 +74,6 @@ public final class VeinGuard extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        checkForUpdates();
-
-        pluginName = getDescription().getName();
-        pluginVersion = getDescription().getVersion();
-        pluginAuthors = String.join(", ", getDescription().getAuthors());
-        pluginDescription = getDescription().getDescription();
-        pluginWebsite = getDescription().getWebsite();
-
-        getLog().log(Level.INFO, "Loading "
-                + pluginName + ", v"
-                + pluginVersion + ", by "
-                + pluginAuthors + ".");
-
         if(!loadCore() || !registerAll()) {
             getLog().log(Level.FATAL, "Critical plugin initialization failure! Plugin is now disabled!");
             getPluginLoader().disablePlugin(this);
@@ -82,17 +86,19 @@ public final class VeinGuard extends JavaPlugin {
                 + pluginName + ", v"
                 + pluginVersion + ", by "
                 + pluginAuthors);
+
+        checkForUpdates();
     }
 
     @Override
     public void onDisable() {
+        getAlertManager().getActionBarQueue().shutdown();
         playerTracker.shutdown();
         configOptions.shutdown();
         getLog().log(Level.INFO, "Plugin disabled. Goodbye!");
     }
 
     public boolean reload() {
-        getLog().log(Level.DEBUG, "Pushing method reload() in VeinGuard.class.");
         try {
             configFile.reloadConfig();
             langFile.reloadConfig();
@@ -107,7 +113,6 @@ public final class VeinGuard extends JavaPlugin {
 
     private boolean createConfigs() {
         try {
-            getLog().log(Level.DEBUG, "Pushing method createConfigs() in VeinGuard.class.");
             configFile = new ConfigFile(this);
             langFile = new LangFile(this);
             configFile.checkUpdateConfig();
@@ -120,13 +125,11 @@ public final class VeinGuard extends JavaPlugin {
     }
 
     private boolean loadCore() {
-        getLog().log(Level.DEBUG, "Pushing method loadCore() in VeinGuard.class.");
         try {
             locale = new Locale(this);
             configOptions = new ConfigOptions(this);
             playerTracker = new PlayerTracker(this);
             alertManager = new AlertManager(this);
-            blockReport = new BlockReport(this);
             return true;
         } catch (Exception e) {
             getLog().log(Level.ERROR, "There was an error while loading core plugin objects!", e);
@@ -135,7 +138,6 @@ public final class VeinGuard extends JavaPlugin {
     }
 
     private boolean registerAll() {
-        getLog().log(Level.DEBUG, "Pushing method registerAll() in VeinGuard.class.");
         try {
             new BlockBreakListener(this);
             new StaffJoinListener(this);
@@ -148,7 +150,6 @@ public final class VeinGuard extends JavaPlugin {
     }
 
     private void loadMetrics() {
-        getLog().log(Level.DEBUG, "Pushing method loadMetrics() in VeinGuard.class.");
         try {
             new Metrics(this, 28893);
         } catch (Exception e) {
@@ -157,20 +158,19 @@ public final class VeinGuard extends JavaPlugin {
     }
 
     private void checkForUpdates() {
-        getLog().log(Level.DEBUG, "Pushing method checkForUpdates() in VeinGuard.class.");
         new UpdateChecker(this);
     }
 
     public Logger getLog() { return this.logger; }
     public Locale getLocale() { return this.locale; }
 
-    public FileConfiguration getConfig() { return this.configFile.getConfig(); }
+    public ConfigFile getConfigFile() { return this.configFile; }
+    public FileConfiguration getVGConfig() { return this.configFile.getConfig(); }
     public FileConfiguration getLangConfig() { return this.langFile.getConfig(); }
 
     public ConfigOptions getConfigOptions() { return this.configOptions; }
     public PlayerTracker getPlayerTracker() { return this.playerTracker; }
     public AlertManager getAlertManager() { return this.alertManager; }
-    public BlockReport getBlockReport() { return this.blockReport; }
 
     public String getPluginVersion() { return this.pluginVersion; }
     public String getPluginAuthors() { return this.pluginAuthors; }

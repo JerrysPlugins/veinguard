@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 JerrysPlugins
+ * SPDX‑License‑Identifier: MIT
+ * Licensed under the MIT License (see LICENSE file)
+ * DO NOT REMOVE: This header must remain in all source files.
+ */
 package com.jerrysplugins.veinguard.util.update;
 
 import com.jerrysplugins.veinguard.VeinGuard;
@@ -29,7 +35,7 @@ public class UpdateChecker implements Listener {
 
     public UpdateChecker(VeinGuard plugin) {
         this.plugin = plugin;
-        this.announceUpdate = plugin.getConfig().getBoolean("show-update-notice", true);
+        this.announceUpdate = plugin.getVGConfig().getBoolean("show-update-notice", true);
 
         Bukkit.getPluginManager().registerEvents(this, plugin);
 

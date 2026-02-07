@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 JerrysPlugins
+ * SPDX‑License‑Identifier: MIT
+ * Licensed under the MIT License (see LICENSE file)
+ * DO NOT REMOVE: This header must remain in all source files.
+ */
 package com.jerrysplugins.veinguard.util.logger;
 
 import com.jerrysplugins.veinguard.VeinGuard;
@@ -76,11 +82,7 @@ public class Logger {
         log(Level.DEBUG, "Debug mode is enabled! Console will now show debug logging.");
     }
 
-    public boolean isDebugEnabled() {
-        return this.debugEnabled;
-    }
-
     public boolean isDebugConfigEnabled() {
-        return plugin.getConfig().getBoolean("debug-mode", false);
+        return plugin.getVGConfig().getBoolean("debug-mode", false);
     }
 }

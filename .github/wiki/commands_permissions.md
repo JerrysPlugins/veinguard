@@ -26,6 +26,7 @@ Each command requires the appropriate permission to execute. Permissions should 
     * `veinguard.command.check`
     * `veinguard.command.help`
     * `veinguard.command.toggle-alerts`
+    * `veinguard.command.tracked-blocks.list`
 
 ---
 
@@ -114,6 +115,15 @@ Removes a global mute from the specified player, allowing alerts related to them
 
 ---
 
+### `/veinguard tracked-blocks <add|list|remove> (?list [page]) <block> <threshold> <pretty-name>`
+**Permissions:** `veinguard.command.tracked-blocks`, `veinguard.command.tracked-blocks.add`,
+`veinguard.command.tracked-blocks.list`, `veinguard.command.tracked-blocks.remove`
+
+**Description:**  
+Add, list or remove tracked blocks while in-game.
+
+---
+
 ### `/veinguard reset <player>`
 **Permission:** `veinguard.command.reset`
 
@@ -147,28 +157,31 @@ Reloads VeinGuard and all associated configuration files without requiring a ful
 
 ---
 
-*Last updated for VeinGuard 1.1.2+*
+*Last updated for VeinGuard 1.1.4+*
 
 ## Permission Overview
 
 The table below reflects VeinGuard’s actual permission structure as defined in the plugin configuration.  
 Regular players do not have access to any VeinGuard functionality unless permissions are explicitly granted.
 
-| Permission Node                          | Description                                                         | Admin | Moderator | Player |
-|------------------------------------------|---------------------------------------------------------------------|:-----:|:---------:|:------:|
-| `veinguard.admin`                        | Full administrative access to VeinGuard                             | ✔     | ❌        | ❌     |
-| `veinguard.mod`                          | Grants limited moderation permissions                               | ❌     | ✔         | ❌     |
-| `veinguard.notify`                       | Receive in-game block break alerts                                  | ✔     | ✔         | ❌     |
-| `veinguard.bypass`                       | Exempt from block-break tracking                                    | ✔     | ✔         | ❌     |
-| `veinguard.update`                       | Receive plugin update notifications                                 | ✔     | ❌        | ❌     |
-| `veinguard.command`                      | Access to base `/veinguard` command                                 | ✔     | ✔         | ❌     |
-| `veinguard.command.help`                 | Access to `/veinguard help`                                         | ✔     | ✔         | ❌     |
-| `veinguard.command.check`                | View player block-break reports                                     | ✔     | ✔         | ❌     |
-| `veinguard.command.msg`                  | Send formatted messages via VeinGuard                               | ✔     | ❌        | ❌     |
-| `veinguard.command.mute`                 | Globally mute alerts from a player                                  | ✔     | ❌        | ❌     |
-| `veinguard.command.unmute`               | Remove a global alert mute                                          | ✔     | ❌        | ❌     |
-| `veinguard.command.toggle-alerts`        | Toggle alerts for yourself                                          | ✔     | ✔         | ❌     |
-| `veinguard.command.toggle-alerts.others` | Toggle alerts for other staff members                               | ✔     | ❌        | ❌     |
-| `veinguard.command.reset`                | Reset block-break history for a player                              | ✔     | ❌        | ❌     |
-| `veinguard.command.resetall`             | Reset block-break history for all players                           | ✔     | ❌        | ❌     |
-| `veinguard.command.reload`               | Reload VeinGuard configuration files                                | ✔     | ❌        | ❌     |
+| Permission Node                           | Description                                     | Admin | Moderator | Player |
+|-------------------------------------------|-------------------------------------------------|:-----:|:---------:|:------:|
+| `veinguard.admin`                         | Full administrative access to VeinGuard         |   ✔   |     ❌     |   ❌    |
+| `veinguard.mod`                           | Grants limited moderation permissions           |   ❌   |     ✔     |   ❌    |
+| `veinguard.notify`                        | Receive in-game block break alerts              |   ✔   |     ✔     |   ❌    |
+| `veinguard.bypass`                        | Exempt from block-break tracking                |   ✔   |     ✔     |   ❌    |
+| `veinguard.update`                        | Receive plugin update notifications             |   ✔   |     ❌     |   ❌    |
+| `veinguard.command`                       | Access to base `/veinguard` command             |   ✔   |     ✔     |   ❌    |
+| `veinguard.command.help`                  | Access to `/veinguard help`                     |   ✔   |     ✔     |   ❌    |
+| `veinguard.command.check`                 | View player block-break reports                 |   ✔   |     ✔     |   ❌    |
+| `veinguard.command.msg`                   | Send formatted messages via VeinGuard           |   ✔   |     ❌     |   ❌    |
+| `veinguard.command.mute`                  | Globally mute alerts from a player              |   ✔   |     ❌     |   ❌    |
+| `veinguard.command.unmute`                | Remove a global alert mute                      |   ✔   |     ❌     |   ❌    |
+| `veinguard.command.toggle-alerts`         | Toggle alerts for yourself                      |   ✔   |     ✔     |   ❌    |
+| `veinguard.command.toggle-alerts.others`  | Toggle alerts for other staff members           |   ✔   |     ❌     |   ❌    |
+| `veinguard.command.tracked-blocks.add`    | Add a new tracked block                         |   ✔   |     ❌     |   ❌    |
+| `veinguard.command.tracked-blocks.list`   | List the current tracked blocks and their data  |   ✔   |     ✔     |   ❌    |
+| `veinguard.command.tracked-blocks.remove` | Remove a currently tracked block                |   ✔   |     ❌     |   ❌    |
+| `veinguard.command.reset`                 | Reset block-break history for a player          |   ✔   |     ❌     |   ❌    |
+| `veinguard.command.resetall`              | Reset block-break history for all players       |   ✔   |     ❌     |   ❌    |
+| `veinguard.command.reload`                | Reload VeinGuard plugin and configuration files |   ✔   |     ❌     |   ❌    |

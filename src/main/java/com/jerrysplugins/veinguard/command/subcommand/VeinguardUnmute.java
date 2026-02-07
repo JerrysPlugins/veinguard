@@ -1,8 +1,14 @@
+/*
+ * Copyright (c) 2026 JerrysPlugins
+ * SPDX‑License‑Identifier: MIT
+ * Licensed under the MIT License (see LICENSE file)
+ * DO NOT REMOVE: This header must remain in all source files.
+ */
 package com.jerrysplugins.veinguard.command.subcommand;
 
 import com.jerrysplugins.veinguard.VeinGuard;
 import com.jerrysplugins.veinguard.command.CommandManager;
-import com.jerrysplugins.veinguard.command.SubCommand;
+import com.jerrysplugins.veinguard.command.ISubCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -10,7 +16,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Map;
 
-public class VeinguardUnmute implements SubCommand {
+public class VeinguardUnmute implements ISubCommand {
 
     private final VeinGuard plugin;
 
@@ -31,6 +37,11 @@ public class VeinguardUnmute implements SubCommand {
     @Override
     public String getPermission() {
         return "veinguard.command.unmute";
+    }
+
+    @Override
+    public List<String> getSubPermissions() {
+        return null;
     }
 
     @Override

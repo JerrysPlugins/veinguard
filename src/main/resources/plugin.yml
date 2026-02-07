@@ -1,5 +1,5 @@
 name: VeinGuard
-version: '1.1.3'
+version: '1.1.4'
 main: com.jerrysplugins.veinguard.VeinGuard
 api-version: '1.17'
 prefix: VeinGuard
@@ -21,6 +21,7 @@ permissions:
       veinguard.command.check: true
       veinguard.command.help: true
       veinguard.command.toggle-alerts: true
+      veinguard.command.tracked-blocks.list: true
   veinguard.admin:
     description: Grant's full permission for administrators.
     default: op
@@ -38,4 +39,7 @@ permissions:
       veinguard.command.resetall: true
       veinguard.command.toggle-alerts: true
       veinguard.command.toggle-alerts.others: true
+      veinguard.command.tracked-blocks.add: true
+      veinguard.command.tracked-blocks.list: true
+      veinguard.command.tracked-blocks.remove: true
       veinguard.command.unmute: true
