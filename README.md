@@ -18,6 +18,7 @@
 </p>
 
 <p align="center">
+  <img src="https://github.com/jerrysplugins/veinguard/actions/workflows/maven.yml/badge.svg" alt="Passing" />
   <img src="https://img.shields.io/github/v/release/jerrysplugins/veinguard" alt="Latest Release" />
   <img src="https://img.shields.io/discord/1461939188105609298" alt="Discord" />
 </p>
