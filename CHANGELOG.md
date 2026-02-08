@@ -1,3 +1,16 @@
+## v1.1.5
+* Refactored project into multi-module project.
+* Implemented an API which is currently experimental.
+* Added arg to subcommand '/vg help \[page\]' for pagination of help command messages.
+* Added exempt permission 'veinguard.bypass.<MATERIAL>' for permission bypass of specific tracked blocks.
+* New pagination class CommandHelp for paginating of the '/vg help' command.
+* Renamed sub-command classes From 'VeinguardCmd' to 'SubCmd'
+* Renamed pagination classes to be 'SubPage' with sub being sub-command name.
+* Refactored 'StaffJoinListener' and 'BlockBreakListener' into same class 'VGListener'
+* Removed support for Minecraft 1.17 and lower.
+* Changed Java version to Java 17.
+* New lang version '7'.
+
 ## v1.1.4
 * Added new command '/vg tracked-blocks <add|list|remove>' for changing tracked blocks in-game.
 * Added action-bar alert message, switch to this in config.yml.
@@ -10,8 +23,8 @@
 * Added class 'TrackedBlockList' for paginated in-game list of tracked blocks.
 * Added enum 'CooldownType' for switching between cooldown types.
 * Added enum 'AlertDelivery' for switching between alert delivery types.
-* Added new package 'com.jerrysplugins.veinguard.core.alert' for housing of alert handling classes.
-* Added new package 'com.jerrysplugins.veinguard.core.page' for housing of pagination handlers.
+* Added new package 'com.jerrysplugins.veinguard.common.alert' for housing of alert handling classes.
+* Added new package 'com.jerrysplugins.veinguard.common.pagination' for housing of pagination handlers.
 * Added language key 'staff-notify-action-bar' for action bar alert messages.
 * Changed language key 'staff-notify' to 'staff-notify-chat'.
 * Re-do of config.yml to have smaller description comments and better organization.
@@ -34,8 +47,8 @@
 * Cleaned up code in UpdateChecker.
 * Cleaned up code in AlertManager.
 * Moved .yml configuration file creation from onEnable to onLoad for logger to check if 'debug-mode' is true in config.
-* Removed 'com.jerrysplugins.veinguard.core.' package, all files now nested in 'com.jerrysplugins.veinguard'
-* Renamed 'com.jerrysplugins.veinguard.common' to 'com.jerrysplugins.veinguard.core'
+* Removed 'com.jerrysplugins.veinguard.common.' package, all files now nested in 'com.jerrysplugins.veinguard'
+* Renamed 'com.jerrysplugins.veinguard.common' to 'com.jerrysplugins.veinguard.common'
 * Removed 'new-version' message from lang. Replaced with message list 'update'.
 * New lang version '5.
 * New config version '5'.

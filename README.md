@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://cdn.modrinth.com/data/zIQ58sDz/images/096ab4efe3e526126dfa72571962c58832992498.png" alt="VeinGuard Banner">
+  <img src="https://cdn.modrinth.com/data/zIQ58sDz/images/630507d6fa117c5d38dc15306adcbcc5b4bb3e1b.png" alt="VeinGuard Banner">
 </p>
 
 <p align="center">
@@ -39,7 +39,7 @@ VeinGuard is simple, configurable, and designed to moderate X-ray abuse without 
 
 - Tracks how many tracked blocks players break in a configured time (minutes)
 - Supports all block types with configurable limits
-- Prevents spam alerts by using cooldowns per player and block
+- Prevents spam alerts by using cooldowns per tracked block or per alert
 - Sends alerts to staff in-game, console, and Discord webhook
 - Runs configurable commands when an alert is triggered
 - Allows staff to mute or toggle alerts
@@ -93,8 +93,13 @@ You are also free to ignore ^ these permissions and configure them as you please
 - **`veinguard.notify`**  
   Receives in-game alert notifications when suspicious mining activity is detected.
 
-- **`veinguard.bypass`**  
+- **`veinguard.bypass`**
   Exempts the player from all VeinGuard block tracking and detection checks.
+
+- **`veinguard.bypass.MATERIAL`**  
+  Exempts the player from block-break tracking for a specific material. Material is CASE SENSITIVE!\
+  Example: `veinguard.bypass.DIAMOND_ORE`\
+  Intended for staff members or trusted roles.
 
 - **`veinguard.update`**  
   Allows the player to receive VeinGuard update notifications.

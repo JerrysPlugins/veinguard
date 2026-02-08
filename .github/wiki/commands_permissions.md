@@ -39,6 +39,11 @@ Each command requires the appropriate permission to execute. Permissions should 
   Exempts the player from block-break tracking and violation checks.  
   Intended for staff members or trusted roles.
 
+* **`veinguard.bypass.MATERIAL`**  
+  Exempts the player from block-break tracking for a specific material. Material is CASE SENSITIVE!\
+  Example: `veinguard.bypass.DIAMOND_ORE`\
+  Intended for staff members or trusted roles.
+
 * **`veinguard.update`**  
   Sends an in-game notification to the player when a new version of VeinGuard is available.
 
@@ -170,6 +175,7 @@ Regular players do not have access to any VeinGuard functionality unless permiss
 | `veinguard.mod`                           | Grants limited moderation permissions           |   ❌   |     ✔     |   ❌    |
 | `veinguard.notify`                        | Receive in-game block break alerts              |   ✔   |     ✔     |   ❌    |
 | `veinguard.bypass`                        | Exempt from block-break tracking                |   ✔   |     ✔     |   ❌    |
+| `veinguard.bypass.MATERIAL`               | Exempt from specific block-break tracking       |   ❌   |     ❌     |   ❌    |
 | `veinguard.update`                        | Receive plugin update notifications             |   ✔   |     ❌     |   ❌    |
 | `veinguard.command`                       | Access to base `/veinguard` command             |   ✔   |     ✔     |   ❌    |
 | `veinguard.command.help`                  | Access to `/veinguard help`                     |   ✔   |     ✔     |   ❌    |
