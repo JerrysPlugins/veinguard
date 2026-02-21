@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://cdn.modrinth.com/data/zIQ58sDz/images/630507d6fa117c5d38dc15306adcbcc5b4bb3e1b.png" alt="VeinGuard Banner">
+  <img src="https://cdn.modrinth.com/data/zIQ58sDz/images/aff0b7e49978da17e613b2034ad7cccaa2774dfb.png" alt="VeinGuard Banner">
 </p>
 
 <p align="center">

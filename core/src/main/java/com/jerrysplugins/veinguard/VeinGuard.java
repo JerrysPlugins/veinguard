@@ -41,7 +41,7 @@ public final class VeinGuard extends JavaPlugin {
     private UpdateService updateService;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final int CONFIG_VERSION = 8;
+    private final int CONFIG_VERSION = 7;
 
     @SuppressWarnings("FieldCanBeLocal")
     private final int LANG_VERSION = 7;
