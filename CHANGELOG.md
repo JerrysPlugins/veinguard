@@ -1,3 +1,5 @@
+## v1.1.6
+
 ## v1.1.5
 * Added config option 'enable-worldguard' to enable or disable WorldGuard integration.
 * Moved some core initialization to onLoad to support config-dependent hook registration.

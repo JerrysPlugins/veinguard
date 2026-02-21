@@ -12,6 +12,9 @@ import com.jerrysplugins.veinguard.common.ConfigOptions;
 import com.jerrysplugins.veinguard.common.PlayerTracker;
 import com.jerrysplugins.veinguard.listener.VGListener;
 import com.jerrysplugins.veinguard.common.patrol.PatrolManager;
+import com.jerrysplugins.veinguard.detection.DetectionListener;
+import com.jerrysplugins.veinguard.detection.VeinTracker;
+import com.jerrysplugins.veinguard.detection.XRayDetector;
 import com.jerrysplugins.veinguard.integration.HookManager;
 import com.jerrysplugins.veinguard.util.config.ConfigFile;
 import com.jerrysplugins.veinguard.util.config.LangFile;
@@ -37,6 +40,9 @@ public final class VeinGuard extends JavaPlugin {
     private PatrolManager patrolManager;
     private HookManager hookManager;
     private CommandManager commandManager;
+
+    private XRayDetector xRayDetector;
+    private VeinTracker veinTracker;
 
     private UpdateService updateService;
 
@@ -147,6 +153,10 @@ public final class VeinGuard extends JavaPlugin {
             playerTracker = new PlayerTracker(this);
             alertManager = new AlertManager(this);
             patrolManager = new PatrolManager(this);
+
+            veinTracker = new VeinTracker();
+            xRayDetector = new XRayDetector(veinTracker);
+
             hookManager.onEnable();
             return true;
         } catch (Exception e) {
@@ -158,6 +168,7 @@ public final class VeinGuard extends JavaPlugin {
     private boolean register() {
         try {
             new VGListener(this);
+            new DetectionListener(this);
             commandManager = new CommandManager(this);
             return true;
         } catch (Exception e) {
@@ -191,6 +202,9 @@ public final class VeinGuard extends JavaPlugin {
     public PatrolManager getPatrolManager() { return this.patrolManager; }
     public HookManager getHookManager() { return this.hookManager; }
     public CommandManager getCommandManager() { return this.commandManager; }
+
+    public XRayDetector getXRayDetector() { return this.xRayDetector; }
+    public VeinTracker getVeinTracker() { return this.veinTracker; }
 
     public UpdateService getUpdateService() { return this.updateService; }
 

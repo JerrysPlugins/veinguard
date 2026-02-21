@@ -80,5 +80,9 @@ public class VGListener implements Listener {
         if (plugin.getPatrolManager().isPatrolling(player.getUniqueId())) {
             plugin.getPatrolManager().stopPatrol(player, true);
         }
+        
+        // Clear experimental detection data
+        plugin.getVeinTracker().clear(player);
+        plugin.getXRayDetector().clear(player);
     }
 }

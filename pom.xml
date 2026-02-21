@@ -7,7 +7,7 @@
 
     <groupId>com.jerrysplugins</groupId>
     <artifactId>VeinGuard</artifactId>
-    <version>1.1.5</version> <!-- Parent/Core version, mainly for config -->
+    <version>1.1.6-SNAPSHOT-1</version> <!-- Parent/Core version, mainly for config -->
     <packaging>pom</packaging>
     <name>VeinGuard</name>
 

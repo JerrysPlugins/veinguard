@@ -8,13 +8,13 @@
     <parent>
         <groupId>com.jerrysplugins</groupId>
         <artifactId>VeinGuard</artifactId>
-        <version>1.1.5</version>
+        <version>1.1.6-SNAPSHOT-1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>core</artifactId>
     <!--
-    <version>1.1.5</version> Core version independent
+    <version>1.1.6-SNAPSHOT-1</version> Core version independent
     -->
     <packaging>jar</packaging>
 
