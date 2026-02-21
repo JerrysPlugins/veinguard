@@ -4,9 +4,9 @@
  * Licensed under the MIT License (see LICENSE file)
  * DO NOT REMOVE: This header must remain in all source files.
  */
-package com.jerrysplugins.veinguard.common;
+package com.jerrysplugins.veinguard.common.patrol;
 
-public enum CooldownType {
-    BLOCK,
-    ALERT
+public enum PatrolFinishAction {
+    LOOP,
+    STOP
 }

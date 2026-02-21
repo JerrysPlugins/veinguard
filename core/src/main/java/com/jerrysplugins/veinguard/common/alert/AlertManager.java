@@ -38,16 +38,17 @@ public class AlertManager {
 
     public void sendAlert(Player suspect, Material material, Location location, int count) {
 
-        if (!plugin.getPlayerTracker().isPlayerMuted(suspect)) {
+        if (plugin.getPlayerTracker().isPlayerMuted(suspect)) return;
 
-            sendStaffAlerts(suspect, material, count);
-            sendConsoleAlert(suspect, material, count);
-            sendDiscordAlert(suspect, material, count, location);
+        VeinguardAlertEvent veinguardAlertEvent = new VeinguardAlertEvent(suspect);
+        Bukkit.getPluginManager().callEvent(veinguardAlertEvent);
+        if (veinguardAlertEvent.isCancelled()) return;
 
-            Bukkit.getPluginManager().callEvent(new VeinguardAlertEvent(suspect));
+        sendStaffAlerts(suspect, material, count);
+        sendConsoleAlert(suspect, material, count);
+        sendDiscordAlert(suspect, material, count, location);
 
-            dispatchAlertCommandsAsync(suspect, material, location, count);
-        }
+        dispatchAlertCommandsAsync(suspect, material, location, count);
     }
 
     private void sendStaffAlerts(Player suspect, Material material, int count) {

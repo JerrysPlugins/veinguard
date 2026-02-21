@@ -8,12 +8,12 @@
     <parent>
         <groupId>com.jerrysplugins</groupId>
         <artifactId>VeinGuard</artifactId>
-        <version>1.1.5-SNAPSHOT-3</version> <!-- parent for shared config only -->
+        <version>1.1.5-SNAPSHOT-4</version> <!-- parent for shared config only -->
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>api</artifactId>
-    <version>1.0.0-EXPERIMENTAL-1</version> <!-- Independent API version -->
+    <version>1.0.0-EXPERIMENTAL-2</version> <!-- Independent API version -->
     <packaging>jar</packaging>
 
     <dependencies>

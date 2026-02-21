@@ -7,12 +7,17 @@
 package com.jerrysplugins.veinguard.listener;
 
 import com.jerrysplugins.veinguard.VeinGuard;
+import com.jerrysplugins.veinguard.integration.Hook;
+import com.jerrysplugins.veinguard.integration.WorldGuardHook;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.Optional;
 
 public class VGListener implements Listener {
 
@@ -36,6 +41,12 @@ public class VGListener implements Listener {
         Material blockType = event.getBlock().getType();
 
         if(plugin.getConfigOptions().isWorldDisabled(world)) return;
+
+        // WorldGuard region check
+        if (plugin.getHookManager().getHook("WorldGuard").orElse(null) instanceof WorldGuardHook wg) {
+            if (!wg.isTrackingEnabled(location)) return;
+        }
+
         if(location.getBlockY() > plugin.getConfigOptions().getIgnoreAboveY()) return;
         if(plugin.getConfigOptions().isIgnoreCreative() && player.getGameMode() == GameMode.CREATIVE) return;
         if(!plugin.getConfigOptions().isTrackedMaterial(blockType)) return;
@@ -61,5 +72,13 @@ public class VGListener implements Listener {
             player.sendMessage(pluginPrefix + plugin.getLocale().getMessage("staff-join-notify", true)
                     .replace("{count}", String.valueOf(count)));
         }));
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        if (plugin.getPatrolManager().isPatrolling(player.getUniqueId())) {
+            plugin.getPatrolManager().stopPatrol(player, true);
+        }
     }
 }

@@ -56,7 +56,7 @@ public class UpdateService implements Listener {
             this.latestVersionChannel = ReleaseChannel.fromVersionString(latestVersion);
             setVersionState(currentVersion, latest);
 
-            logUpdateStatus();
+            logVersionState();
         });
     }
 
@@ -117,7 +117,7 @@ public class UpdateService implements Listener {
         }
     }
 
-    private void logUpdateStatus() {
+    private void logVersionState() {
         switch (currentVersionState) {
 
             case BEHIND -> plugin.getLog().log(Level.UPDATE, "* New VeinGuard version available! " +
@@ -142,6 +142,8 @@ public class UpdateService implements Listener {
         if(!announceNewVersion || currentVersionState != VersionState.BEHIND || latestVersion == null) return;
 
         Player player = event.getPlayer();
+        if (!player.hasPermission("veinguard.update")) return;
+
         List<String> newVersionMessage = plugin.getLocale().getListMessage("update", true);
 
         newVersionMessage.forEach(line ->

@@ -82,6 +82,23 @@ tracked-blocks-list-footer: "&7----------- &8(&7Page: &9{page} &7of &9{totalPage
 tracked-blocks-list-invalid-page: "&b{page} &cis not a valid page number!"
 
 # -----------------------------------------------------------------------------
+# Patrol Messages
+# -----------------------------------------------------------------------------
+patrol-start: "&aPatrol started!"
+patrol-stop: "&cPatrol stopped! &7Returning to original location."
+patrol-finished: "&aPatrol finished! All players have been visited."
+patrol-pause: "&ePatrol paused!"
+patrol-resume: "&aPatrol resumed!"
+patrol-next: "&aSkipping to next player."
+patrol-back: "&aReturning to previous player."
+patrol-already-started: "&cYou are already patrolling!"
+patrol-not-started: "&cYou are not patrolling!"
+patrol-no-previous-player: "&cNo previous player in patrol history!"
+patrol-boss-bar-title: "&7Current: &b{current} &7| Next: &3{next} &7(&b{timer}s&7)"
+patrol-boss-bar-paused: "&e&lPAUSED &7| Patrolling: &b{current}"
+patrol-no-players: "&cNo other players online to patrol!"
+
+# -----------------------------------------------------------------------------
 # Help Message
 # -----------------------------------------------------------------------------
 help-list-header: "&7---- < &b&lVein&c&lGuard &r&7Help > &7----"

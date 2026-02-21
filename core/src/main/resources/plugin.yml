@@ -1,9 +1,10 @@
 name: VeinGuard
-version: '1.1.5-SNAPSHOT-2'
+version: '1.1.5-SNAPSHOT-4'
 main: com.jerrysplugins.veinguard.VeinGuard
 api-version: '1.18'
 prefix: VeinGuard
 authors: [JerrysPlugins]
+softdepend: [WorldGuard]
 description: Monitors block mining and alerts staff to possible X-ray usage.
 website: https://discord.gg/sW7zu4RXmD
 commands:
@@ -32,6 +33,7 @@ permissions:
       veinguard.command.help: true
       veinguard.command.msg: true
       veinguard.command.mute: true
+      veinguard.command.patrol: true
       veinguard.command.reload: true
       veinguard.command.reset: true
       veinguard.command.resetall: true

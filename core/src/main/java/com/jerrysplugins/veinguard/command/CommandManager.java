@@ -38,6 +38,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         register(new SubHelp(plugin));
         register(new SubMsg(plugin));
         register(new SubMute(plugin));
+        register(new SubPatrol(plugin));
         register(new SubReload(plugin));
         register(new SubResetAll(plugin));
         register(new SubReset(plugin));
@@ -75,7 +76,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
         if (!isConsole && !sender.isOp() &&
                 !sender.hasPermission(sub.getPermission()) &&
-                sub.getSubPermissions().stream().noneMatch(sender::hasPermission)) {
+                (sub.getSubPermissions() == null || sub.getSubPermissions().stream().noneMatch(sender::hasPermission))) {
 
             sender.sendMessage(pluginPrefix + plugin.getLocale().getMessage("no-permission", true));
             return true;

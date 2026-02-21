@@ -11,6 +11,8 @@ import com.jerrysplugins.veinguard.common.alert.AlertManager;
 import com.jerrysplugins.veinguard.common.ConfigOptions;
 import com.jerrysplugins.veinguard.common.PlayerTracker;
 import com.jerrysplugins.veinguard.listener.VGListener;
+import com.jerrysplugins.veinguard.common.patrol.PatrolManager;
+import com.jerrysplugins.veinguard.integration.HookManager;
 import com.jerrysplugins.veinguard.util.config.ConfigFile;
 import com.jerrysplugins.veinguard.util.config.LangFile;
 import com.jerrysplugins.veinguard.util.locale.Locale;
@@ -32,12 +34,14 @@ public final class VeinGuard extends JavaPlugin {
     private ConfigOptions configOptions;
     private PlayerTracker playerTracker;
     private AlertManager alertManager;
+    private PatrolManager patrolManager;
+    private HookManager hookManager;
     private CommandManager commandManager;
 
     private UpdateService updateService;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final int CONFIG_VERSION = 6;
+    private final int CONFIG_VERSION = 8;
 
     @SuppressWarnings("FieldCanBeLocal")
     private final int LANG_VERSION = 7;
@@ -71,6 +75,12 @@ public final class VeinGuard extends JavaPlugin {
         }
 
         if(logger.isDebugConfigEnabled()) logger.setDebugEnabled(true);
+
+        locale = new Locale(this);
+        configOptions = new ConfigOptions(this);
+
+        hookManager = new HookManager(this);
+        hookManager.onLoad();
     }
 
     @Override
@@ -94,6 +104,12 @@ public final class VeinGuard extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (patrolManager != null) {
+            patrolManager.shutdown();
+        }
+        if (hookManager != null) {
+            hookManager.shutdown();
+        }
         getAlertManager().getActionBarQueue().shutdown();
         playerTracker.shutdown();
         configOptions.shutdown();
@@ -128,10 +144,10 @@ public final class VeinGuard extends JavaPlugin {
 
     private boolean loadCore() {
         try {
-            locale = new Locale(this);
-            configOptions = new ConfigOptions(this);
             playerTracker = new PlayerTracker(this);
             alertManager = new AlertManager(this);
+            patrolManager = new PatrolManager(this);
+            hookManager.onEnable();
             return true;
         } catch (Exception e) {
             getLog().log(Level.ERROR, "There was an error while loading core plugin objects!", e);
@@ -172,6 +188,8 @@ public final class VeinGuard extends JavaPlugin {
     public ConfigOptions getConfigOptions() { return this.configOptions; }
     public PlayerTracker getPlayerTracker() { return this.playerTracker; }
     public AlertManager getAlertManager() { return this.alertManager; }
+    public PatrolManager getPatrolManager() { return this.patrolManager; }
+    public HookManager getHookManager() { return this.hookManager; }
     public CommandManager getCommandManager() { return this.commandManager; }
 
     public UpdateService getUpdateService() { return this.updateService; }

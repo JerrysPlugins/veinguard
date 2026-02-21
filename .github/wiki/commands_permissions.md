@@ -108,6 +108,15 @@ Removes a global mute from the specified player, allowing alerts related to them
 
 ---
 
+### `/veinguard patrol <start|stop|pause|resume|next|back>`
+**Permission:** `veinguard.command.patrol`
+
+**Description:**  
+Patrol through all online players with an automated cycle and boss bar display.  
+Staff can skip to the next player, go back to the previous one, or pause/resume the automated cycle.
+
+---
+
 ### `/veinguard toggle-alerts`
 ### `/veinguard toggle-alerts <player>`
 **Permissions:**
@@ -162,7 +171,7 @@ Reloads VeinGuard and all associated configuration files without requiring a ful
 
 ---
 
-*Last updated for VeinGuard 1.1.4+*
+*Last updated for VeinGuard 1.1.5+*
 
 ## Permission Overview
 
@@ -183,6 +192,7 @@ Regular players do not have access to any VeinGuard functionality unless permiss
 | `veinguard.command.msg`                   | Send formatted messages via VeinGuard           |   ✔   |     ❌     |   ❌    |
 | `veinguard.command.mute`                  | Globally mute alerts from a player              |   ✔   |     ❌     |   ❌    |
 | `veinguard.command.unmute`                | Remove a global alert mute                      |   ✔   |     ❌     |   ❌    |
+| `veinguard.command.patrol`                | Automated player patrol for staff               |   ✔   |     ❌     |   ❌    |
 | `veinguard.command.toggle-alerts`         | Toggle alerts for yourself                      |   ✔   |     ✔     |   ❌    |
 | `veinguard.command.toggle-alerts.others`  | Toggle alerts for other staff members           |   ✔   |     ❌     |   ❌    |
 | `veinguard.command.tracked-blocks.add`    | Add a new tracked block                         |   ✔   |     ❌     |   ❌    |

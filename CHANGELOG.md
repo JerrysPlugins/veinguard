@@ -1,8 +1,10 @@
 ## v1.1.5
+* Added config option 'enable-worldguard' to enable or disable WorldGuard integration.
+* Moved some core initialization to onLoad to support config-dependent hook registration.
 * Refactored project into multi-module project.
 * Implemented an API which is currently experimental.
 * Added arg to subcommand '/vg help \[page\]' for pagination of help command messages.
-* Added exempt permission 'veinguard.bypass.<MATERIAL>' for permission bypass of specific tracked blocks.
+* Added exempt permission 'veinguard.bypass.\<MATERIAL\>' for permission bypass of specific tracked blocks.
 * New pagination class CommandHelp for paginating of the '/vg help' command.
 * Renamed sub-command classes From 'VeinguardCmd' to 'SubCmd'
 * Renamed pagination classes to be 'SubPage' with sub being sub-command name.
@@ -10,6 +12,14 @@
 * Removed support for Minecraft 1.17 and lower.
 * Changed Java version to Java 17.
 * New lang version '7'.
+* New config version '7'.
+* Implemented Player Patrol feature for staff members.
+* Added new command '/vg patrol <start|stop|pause|resume|next|back>' for automated player monitoring.
+* Added patrol boss bar with countdown timer and current/next player information.
+* Added config option 'patrol-teleport-seconds' to change interval between teleports.
+* Added config options 'patrolling-color' and 'paused-color' for boss bar customization.
+* Added config option 'patrol-finish-action' to configure behavior (LOOP/STOP) when patrol completes.
+* Added patrol history tracking to allow going back to previous players with '/vg patrol back'.
 
 ## v1.1.4
 * Added new command '/vg tracked-blocks <add|list|remove>' for changing tracked blocks in-game.

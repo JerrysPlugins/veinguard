@@ -8,10 +8,13 @@ package com.jerrysplugins.veinguard.common;
 
 import com.jerrysplugins.veinguard.VeinGuard;
 import com.jerrysplugins.veinguard.common.alert.AlertDeliveryType;
+import com.jerrysplugins.veinguard.common.patrol.PatrolFinishAction;
 import com.jerrysplugins.veinguard.util.logger.Level;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.*;
@@ -49,6 +52,14 @@ public class ConfigOptions {
     private Sound alertSound;
     private float alertSoundVolume;
     private float alertSoundPitch;
+
+    private int patrolTeleportSeconds;
+    private PatrolFinishAction patrolFinishAction;
+    private BarColor patrollingBarColor;
+    private BarColor patrolPausedBarColor;
+    private BarStyle patrolBarStyle;
+
+    private boolean worldGuardEnabled;
 
     public ConfigOptions(VeinGuard plugin) {
         this.plugin = plugin;
@@ -99,6 +110,34 @@ public class ConfigOptions {
         loadTrackedBlocks(config);
         loadDisabledWorlds(config);
         loadAlertCommands(config);
+
+        this.patrolTeleportSeconds = config.getInt("patrol-teleport-seconds", 15);
+        parsePatrolFinishAction(config);
+        String patrollingBarColorStr = config.getString("patrol-boss-bar.patrolling-color", "BLUE");
+        try {
+            this.patrollingBarColor = BarColor.valueOf(patrollingBarColorStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            plugin.getLog().log(Level.ERROR, "Invalid patrolling boss bar color '" + patrollingBarColorStr + "' in config! Defaulting to BLUE.");
+            this.patrollingBarColor = BarColor.BLUE;
+        }
+
+        String pausedBarColorStr = config.getString("patrol-boss-bar.paused-color", "YELLOW");
+        try {
+            this.patrolPausedBarColor = BarColor.valueOf(pausedBarColorStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            plugin.getLog().log(Level.ERROR, "Invalid paused boss bar color '" + pausedBarColorStr + "' in config! Defaulting to YELLOW.");
+            this.patrolPausedBarColor = BarColor.YELLOW;
+        }
+
+        String barStyleStr = config.getString("patrol-boss-bar.style", "SOLID");
+        try {
+            this.patrolBarStyle = BarStyle.valueOf(barStyleStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            plugin.getLog().log(Level.ERROR, "Invalid boss bar style '" + barStyleStr + "' in config! Defaulting to SOLID.");
+            this.patrolBarStyle = BarStyle.SOLID;
+        }
+
+        this.worldGuardEnabled = config.getBoolean("enable-worldguard", true);
     }
 
     private void loadIgnoredTools(FileConfiguration config) {
@@ -183,6 +222,16 @@ public class ConfigOptions {
             plugin.getLog().log(Level.WARN, "Invalid alert-cooldown-type type '" + type + "' in config.yml! " +
                     "Defaulting to PER_BLOCK.");
             cooldownType = CooldownType.BLOCK;
+        }
+    }
+
+    private void parsePatrolFinishAction(FileConfiguration config) {
+        String action = config.getString("patrol-finish-action", "LOOP");
+        try {
+            this.patrolFinishAction = PatrolFinishAction.valueOf(action.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            plugin.getLog().log(Level.ERROR, "Invalid patrol finish action '" + action + "' in config! Defaulting to LOOP.");
+            this.patrolFinishAction = PatrolFinishAction.LOOP;
         }
     }
 
@@ -285,4 +334,11 @@ public class ConfigOptions {
     public Sound getAlertSound() { return this.alertSound; }
     public float getAlertSoundVolume() { return this.alertSoundVolume; }
     public float getAlertSoundPitch() { return this.alertSoundPitch; }
+
+    public int getPatrolTeleportSeconds() { return this.patrolTeleportSeconds; }
+    public PatrolFinishAction getPatrolFinishAction() { return this.patrolFinishAction; }
+    public BarColor getPatrollingBarColor() { return this.patrollingBarColor; }
+    public BarColor getPatrolPausedBarColor() { return this.patrolPausedBarColor; }
+    public BarStyle getPatrolBarStyle() { return this.patrolBarStyle; }
+    public boolean isWorldGuardEnabled() { return this.worldGuardEnabled; }
 }

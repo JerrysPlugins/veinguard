@@ -1,18 +1,15 @@
 #########################################################
 # VeinGuard - Configuration File & Options
-# Version: 1.1.4
+# Version: 1.1.5
 #
 # Useful Links:
 #   Wiki:       https://github.com/JerrysPlugins/veinguard/wiki
 #   Discord:    https://discord.com/invite/sW7zu4RXmD
-#   Issues:     https://github.com/JerrysPlugins/veinguard/issues
 #   GitHub:     https://github.com/JerrysPlugins/veinguard
-#   Modrinth:   https://modrinth.com/plugin/veinguard
-#   Spigot:     https://www.spigotmc.org/resources/veinguard-antixray-for-1-17-1-21.131871/
-#   Hangar:     https://hangar.papermc.io/JerrysPlugins/VeinGuard
+#   Issue Tracker:     https://github.com/JerrysPlugins/veinguard/issues
 #########################################################
 # DO NOT CHANGE
-config-version: 1
+config-version: 8
 
 # ===========================
 # Tracking Settings
@@ -83,6 +80,24 @@ alert-commands:
 discord-webhook-url: ""
 
 # ===========================
+# Patrol Settings
+# ===========================
+
+# Seconds between each teleport during patrol.
+patrol-teleport-seconds: 45
+
+# What to do when all players have been visited.
+#   LOOP - Starts the patrol over from the beginning.
+#   STOP - Stops the patrol and returns the staff member to their original location.
+patrol-finish-action: STOP
+
+# Boss bar settings for patrol.
+patrol-boss-bar:
+  patrolling-color: BLUE
+  paused-color: YELLOW
+  style: SOLID
+
+# ===========================
 # Tracking Exceptions
 # ===========================
 
@@ -145,6 +160,14 @@ tracked-blocks:
   - RAW_IRON_BLOCK:5:"Raw Iron Block"
   - RAW_COPPER_BLOCK:5:"Raw Copper Block"
   - RAW_GOLD_BLOCK:5:"Raw Gold Block"
+
+# ===========================
+# Integrations
+# ===========================
+
+# Whether to enable WorldGuard integration.
+# This registers the 'veinguard-check' flag in WorldGuard.
+enable-worldguard: true
 
 # ===========================
 # Update & Debug
