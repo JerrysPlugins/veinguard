@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://cdn.modrinth.com/data/zIQ58sDz/images/096ab4efe3e526126dfa72571962c58832992498.png" alt="VeinGuard Banner">
+  <img src="https://cdn.modrinth.com/data/zIQ58sDz/images/aff0b7e49978da17e613b2034ad7cccaa2774dfb.png" alt="VeinGuard Banner">
 </p>
 
 <p align="center">
@@ -12,8 +12,17 @@
   <a href="https://hangar.papermc.io/JerrysPlugins/VeinGuard">
     <img src="https://raw.githubusercontent.com/vLuckyyy/badges/main/avaiable-on-hangar.svg" alt="Hangar" />
   </a>
+  <a href="https://www.curseforge.com/minecraft/bukkit-plugins/veinguard">
+    <img src="https://raw.githubusercontent.com/intergrav/devins-badges/refs/heads/v3/assets/cozy/available/curseforge_vector.svg" alt="Hangar" />
+  </a>
   <a href="https://bstats.org/plugin/bukkit/VeinGuard/28893">
     <img src="https://raw.githubusercontent.com/vLuckyyy/badges/main/available-on-bstats.svg" alt="bStats" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://discord.gg/sW7zu4RXmD">
+    <img src="https://raw.githubusercontent.com/intergrav/devins-badges/refs/heads/v3/assets/compact/social/discord-plural_vector.svg" alt="Discord" />
   </a>
 </p>
 
@@ -31,7 +40,7 @@ When a player exceeds the configured break limits, VeinGuard alerts staff via in
 
 VeinGuard is simple, configurable, and designed to moderate X-ray abuse without impacting server performance.
 
-**⚠️ NOTICE: Not all planned features have been implemented yet! Join our [Discord](https://discord.gg/sW7zu4RXmD) for support and announcements.**
+**⚠️ NOTICE: Not all planned features have been implemented yet!**
 
 ---
 
@@ -39,7 +48,8 @@ VeinGuard is simple, configurable, and designed to moderate X-ray abuse without 
 
 - Tracks how many tracked blocks players break in a configured time (minutes)
 - Supports all block types with configurable limits
-- Prevents spam alerts by using cooldowns per player and block
+- Prevents spam alerts by using cooldowns per tracked block or per alert
+- Advanced patrol system to patrol all online players
 - Sends alerts to staff in-game, console, and Discord webhook
 - Runs configurable commands when an alert is triggered
 - Allows staff to mute or toggle alerts
@@ -47,6 +57,7 @@ VeinGuard is simple, configurable, and designed to moderate X-ray abuse without 
 - Supports large reports with pagination
 - Ignores creative mode players, certain tools, worlds, and above certain Y-levels
 - Permission-based bypasses
+- WorldGuard integration: Use the `veinguard-check` custom flag to enable/disable tracking in specific regions
 - Reload configs and language files without restarting the server
 
 ---
@@ -93,8 +104,13 @@ You are also free to ignore ^ these permissions and configure them as you please
 - **`veinguard.notify`**  
   Receives in-game alert notifications when suspicious mining activity is detected.
 
-- **`veinguard.bypass`**  
+- **`veinguard.bypass`**
   Exempts the player from all VeinGuard block tracking and detection checks.
+
+- **`veinguard.bypass.MATERIAL`**  
+  Exempts the player from block-break tracking for a specific material. Material is CASE SENSITIVE!\
+  Example: `veinguard.bypass.DIAMOND_ORE`\
+  Intended for staff members or trusted roles.
 
 - **`veinguard.update`**  
   Allows the player to receive VeinGuard update notifications.
@@ -125,6 +141,10 @@ You are also free to ignore ^ these permissions and configure them as you please
 - **/vg mute \<player\>**
   - Permission: `veinguard.command.mute`
   - Temporarily mute alert notifications for a specific suspect player. This will mute notifications for players with the permission `veinguard.notify`
+
+- **/vg patrol \<start|stop|pause|resume|next|back\>**
+  - Permission: `veinguard.command.patrol`
+  - Patrol through all online players with an automated cycle and boss bar display.
 
 - **/vg toggle-alerts**
   - Permission: `veinguard.command.toggle-alerts`

@@ -8,7 +8,7 @@ This guide explains how to install **VeinGuard** on **Spigot**, **Paper**, or **
 
 Before installing VeinGuard, ensure the following:
 
-- Your server is running **Minecraft 1.17 or newer**.
+- Your server is running **Minecraft 1.18 or newer**.
 - You have **Spigot**, **Paper**, or **Bukkit** installed.
 - You have access to your server’s `plugins` folder and permission to restart the server.
 

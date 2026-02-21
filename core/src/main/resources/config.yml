@@ -1,0 +1,180 @@
+#########################################################
+# VeinGuard - Configuration File & Options
+# Version: 1.1.5
+#
+# Useful Links:
+#   Wiki:       https://github.com/JerrysPlugins/veinguard/wiki
+#   Discord:    https://discord.com/invite/sW7zu4RXmD
+#   GitHub:     https://github.com/JerrysPlugins/veinguard
+#   Issue Tracker:     https://github.com/JerrysPlugins/veinguard/issues
+#########################################################
+# DO NOT CHANGE
+config-version: 1
+
+# ===========================
+# Tracking Settings
+# ===========================
+
+# Time window in minutes to count block break thresholds for alerting.
+blocks-broken-in-last-minutes: 5
+
+# Determines how the alert cooldown is calculated:
+#   BLOCK - separate cooldown for each block type
+#   ALERT - single cooldown for all alerts per player
+alert-cooldown-type: BLOCK
+
+# Cooldown in seconds between alerts, based on the alert-cooldown-type setting.
+alert-cooldown-seconds: 30
+
+# Whether to ignore players in CREATIVE mode when tracking block breaks.
+ignore-creative-mode: true
+
+# Maximum Y-level to track block breaks. Blocks above this level are ignored.
+ignore-above-y-level: 64
+
+# ===========================
+# Command Pagination
+# ===========================
+
+# Maximum number of entries per page when running '/vg check <player> [page]'.
+player-report-page-entries: 7
+
+# Maximum number of entries per page in the '/vg tracked-blocks list' command.
+tracked-blocks-page-entries: 7
+
+# ===========================
+# Alert Settings
+# ===========================
+
+# Determines if alert messages are sent to the console.
+send-alerts-to-console: true
+
+# Method to deliver alerts to staff:
+#   CHAT - sends a chat message
+#   ACTION_BAR - displays in the action bar
+#   NONE - disables staff alerts
+alert-delivery-type: CHAT
+
+# Notify staff with the total number of players currently violating thresholds when they join.
+staff-join-violation-alert: false
+
+# Sound settings for alert notifications.
+# Requires a valid Bukkit sound: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+alert-sound:
+  enabled: true
+  sound: ENTITY_EXPERIENCE_ORB_PICKUP
+  volume: 1.0
+  pitch: 1.0
+
+# Commands executed when an alert is triggered.
+# Placeholders:
+#   {player} - player name
+#   {block}  - block type
+#   {count}  - total broken blocks
+#   {world}, {x}, {y}, {z} - block coordinates
+alert-commands:
+  - 'examplecmd msg {player} &bStop xraying!'
+  - 'examplecmd broadcast &b{player} might be xraying!'
+
+# Optional Discord webhook to send alerts to. Leave blank to disable.
+discord-webhook-url: ""
+
+# ===========================
+# Patrol Settings
+# ===========================
+
+# Seconds between each teleport during patrol.
+patrol-teleport-seconds: 45
+
+# What to do when all players have been visited.
+#   LOOP - Starts the patrol over from the beginning.
+#   STOP - Stops the patrol and returns the staff member to their original location.
+patrol-finish-action: STOP
+
+# Boss bar settings for patrol.
+patrol-boss-bar:
+  patrolling-color: BLUE
+  paused-color: YELLOW
+  style: SOLID
+
+# ===========================
+# Tracking Exceptions
+# ===========================
+
+# List of tools that are ignored when tracking block breaks.
+# Must be a valid Bukkit material: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+ignored-tools:
+  - WOODEN_HOE
+
+# Worlds in which block break tracking is disabled.
+disabled-worlds:
+  - test_world
+
+# ===========================
+# Tracked Blocks & Thresholds
+# ===========================
+
+# Defines which blocks VeinGuard should track and their alert thresholds.
+#
+# Format:
+#   MATERIAL:AMOUNT:"Pretty Name"
+#
+# - MATERIAL must be a valid Bukkit material name.
+# - AMOUNT is how many times the block can be broken within the configured time window
+#   before staff are alerted.
+# - Pretty Name is required and is used in alerts and reports for better readability.
+#
+# - Visit this site for a list of valid materials:
+#   https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+#
+# Example:
+#   'DIAMOND_ORE:15:"Diamond Ore"'
+#   Alerts staff when a player breaks 15 or more Diamond Ore blocks within the time window.
+tracked-blocks:
+  - DIAMOND_ORE:15:"Diamond Ore"
+  - EMERALD_ORE:5:"Emerald Ore"
+  - LAPIS_ORE:12:"Lapis Ore"
+  - REDSTONE_ORE:40:"Redstone Ore"
+  - GOLD_ORE:20:"Gold Ore"
+  - IRON_ORE:90:"Iron Ore"
+  - COPPER_ORE:100:"Copper Ore"
+  - COAL_ORE:120:"Coal Ore"
+
+  - DEEPSLATE_DIAMOND_ORE:15:"Deepslate Diamond Ore"
+  - DEEPSLATE_EMERALD_ORE:5:"Deepslate Emerald Ore"
+  - DEEPSLATE_LAPIS_ORE:12:"Deepslate Lapis Ore"
+  - DEEPSLATE_REDSTONE_ORE:40:"Deepslate Redstone Ore"
+  - DEEPSLATE_GOLD_ORE:20:"Deepslate Gold Ore"
+  - DEEPSLATE_IRON_ORE:90:"Deepslate Iron Ore"
+  - DEEPSLATE_COPPER_ORE:100:"Deepslate Copper Ore"
+  - DEEPSLATE_COAL_ORE:120:"Deepslate Coal Ore"
+
+  - ANCIENT_DEBRIS:8:"Ancient Debris"
+  - NETHER_GOLD_ORE:40:"Nether Gold Ore"
+  - NETHER_QUARTZ_ORE:90:"Nether Quartz Ore"
+
+  - AMETHYST_BLOCK:20:"Amethyst Block"
+  - BUDDING_AMETHYST:8:"Budding Amethyst"
+  - SPAWNER:2:"Spawner"
+
+  - RAW_IRON_BLOCK:5:"Raw Iron Block"
+  - RAW_COPPER_BLOCK:5:"Raw Copper Block"
+  - RAW_GOLD_BLOCK:5:"Raw Gold Block"
+
+# ===========================
+# Integrations
+# ===========================
+
+# Whether to enable WorldGuard integration.
+# This registers the 'veinguard-check' flag in WorldGuard.
+enable-worldguard: true
+
+# ===========================
+# Update & Debug
+# ===========================
+
+# Show a message to players with 'veinguard.update' permission when a new version is available.
+show-update-notice: true
+
+# Leave this disabled.
+debug-mode: false

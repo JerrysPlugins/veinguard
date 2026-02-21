@@ -1,0 +1,46 @@
+name: VeinGuard
+version: '1.1.5'
+main: com.jerrysplugins.veinguard.VeinGuard
+api-version: '1.18'
+prefix: VeinGuard
+authors: [JerrysPlugins]
+softdepend: [WorldGuard]
+description: Monitors block mining and alerts staff to possible X-ray usage.
+website: https://discord.gg/sW7zu4RXmD
+commands:
+  veinguard:
+    description: Check a player's Xray alert stats and manage the plugin.
+    aliases: [vg]
+permissions:
+  veinguard.mod:
+    description: Grants limited permission for commands for moderators.
+    default: op
+    children:
+      veinguard.notify: true
+      veinguard.bypass: true
+      veinguard.command.check: true
+      veinguard.command.help: true
+      veinguard.command.toggle-alerts: true
+      veinguard.command.tracked-blocks.list: true
+  veinguard.admin:
+    description: Grant's full permission for administrators.
+    default: op
+    children:
+      veinguard.notify: true
+      veinguard.bypass: true
+      veinguard.update: true
+      veinguard.command.check: true
+      veinguard.command.help: true
+      veinguard.command.msg: true
+      veinguard.command.mute: true
+      veinguard.command.patrol: true
+      veinguard.command.reload: true
+      veinguard.command.reset: true
+      veinguard.command.resetall: true
+      veinguard.command.toggle-alerts: true
+      veinguard.command.toggle-alerts.others: true
+      veinguard.command.tracked-blocks.add: true
+      veinguard.command.tracked-blocks.list: true
+      veinguard.command.tracked-blocks.remove: true
+      veinguard.command.unmute: true
+      veinguard.command.version: true

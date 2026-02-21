@@ -1,11 +1,12 @@
 # VeinGuard Wiki
-Hello and welcome to the VeinGuard wiki for version 1.1.4.\
+Hello and welcome to the VeinGuard wiki for version 1.1.5.\
 This wiki will explain the functionality of the plugin as well as information on how to install the VeinGuard plugin, commands and permissions.
 
 ## Table of Contents
 
 | Page                                                                                               | Description |
 |----------------------------------------------------------------------------------------------------|-------------|
+| [Features](https://github.com/JerrysPlugins/veinguard/wiki/Features) | Detailed list of all features provided by the VeinGuard plugin. |
 | [Commands & Permissions](https://github.com/JerrysPlugins/veinguard/wiki/Commands-and-Permissions) | Detailed list of all commands and required permissions for VeinGuard. |
 | [Installation](https://github.com/JerrysPlugins/veinguard/wiki/Installation)                       | Step-by-step guide to install VeinGuard on Spigot, Paper, and Bukkit servers. |
 | [Configuration](https://github.com/JerrysPlugins/veinguard/wiki/Configuration) | Detailed guide to all VeinGuard `config.yml` options, including general settings, alert commands, tools & worlds, and tracked blocks. |

@@ -27,6 +27,10 @@ Proper configuration ensures accurate tracking, alerts, and reporting of suspici
 | tracked-blocks                | Defines blocks to track and alert thresholds. Format: `MATERIAL:AMOUNT:"Pretty Name"`.                                         | See config list                                                               |
 | show-update-notice            | Show message to players with `veinguard.update` when a new version is available.                                               | true                                                                          |
 | debug-mode                    | Enable debug logging. Keep false for production.                                                                               | false                                                                         |
+| enable-worldguard             | Whether to enable WorldGuard integration. This registers the 'veinguard-check' flag in WorldGuard.                             | true                                                                          |
+| patrol-teleport-seconds       | Seconds between each teleport during patrol.                                                                                   | 45                                                                            |
+| patrol-finish-action          | Action to take when all players have been visited: `LOOP` (restart) or `STOP` (end patrol).                                    | STOP                                                                          |
+| patrol-boss-bar               | Configures the patrol boss bar. Includes sub-options for patrolling color, paused color, and style.                            | `patrolling-color: BLUE, paused-color: YELLOW, style: SOLID`                   |
 
 
 
@@ -283,16 +287,95 @@ show-update-notice: true
 
 ---
 
+## debug-mode
+
+**Description:**  
+This setting enables **debug logging** for the plugin.
+- `true` — Detailed debug information will be printed to the console.
+- `false` — Only standard informational and error messages will be logged.
+- **Note:** Keep this disabled for production unless troubleshooting.
+
+**Default Value:**
+```yaml
+debug-mode: false
+```
+
+---
+
+## enable-worldguard
+
+**Description:**
+This setting determines whether VeinGuard **integrates with WorldGuard**.
+- `true` — VeinGuard will register a custom boolean flag `veinguard-check` in WorldGuard. This flag can be used to enable/disable VeinGuard tracking on a per-region basis.
+- `false` — WorldGuard integration is disabled entirely, and the custom flag will not be registered.
+- **Note:** This option is loaded during the plugin's `onLoad` phase. Changing it requires a full server restart to take effect if the flag was already registered.
+
+**Default Value:**
+```yaml
+enable-worldguard: true
+```
+
+---
+
+## patrol-teleport-seconds
+
+**Description:**  
+This setting defines the **time interval in seconds** between automatic teleports during a staff patrol.
+- Every time the countdown reaches zero, the staff member is teleported to the next player in the queue.
+
+**Default Value:**
+```yaml
+patrol-teleport-seconds: 45
+```
+
+---
+
+## patrol-finish-action
+
+**Description:**  
+This setting determines **what happens when a staff member has visited all online players** during a patrol.
+
+**Options:**
+- `LOOP` — Restarts the patrol from the beginning, shuffling the player list again.
+- `STOP` — Automatically ends the patrol and returns the staff member to their original location and gamemode.
+
+**Default Value:**
+```yaml
+patrol-finish-action: STOP
+```
+
+---
+
+## patrol-boss-bar
+
+**Description:**  
+This setting configures the **appearance of the boss bar** shown to staff members during a patrol.  
+It has the following nested sub-options:
+
+- `patrolling-color` — The color of the boss bar while the patrol is active.
+- `paused-color` — The color of the boss bar when the patrol is paused.
+- `style` — The style of the boss bar (e.g., `SOLID`, `SEGMENTED_6`, etc.).
+
+**Default Values:**
+```yaml
+patrol-boss-bar:
+  patrolling-color: BLUE
+  paused-color: YELLOW
+  style: SOLID
+```
+
+---
+
 ## Full Config File
 
-Below is the **complete default `config.yml`** for VeinGuard version 1.1.4.  
+Below is the **complete default `config.yml`** for VeinGuard version 1.1.5.  
 You can copy this as a reference when configuring your server.  
 All options are explained in the sections above.
 
 ```yaml
 #########################################################
 # VeinGuard - Configuration File & Options
-# Version: 1.1.4
+# Version: 1.1.5
 #
 # Useful Links:
 #   Wiki:       https://github.com/JerrysPlugins/veinguard/wiki
@@ -304,7 +387,7 @@ All options are explained in the sections above.
 #   Hangar:     https://hangar.papermc.io/JerrysPlugins/VeinGuard
 #########################################################
 # DO NOT CHANGE
-config-version: 1
+config-version: 8
 
 # ===========================
 # Tracking Settings
@@ -375,6 +458,24 @@ alert-commands:
 discord-webhook-url: ""
 
 # ===========================
+# Patrol Settings
+# ===========================
+
+# Seconds between each teleport during patrol.
+patrol-teleport-seconds: 45
+
+# What to do when all players have been visited.
+#   LOOP - Starts the patrol over from the beginning.
+#   STOP - Stops the patrol and returns the staff member to their original location.
+patrol-finish-action: STOP
+
+# Boss bar settings for patrol.
+patrol-boss-bar:
+  patrolling-color: BLUE
+  paused-color: YELLOW
+  style: SOLID
+
+# ===========================
 # Tracking Exceptions
 # ===========================
 
@@ -437,6 +538,14 @@ tracked-blocks:
   - RAW_IRON_BLOCK:5:"Raw Iron Block"
   - RAW_COPPER_BLOCK:5:"Raw Copper Block"
   - RAW_GOLD_BLOCK:5:"Raw Gold Block"
+
+# ===========================
+# Integrations
+# ===========================
+
+# Whether to enable WorldGuard integration.
+# This registers the 'veinguard-check' flag in WorldGuard.
+enable-worldguard: true
 
 # ===========================
 # Update & Debug
