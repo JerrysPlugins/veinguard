@@ -1,3 +1,9 @@
+## v1.1.6
+* Support for 26.1+
+* Updated WorldGuard dependency to v7.0.17.
+* Fixed 'veinguard-check' WorldGuard flag not being registered on newer versions of WorldGuard and MC 26.1+.
+* Fixed a NoClassDefFoundError console stack trace when starting the plugin on a server without WorldGuard installed.
+
 ## v1.1.5
 * Added config option 'enable-worldguard' to enable or disable WorldGuard integration.
 * Moved some core initialization to onLoad to support config-dependent hook registration.

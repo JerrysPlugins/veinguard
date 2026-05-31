@@ -27,4 +27,4 @@ There are currently no plans to create a version the supports Folia.
 | 1.19.x            |  ✔️   |   ✔️   |   ?️   |   ❌   |
 | 1.20.x            |  ✔️   |   ✔️   |   ?️   |   ❌   |
 | 1.21.x            |  ✔️   |   ✔️   |   ✔️   |   ❌   |
-| 26.x              |  ?️️  |  ?️️   |  ?️️   |   ❌   |
+| 26.x              |  ✔️   |   ✔️   |  ✔️️   |   ❌   |

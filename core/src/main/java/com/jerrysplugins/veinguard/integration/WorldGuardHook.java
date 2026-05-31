@@ -10,7 +10,6 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.BooleanFlag;
 import com.sk89q.worldguard.protection.flags.Flag;
-import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
@@ -18,12 +17,9 @@ import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-/**
- * Hook for WorldGuard integration.
- */
 public class WorldGuardHook implements Hook {
 
-    public static BooleanFlag VEINGUARD_CHECK;
+    private BooleanFlag veinGuardCheck;
     private boolean enabled = false;
 
     @Override
@@ -37,18 +33,21 @@ public class WorldGuardHook implements Hook {
     }
 
     @Override
-    public void onLoad() {
+    public boolean onLoad() {
         try {
             FlagRegistry registry = WorldGuard.getInstance().getFlagRegistry();
             BooleanFlag flag = new BooleanFlag("veinguard-check");
             registry.register(flag);
-            VEINGUARD_CHECK = flag;
+            veinGuardCheck = flag;
+            return true;
         } catch (FlagConflictException e) {
             Flag<?> existing = WorldGuard.getInstance().getFlagRegistry().get("veinguard-check");
             if (existing instanceof BooleanFlag) {
-                VEINGUARD_CHECK = (BooleanFlag) existing;
+                veinGuardCheck = (BooleanFlag) existing;
             }
+            return true;
         } catch (NoClassDefFoundError | Exception ignored) {
+            return false;
             // WorldGuard not present or other error
         }
     }
@@ -57,7 +56,6 @@ public class WorldGuardHook implements Hook {
     public boolean initialize() {
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
             try {
-                // Check if we can access WorldGuard classes
                 WorldGuard.getInstance();
                 enabled = true;
                 return true;
@@ -73,19 +71,14 @@ public class WorldGuardHook implements Hook {
         enabled = false;
     }
 
-    /**
-     * Checks if VeinGuard tracking is enabled at the given location based on WorldGuard flags.
-     *
-     * @param location The location to check.
-     * @return True if tracking is enabled (flag is true or not set), false if explicitly disabled (flag is false).
-     */
-    public boolean isTrackingEnabled(Location location) {
-        if (!enabled || VEINGUARD_CHECK == null) return true;
+    @Override
+    public boolean isAllowed(Location location) {
+        if (!enabled || veinGuardCheck == null) return true;
 
         try {
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
             RegionQuery query = container.createQuery();
-            Boolean value = query.queryValue(BukkitAdapter.adapt(location), null, VEINGUARD_CHECK);
+            Boolean value = query.queryValue(BukkitAdapter.adapt(location), null, veinGuardCheck);
 
             return value == null || value;
         } catch (NoClassDefFoundError | Exception e) {
@@ -93,11 +86,6 @@ public class WorldGuardHook implements Hook {
         }
     }
 
-    /**
-     * Gets the WorldGuard region container.
-     *
-     * @return The region container, or null if WorldGuard is not enabled.
-     */
     public RegionContainer getRegionContainer() {
         if (!enabled) return null;
         return WorldGuard.getInstance().getPlatform().getRegionContainer();

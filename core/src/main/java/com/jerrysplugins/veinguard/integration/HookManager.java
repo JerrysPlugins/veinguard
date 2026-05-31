@@ -9,14 +9,12 @@ package com.jerrysplugins.veinguard.integration;
 import com.jerrysplugins.veinguard.VeinGuard;
 import com.jerrysplugins.veinguard.util.logger.Level;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Manages hooks into external plugins.
- */
 public class HookManager {
 
     private final VeinGuard plugin;
@@ -27,28 +25,21 @@ public class HookManager {
         this.registeredHooks = new HashMap<>();
     }
 
-    /**
-     * Called during plugin onLoad.
-     */
     public void onLoad() {
-        // Register all built-in hooks
-        if (plugin.getConfigOptions().isWorldGuardEnabled()) {
+        if (plugin.getConfigOptions().isWorldGuardEnabled() && Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
             addHook(new WorldGuardHook());
         }
 
-        // Call onLoad for each hook
         for (Hook hook : registeredHooks.values()) {
-            try {
-                hook.onLoad();
-            } catch (Exception e) {
-                plugin.getLog().log(Level.ERROR, "Error during onLoad for hook " + hook.getPluginName(), e);
+            String pluginName = hook.getPluginName();
+            if (Bukkit.getPluginManager().getPlugin(pluginName) != null) {
+                if (!hook.onLoad()) {
+                    plugin.getLog().log(Level.INFO, "Failed to hook into " + pluginName + "!");
+                }
             }
         }
     }
 
-    /**
-     * Called during plugin onEnable.
-     */
     public void onEnable() {
         for (Hook hook : registeredHooks.values()) {
             String pluginName = hook.getPluginName();
@@ -62,11 +53,6 @@ public class HookManager {
         }
     }
 
-    /**
-     * Registers a new hook. If the plugin is already enabled, it will be initialized immediately.
-     *
-     * @param hook The hook to register.
-     */
     public void registerHook(Hook hook) {
         addHook(hook);
         String pluginName = hook.getPluginName();
@@ -81,12 +67,6 @@ public class HookManager {
         registeredHooks.put(hook.getPluginName().toLowerCase(), hook);
     }
 
-    /**
-     * Gets a hook by plugin name.
-     *
-     * @param pluginName The name of the plugin.
-     * @return An Optional containing the hook if found and enabled.
-     */
     public Optional<Hook> getHook(String pluginName) {
         Hook hook = registeredHooks.get(pluginName.toLowerCase());
         if (hook != null && hook.isEnabled()) {
@@ -95,19 +75,19 @@ public class HookManager {
         return Optional.empty();
     }
 
-    /**
-     * Checks if a hook is registered and enabled for a given plugin.
-     *
-     * @param pluginName The name of the plugin.
-     * @return True if a hook is active.
-     */
     public boolean isHookActive(String pluginName) {
         return getHook(pluginName).isPresent();
     }
 
-    /**
-     * Shuts down all registered hooks.
-     */
+    public boolean isAllowed(Location location) {
+        for (Hook hook : registeredHooks.values()) {
+            if (hook.isEnabled() && !hook.isAllowed(location)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void shutdown() {
         for (Hook hook : registeredHooks.values()) {
             try {
