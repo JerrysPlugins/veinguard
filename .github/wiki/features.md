@@ -47,7 +47,7 @@ VeinGuard is a comprehensive X-ray detection and player monitoring tool for Mine
 
 ## Integration & Compatibility
 - **Configurable Plugin Hooks**: Enable or disable integrations like **WorldGuard** via the configuration file to suit your server's needs.
-- **Cross-Version Support**: Fully compatible with Minecraft 1.18 through 1.21+ (Spigot, Paper, Purpur).
+- **Cross-Version Support**: Fully compatible with Minecraft 1.18 through 26.1+ (Spigot, Paper, Purpur).
 - **Multi-module Architecture**: Decoupled API and Core modules for better maintainability and third-party integration.
 - **Lightweight Design**: Built for performance with asynchronous tasks where possible (e.g., Discord webhooks and data lookups).
 - **Comprehensive API**: Includes an experimental API for developers to hook into VeinGuard's tracking and alert systems.

@@ -368,14 +368,14 @@ patrol-boss-bar:
 
 ## Full Config File
 
-Below is the **complete default `config.yml`** for VeinGuard version 1.1.5.  
+Below is the **complete default `config.yml`** for VeinGuard version 1.1.6.  
 You can copy this as a reference when configuring your server.  
 All options are explained in the sections above.
 
 ```yaml
 #########################################################
 # VeinGuard - Configuration File & Options
-# Version: 1.1.5
+# Version: 1.1.6
 #
 # Useful Links:
 #   Wiki:       https://github.com/JerrysPlugins/veinguard/wiki

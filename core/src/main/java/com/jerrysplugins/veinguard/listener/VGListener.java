@@ -8,7 +8,6 @@ package com.jerrysplugins.veinguard.listener;
 
 import com.jerrysplugins.veinguard.VeinGuard;
 import com.jerrysplugins.veinguard.integration.Hook;
-import com.jerrysplugins.veinguard.integration.WorldGuardHook;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,10 +41,8 @@ public class VGListener implements Listener {
 
         if(plugin.getConfigOptions().isWorldDisabled(world)) return;
 
-        // WorldGuard region check
-        if (plugin.getHookManager().getHook("WorldGuard").orElse(null) instanceof WorldGuardHook wg) {
-            if (!wg.isTrackingEnabled(location)) return;
-        }
+        // Integration hooks check (e.g. WorldGuard)
+        if (!plugin.getHookManager().isAllowed(location)) return;
 
         if(location.getBlockY() > plugin.getConfigOptions().getIgnoreAboveY()) return;
         if(plugin.getConfigOptions().isIgnoreCreative() && player.getGameMode() == GameMode.CREATIVE) return;

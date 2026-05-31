@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://cdn.modrinth.com/data/zIQ58sDz/images/aff0b7e49978da17e613b2034ad7cccaa2774dfb.png" alt="VeinGuard Banner">
+  <img src="https://cdn.modrinth.com/data/zIQ58sDz/images/51722cf8bb0edb7b8ea5e5aae0f1b7ffdc3a1867.png" alt="VeinGuard Banner">
 </p>
 
 <p align="center">
@@ -68,9 +68,9 @@ VeinGuard is simple, configurable, and designed to moderate X-ray abuse without 
 
 Before installing **VeinGuard**, make sure your server meets the following requirements:
 
-- **Java 16 or newer**
+- **Java 17 or newer**
 - One of the following server types: Spigot, Paper, Purpur(1.21+) or any compatible fork.
-- Minecraft 1.17+ if using Spigot or Paper.
+- Minecraft 1.18+ if using Spigot or Paper.
 ---
 
 ## Installation
