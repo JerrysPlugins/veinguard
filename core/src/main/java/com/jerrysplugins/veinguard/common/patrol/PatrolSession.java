@@ -11,10 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class PatrolSession {
 
@@ -22,12 +19,13 @@ public class PatrolSession {
     private final Location originalLocation;
     private final GameMode originalGameMode;
     private final BossBar bossBar;
-    
+
     private final LinkedList<UUID> playersToVisit;
     private final LinkedList<UUID> visitedPlayers;
+    private final Map<UUID, String> playerNames;
     private UUID currentPlayer;
     private UUID nextPlayer;
-    
+
     private int secondsRemaining;
     private boolean paused;
 
@@ -38,8 +36,9 @@ public class PatrolSession {
         this.bossBar = bossBar;
         this.playersToVisit = new LinkedList<>();
         this.visitedPlayers = new LinkedList<>();
+        this.playerNames = new HashMap<>();
         this.paused = false;
-        
+
         this.bossBar.addPlayer(staff);
     }
 
@@ -99,6 +98,14 @@ public class PatrolSession {
         this.paused = paused;
     }
 
+    public String getCachedName(UUID uuid) {
+        return playerNames.get(uuid);
+    }
+
+    public void cacheName(UUID uuid, String name) {
+        playerNames.put(uuid, name);
+    }
+
     public void refreshPlayerQueue(List<UUID> onlinePlayers) {
         playersToVisit.clear();
         for (UUID uuid : onlinePlayers) {
@@ -108,9 +115,6 @@ public class PatrolSession {
         }
         Collections.shuffle(playersToVisit);
 
-        // If the queue is empty after filtering the staff member and the current player,
-        // it means there's at most one other player online. We should add them back
-        // so the patrol can continue.
         if (playersToVisit.isEmpty()) {
             for (UUID uuid : onlinePlayers) {
                 if (!uuid.equals(staffUuid)) {

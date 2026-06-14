@@ -36,12 +36,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
         register(new SubCheck(plugin));
         register(new SubHelp(plugin));
+        register(new SubHistory(plugin));
         register(new SubMsg(plugin));
         register(new SubMute(plugin));
         register(new SubPatrol(plugin));
+        register(new SubPurge(plugin));
         register(new SubReload(plugin));
+        register(new SubStaffMsg(plugin));
         register(new SubResetAll(plugin));
         register(new SubReset(plugin));
+        register(new SubTop(plugin));
         register(new SubToggleAlerts(plugin));
         register(new SubTrackedBlocks(plugin));
         register(new SubUnmute(plugin));

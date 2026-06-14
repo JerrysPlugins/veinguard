@@ -1,203 +1,134 @@
-# VeinGuard — Commands & Permissions
+# 🔑 Commands & Permissions
 
-This page documents all available **commands** and **permission nodes** provided by **VeinGuard**.  
-Each command requires the appropriate permission to execute. Permissions should be managed using a permissions plugin (LuckPerms recommended).
-
----
-
-## Permissions
-
-### Administrative Permissions
-
-* **`veinguard.admin`**  
-  Grants full administrative access to VeinGuard.  
-  Includes **all commands**, **all bypasses**, and **all notification permissions**.
+This guide provides a comprehensive overview of all **VeinGuard** commands and their associated permissions. Use this information to configure your staff ranks and manage plugin access effectively.
 
 ---
 
-### Moderator Permissions
+## 🛡️ Permissions Overview
 
-* **`veinguard.mod`**  
-  Intended for staff members who monitor players but do not manage plugin configuration.  
-  This permission grants the following nodes automatically:
-    * `veinguard.notify`
-    * `veinguard.bypass`
-    * `veinguard.command`
-    * `veinguard.command.check`
-    * `veinguard.command.help`
-    * `veinguard.command.toggle-alerts`
-    * `veinguard.command.tracked-blocks.list`
+VeinGuard uses a granular permission system. For most servers, we recommend using [LuckPerms](https://luckperms.net/) to manage these nodes.
 
----
+### 👑 Core Ranks
+| Node | Description | Includes |
+| :--- | :--- | :--- |
+| `veinguard.admin` | **Full access** to all features, commands, and bypasses. | Everything. |
+| `veinguard.mod` | **Moderator access** for monitoring and investigating. | `notify`, `bypass`, `check`, `history`, `top`, `patrol`, `toggle-alerts`. |
 
-### Notification & Utility Permissions
-
-* **`veinguard.notify`**  
-  Allows the player to receive in-game alerts when VeinGuard detects suspicious block-breaking activity.
-
-* **`veinguard.bypass`**  
-  Exempts the player from block-break tracking and violation checks.  
-  Intended for staff members or trusted roles.
-
-* **`veinguard.bypass.MATERIAL`**  
-  Exempts the player from block-break tracking for a specific material. Material is CASE SENSITIVE!\
-  Example: `veinguard.bypass.DIAMOND_ORE`\
-  Intended for staff members or trusted roles.
-
-* **`veinguard.update`**  
-  Sends an in-game notification to the player when a new version of VeinGuard is available.
+### 🛠️ Utility Permissions
+*   `veinguard.notify` — Allows receiving real-time in-game alerts.
+*   `veinguard.bypass` — Complete exemption from all block tracking.
+*   `veinguard.bypass.[MATERIAL]` — Exemption for a specific block (e.g., `veinguard.bypass.DIAMOND_ORE`). *Note: Material names are case-sensitive.*
+*   `veinguard.update` — Receive notifications when a new version of VeinGuard is available.
 
 ---
 
-## Commands
+## 💻 Commands Reference
 
-### Base Command
+The base command for the plugin is `/veinguard`, with the alias `/vg`.
 
-## `/veinguard`
-**Aliases:** `/vg`  
-**Permission:** `veinguard.command`
+### 🔍 Investigation Commands
 
-**Description:**  
-Displays basic plugin information.
+#### `/vg check <player> [page]`
+*   **Permission:** `veinguard.command.check`
+*   **Description:** Displays a real-time report of a player's recent mining activity, showing exact block counts and highlighting violations.
 
----
+#### `/vg history <player> [time] [page]`
+*   **Permission:** `veinguard.command.history`
+*   **Description:** Retrieves historical mining data from the database.
+*   **Arguments:** `[time]` can be formatted like `1h`, `2d`, or `7d`.
 
-## Subcommands
+#### `/vg top [time] [page]`
+*   **Permission:** `veinguard.command.top`
+*   **Description:** Displays a leaderboard of players with the highest violation levels, block counts, and total alerts triggered over a specific period.
 
-### `/veinguard help`
-**Permission:** `veinguard.command.help`
-
-**Description:**  
-Displays a list of available VeinGuard commands along with brief usage information.
-
----
-
-### `/veinguard check <player>`
-### `/veinguard check <player> <page>`
-**Permission:** `veinguard.command.check`
-
-**Description:**  
-Displays the specified player’s tracked block-break report.  
-Results are paginated to make large reports easier to review.
+#### `/vg patrol <action>`
+*   **Permission:** `veinguard.command.patrol`
+*   **Description:** Manage the automated staff patrol.
+*   **Actions:** `start`, `stop`, `pause`, `resume`, `next`, `back`.
 
 ---
 
-### `/veinguard msg <player> <message>`
-**Permission:** `veinguard.command.msg`
+### 👮 Staff Utility
 
-**Description:**  
-Sends a formatted message to the specified player.  
-This command is primarily intended for internal use with the `alert-commands` option in `config.yml`, but can be executed manually if needed.
+#### `/vg staffmsg <message>`
+*   **Permission:** `veinguard.command.staffmsg`
+*   **Description:** Sends a formatted message to all online staff members with notification permissions.
 
----
+#### `/vg msg <player> <message>`
+*   **Permission:** `veinguard.command.msg`
+*   **Description:** Sends a private plugin-formatted message to a player. Ideal for automated violation actions.
 
-### `/veinguard mute <player>`
-**Permission:** `veinguard.command.mute`
+#### `/vg toggle-alerts [player]`
+*   **Permission:** `veinguard.command.toggle-alerts`
+*   **Extra Permission:** `veinguard.command.toggle-alerts.others` (required to target other staff)
+*   **Description:** Toggles your own alert visibility or manages it for another staff member.
 
-**Description:**  
-Globally mutes alerts originating from the specified player.  
-While muted, **no staff members** with `veinguard.notify` will receive alerts related to that player.
+#### `/vg help [page]`
+*   **Permission:** `veinguard.command.help`
+*   **Description:** Displays a list of available VeinGuard commands with usage instructions.
 
----
+#### `/vg mute <player>`
+*   **Permission:** `veinguard.command.mute`
+*   **Description:** Globally silences alerts originating from a specific player for all staff.
 
-### `/veinguard unmute <player>`
-**Permission:** `veinguard.command.unmute`
-
-**Description:**  
-Removes a global mute from the specified player, allowing alerts related to them to be received again.
-
----
-
-### `/veinguard patrol <start|stop|pause|resume|next|back>`
-**Permission:** `veinguard.command.patrol`
-
-**Description:**  
-Patrol through all online players with an automated cycle and boss bar display.  
-Staff can skip to the next player, go back to the previous one, or pause/resume the automated cycle.
+#### `/vg unmute <player>`
+*   **Permission:** `veinguard.command.unmute`
+*   **Description:** Restores alerts for a previously muted player.
 
 ---
 
-### `/veinguard toggle-alerts`
-### `/veinguard toggle-alerts <player>`
-**Permissions:**
-* `veinguard.command.toggle-alerts`
-* `veinguard.command.toggle-alerts-others` (required when targeting other staff)
+### ⚙️ Administrative Commands
 
-**Description:**
-* Without arguments: Toggles alerts **for yourself only**. When disabled, you will not receive alerts from any player.
-* With `<player>`: Toggles alerts for another staff member, provided they have the `veinguard.notify` permission.
+#### `/vg reload`
+*   **Permission:** `veinguard.command.reload`
+*   **Description:** Instantly reloads all configuration and language files without a server restart.
 
----
+#### `/vg tracked-blocks <add|list|remove>`
+*   **Permission:** `veinguard.command.tracked-blocks.[add|list|remove]`
+*   **Description:** Manage which blocks are monitored, their thresholds, and their pretty names in real-time.
+*   **Usage Example:** `/vg tracked-blocks add DIAMOND_ORE 15 Diamond Ore`
 
-### `/veinguard tracked-blocks <add|list|remove> (?list [page]) <block> <threshold> <pretty-name>`
-**Permissions:** `veinguard.command.tracked-blocks`, `veinguard.command.tracked-blocks.add`,
-`veinguard.command.tracked-blocks.list`, `veinguard.command.tracked-blocks.remove`
+#### `/vg reset <player>`
+*   **Permission:** `veinguard.command.reset`
+*   **Description:** Clears active tracking data and VL scores for a specific player.
 
-**Description:**  
-Add, list or remove tracked blocks while in-game.
+#### `/vg resetall`
+*   **Permission:** `veinguard.command.resetall`
+*   **Description:** Wipes active tracking data and VL scores for everyone currently being tracked.
 
----
-
-### `/veinguard reset <player>`
-**Permission:** `veinguard.command.reset`
-
-**Description:**  
-Clears the tracked block-break history for the specified player only.
+#### `/vg purge <time> [player]`
+*   **Permission:** `veinguard.command.purge`
+*   **Description:** Manually deletes old historical data from the database. In-game staff are restricted to purging data older than 15 days.
 
 ---
 
-### `/veinguard resetall`
-**Permission:** `veinguard.command.resetall`
+## 📊 Permission Matrix
 
-**Description:**  
-Resets **all tracked block-break data** for every player currently stored by VeinGuard.  
-Use with caution.
+| Node | Description | Admin | Mod |
+| :--- | :--- | :---: | :---: |
+| `veinguard.admin` | Full Control | ✅ | ❌ |
+| `veinguard.mod` | Standard Moderation | ❌ | ✅ |
+| `veinguard.notify` | Receive Alerts | ✅ | ✅ |
+| `veinguard.bypass` | Ignore Tracking | ✅ | ✅ |
+| `veinguard.command.check` | View Active Stats | ✅ | ✅ |
+| `veinguard.command.history` | View Database History | ✅ | ✅ |
+| `veinguard.command.patrol` | Use Patrol System | ✅ | ✅ |
+| `veinguard.command.top` | View Leaderboard | ✅ | ✅ |
+| `veinguard.command.help` | View Help Menu | ✅ | ✅ |
+| `veinguard.command.msg` | Send Plugin Msg | ✅ | ❌ |
+| `veinguard.command.mute` | Mute a Player | ✅ | ❌ |
+| `veinguard.command.unmute` | Unmute a Player | ✅ | ❌ |
+| `veinguard.command.staffmsg` | Msg to Staff | ✅ | ✅ |
+| `veinguard.command.reset` | Reset a Player | ✅ | ❌ |
+| `veinguard.command.resetall` | Wipe All Data | ✅ | ❌ |
+| `veinguard.command.purge` | Purge Database | ✅ | ❌ |
+| `veinguard.command.reload` | Reload Plugin | ✅ | ❌ |
+| `veinguard.command.toggle-alerts` | Toggle Alerts | ✅ | ✅ |
+| `veinguard.command.toggle-alerts.others` | Toggle Alerts (Others) | ✅ | ❌ |
+| `veinguard.command.tracked-blocks.add` | Add Tracked Block | ✅ | ❌ |
+| `veinguard.command.tracked-blocks.list` | List Tracked Blocks | ✅ | ✅ |
+| `veinguard.command.tracked-blocks.remove` | Remove Tracked Block | ✅ | ❌ |
 
 ---
 
-### `/veinguard reload`
-**Permission:** `veinguard.command.reload`
-
-**Description:**  
-Reloads VeinGuard and all associated configuration files without requiring a full server restart.
-
----
-
-## Notes
-
-* Commands and permissions are designed to be modular—grant only what each role requires.
-* Using `veinguard.admin` overrides all individual permission checks.
-* A permissions plugin is required for proper role management.
-
----
-
-*Last updated for VeinGuard 1.1.5+*
-
-## Permission Overview
-
-The table below reflects VeinGuard’s actual permission structure as defined in the plugin configuration.  
-Regular players do not have access to any VeinGuard functionality unless permissions are explicitly granted.
-
-| Permission Node                           | Description                                     | Admin | Moderator | Player |
-|-------------------------------------------|-------------------------------------------------|:-----:|:---------:|:------:|
-| `veinguard.admin`                         | Full administrative access to VeinGuard         |   ✔   |     ❌     |   ❌    |
-| `veinguard.mod`                           | Grants limited moderation permissions           |   ❌   |     ✔     |   ❌    |
-| `veinguard.notify`                        | Receive in-game block break alerts              |   ✔   |     ✔     |   ❌    |
-| `veinguard.bypass`                        | Exempt from block-break tracking                |   ✔   |     ✔     |   ❌    |
-| `veinguard.bypass.MATERIAL`               | Exempt from specific block-break tracking       |   ❌   |     ❌     |   ❌    |
-| `veinguard.update`                        | Receive plugin update notifications             |   ✔   |     ❌     |   ❌    |
-| `veinguard.command`                       | Access to base `/veinguard` command             |   ✔   |     ✔     |   ❌    |
-| `veinguard.command.help`                  | Access to `/veinguard help`                     |   ✔   |     ✔     |   ❌    |
-| `veinguard.command.check`                 | View player block-break reports                 |   ✔   |     ✔     |   ❌    |
-| `veinguard.command.msg`                   | Send formatted messages via VeinGuard           |   ✔   |     ❌     |   ❌    |
-| `veinguard.command.mute`                  | Globally mute alerts from a player              |   ✔   |     ❌     |   ❌    |
-| `veinguard.command.unmute`                | Remove a global alert mute                      |   ✔   |     ❌     |   ❌    |
-| `veinguard.command.patrol`                | Automated player patrol for staff               |   ✔   |     ❌     |   ❌    |
-| `veinguard.command.toggle-alerts`         | Toggle alerts for yourself                      |   ✔   |     ✔     |   ❌    |
-| `veinguard.command.toggle-alerts.others`  | Toggle alerts for other staff members           |   ✔   |     ❌     |   ❌    |
-| `veinguard.command.tracked-blocks.add`    | Add a new tracked block                         |   ✔   |     ❌     |   ❌    |
-| `veinguard.command.tracked-blocks.list`   | List the current tracked blocks and their data  |   ✔   |     ✔     |   ❌    |
-| `veinguard.command.tracked-blocks.remove` | Remove a currently tracked block                |   ✔   |     ❌     |   ❌    |
-| `veinguard.command.reset`                 | Reset block-break history for a player          |   ✔   |     ❌     |   ❌    |
-| `veinguard.command.resetall`              | Reset block-break history for all players       |   ✔   |     ❌     |   ❌    |
-| `veinguard.command.reload`                | Reload VeinGuard plugin and configuration files |   ✔   |     ❌     |   ❌    |
+*Last updated for VeinGuard v2.0.0*

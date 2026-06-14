@@ -41,7 +41,6 @@ public class VGListener implements Listener {
 
         if(plugin.getConfigOptions().isWorldDisabled(world)) return;
 
-        // Integration hooks check (e.g. WorldGuard)
         if (!plugin.getHookManager().isAllowed(location)) return;
 
         if(location.getBlockY() > plugin.getConfigOptions().getIgnoreAboveY()) return;
@@ -60,6 +59,8 @@ public class VGListener implements Listener {
     public void onStaffJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        plugin.getPlayerTracker().loadViolationLevelAsync(player.getUniqueId());
+
         if (!plugin.getConfigOptions().isStaffJoinViolationAlert()) return;
         if (!player.hasPermission("veinguard.notify")) return;
 
@@ -74,6 +75,9 @@ public class VGListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+
+        plugin.getPlayerTracker().saveViolationLevelAsync(player.getUniqueId());
+
         if (plugin.getPatrolManager().isPatrolling(player.getUniqueId())) {
             plugin.getPatrolManager().stopPatrol(player, true);
         }

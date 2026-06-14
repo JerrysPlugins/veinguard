@@ -11,12 +11,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.TimeUnit;
 
 public class PlayerTracker {
 
@@ -25,11 +25,17 @@ public class PlayerTracker {
     private final ConfigOptions configOptions;
 
     private final Map<UUID, Map<Material, Deque<Long>>> blockBreakHistory;
+    private final Map<UUID, Map<Material, Integer>> incidentCounts;
     private final Map<UUID, Map<Material, Long>> blockAlertCooldowns;
     private final Set<UUID> alertCooldowns;
 
+    private final Map<UUID, Double> violationLevels;
+
     private final Set<UUID> mutedPlayers;
     private final Set<UUID> mutedStaff;
+
+    private BukkitTask cleanupTask;
+    private BukkitTask violationDecayTask;
 
     public PlayerTracker(VeinGuard plugin) {
         this.plugin = plugin;
@@ -37,13 +43,17 @@ public class PlayerTracker {
         this.configOptions = plugin.getConfigOptions();
 
         this.blockBreakHistory = new ConcurrentHashMap<>();
+        this.incidentCounts = new ConcurrentHashMap<>();
         this.blockAlertCooldowns = new ConcurrentHashMap<>();
         this.alertCooldowns = ConcurrentHashMap.newKeySet();
 
-        this.mutedPlayers = new HashSet<>();
-        this.mutedStaff = new HashSet<>();
+        this.violationLevels = new ConcurrentHashMap<>();
+
+        this.mutedPlayers = ConcurrentHashMap.newKeySet();
+        this.mutedStaff = ConcurrentHashMap.newKeySet();
 
         scheduleCleanupTaskAsync();
+        scheduleViolationDecayTaskAsync();
     }
 
     public void recordBreak(Player suspect, Material material, Location location) {
@@ -51,13 +61,25 @@ public class PlayerTracker {
         UUID suspectUUID = suspect.getUniqueId();
 
         Map<Material, Deque<Long>> suspectHistory =
-                blockBreakHistory.computeIfAbsent(suspectUUID, k -> new EnumMap<>(Material.class));
+                blockBreakHistory.computeIfAbsent(suspectUUID, k -> new ConcurrentHashMap<>());
 
         Deque<Long> timestamps =
                 suspectHistory.computeIfAbsent(material, k -> new ConcurrentLinkedDeque<>());
 
-        timestamps.addLast(currentTimeMs);
         cleanupOldEntries(timestamps, currentTimeMs);
+
+        if (timestamps.isEmpty()) {
+
+            Map<Material, Integer> pIncidents = incidentCounts.get(suspectUUID);
+            if (pIncidents != null) {
+                pIncidents.remove(material);
+            }
+        }
+
+        timestamps.addLast(currentTimeMs);
+
+        incidentCounts.computeIfAbsent(suspectUUID, k -> new ConcurrentHashMap<>())
+                .merge(material, 1, Integer::sum);
 
         int breakThreshold = configOptions.getBreakThreshold(material);
         if (timestamps.size() < breakThreshold) return;
@@ -74,7 +96,38 @@ public class PlayerTracker {
             }
         }
 
-        plugin.getAlertManager().sendAlert(suspect, material, location, timestamps.size());
+        double oldVl = getViolationLevel(suspectUUID);
+        double newVl = incrementViolationLevel(suspectUUID, material);
+
+        int incidentCount = 0;
+        Map<Material, Integer> pIncidents = incidentCounts.get(suspectUUID);
+        if (pIncidents != null) {
+            incidentCount = pIncidents.getOrDefault(material, 0);
+        }
+
+        plugin.getAlertManager().sendAlert(suspect, material, location, timestamps.size(), incidentCount, oldVl, newVl);
+    }
+
+    private double incrementViolationLevel(UUID uuid, Material material) {
+        if (!configOptions.isViolationEnabled()) return 0.0;
+
+        double weight = configOptions.getMaterialWeight(material);
+        double initialVl = configOptions.getViolationInitialVl();
+        double addedVl = initialVl * weight;
+
+        return violationLevels.merge(uuid, addedVl, Double::sum);
+    }
+
+    public double getViolationLevel(UUID uuid) {
+        return violationLevels.getOrDefault(uuid, 0.0);
+    }
+
+    public void setViolationLevel(UUID uuid, double vl) {
+        if (vl <= 0) {
+            violationLevels.remove(uuid);
+        } else {
+            violationLevels.put(uuid, vl);
+        }
     }
 
     public CompletableFuture<Integer> getPlayersInViolationAsync() {
@@ -105,15 +158,34 @@ public class PlayerTracker {
     public void scheduleCleanupTaskAsync() {
         long delayTicks = 15L * 60L * 20L;
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+        cleanupTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             long currentTimeMs = System.currentTimeMillis();
-            long expirationTimeMs = configOptions.getCheckIntervalMs() + TimeUnit.MINUTES.toMillis(2);
+            long expirationTimeMs = configOptions.getCheckIntervalMs();
 
-            for (Map<Material, Deque<Long>> materialMap : blockBreakHistory.values()) {
-                for (Deque<Long> deque : materialMap.values()) {
+            for (Iterator<Map.Entry<UUID, Map<Material, Deque<Long>>>> playerIt = blockBreakHistory.entrySet().iterator(); playerIt.hasNext(); ) {
+                Map.Entry<UUID, Map<Material, Deque<Long>>> playerEntry = playerIt.next();
+                Map<Material, Deque<Long>> materialMap = playerEntry.getValue();
+
+                for (Iterator<Map.Entry<Material, Deque<Long>>> matIt = materialMap.entrySet().iterator(); matIt.hasNext(); ) {
+                    Map.Entry<Material, Deque<Long>> matEntry = matIt.next();
+                    Deque<Long> deque = matEntry.getValue();
+
                     while (!deque.isEmpty() && currentTimeMs - deque.peekFirst() > expirationTimeMs) {
                         deque.removeFirst();
                     }
+
+                    if (deque.isEmpty()) {
+                        matIt.remove();
+                        Map<Material, Integer> pIncidents = incidentCounts.get(playerEntry.getKey());
+                        if (pIncidents != null) {
+                            pIncidents.remove(matEntry.getKey());
+                        }
+                    }
+                }
+
+                if (materialMap.isEmpty()) {
+                    playerIt.remove();
+                    incidentCounts.remove(playerEntry.getKey());
                 }
             }
 
@@ -130,6 +202,48 @@ public class PlayerTracker {
             }
 
         }, delayTicks, delayTicks);
+    }
+
+    public void scheduleViolationDecayTaskAsync() {
+        if (!configOptions.isViolationEnabled()) return;
+
+        long intervalTicks = configOptions.getViolationDecayInterval() * 20L;
+
+        violationDecayTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+            double decayAmount = configOptions.getViolationDecayAmount();
+
+            for (Iterator<Map.Entry<UUID, Double>> it = violationLevels.entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry<UUID, Double> entry = it.next();
+                double newVl = entry.getValue() - decayAmount;
+
+                if (newVl <= 0) {
+                    it.remove();
+                } else {
+                    entry.setValue(newVl);
+                }
+            }
+        }, intervalTicks, intervalTicks);
+    }
+
+    public void loadViolationLevelAsync(UUID uuid) {
+        if (!configOptions.isViolationEnabled()) return;
+
+        CompletableFuture.supplyAsync(() -> plugin.getVGDatabase().loadViolationLevel(uuid, configOptions.getDbTablePrefix()))
+                .thenAccept(vl -> {
+                    if (vl > 0) {
+                        violationLevels.put(uuid, vl);
+                    }
+                });
+    }
+
+    public void saveViolationLevelAsync(UUID uuid) {
+        if (!configOptions.isViolationEnabled()) return;
+
+        Double vl = violationLevels.get(uuid);
+        if (vl == null) vl = 0.0;
+
+        final double finalVl = vl;
+        CompletableFuture.runAsync(() -> plugin.getVGDatabase().saveViolationLevel(uuid, finalVl, configOptions.getDbTablePrefix()));
     }
 
     private void cleanupOldEntries(Deque<Long> timestamps, long currentTimeMs) {
@@ -157,7 +271,7 @@ public class PlayerTracker {
 
     private void setPerBlockCooldown(UUID suspectUUID, Material material, long currentTimeMs) {
         blockAlertCooldowns.computeIfAbsent(suspectUUID, k ->
-                new EnumMap<>(Material.class)).put(material, currentTimeMs
+                new ConcurrentHashMap<>()).put(material, currentTimeMs
         );
     }
 
@@ -174,12 +288,16 @@ public class PlayerTracker {
     public void resetPlayerData(Player suspect) {
         UUID uuid = suspect.getUniqueId();
         blockBreakHistory.remove(uuid);
+        incidentCounts.remove(uuid);
         blockAlertCooldowns.remove(uuid);
+        violationLevels.remove(uuid);
     }
 
     public void resetAllData() {
         blockBreakHistory.clear();
+        incidentCounts.clear();
         blockAlertCooldowns.clear();
+        violationLevels.clear();
     }
 
     public Map<Material, Deque<Long>> getBlockBreakHistory(UUID suspectUUID) {
@@ -187,8 +305,25 @@ public class PlayerTracker {
     }
 
     public void shutdown() {
+        if (cleanupTask != null) {
+            cleanupTask.cancel();
+            cleanupTask = null;
+        }
+        if (violationDecayTask != null) {
+            violationDecayTask.cancel();
+            violationDecayTask = null;
+        }
+
+        if (configOptions.isViolationEnabled() && !violationLevels.isEmpty()) {
+            for (Map.Entry<UUID, Double> entry : violationLevels.entrySet()) {
+                plugin.getVGDatabase().saveViolationLevel(entry.getKey(), entry.getValue(), configOptions.getDbTablePrefix());
+            }
+        }
+
         blockBreakHistory.clear();
+        incidentCounts.clear();
         blockAlertCooldowns.clear();
+        violationLevels.clear();
         mutedPlayers.clear();
         mutedStaff.clear();
     }

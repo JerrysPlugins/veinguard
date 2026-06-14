@@ -1,55 +1,62 @@
-# Features
+# 🛡️ Feature Overview
 
-VeinGuard is a comprehensive X-ray detection and player monitoring tool for Minecraft servers. Below is a detailed list of all features provided by the plugin.
+**VeinGuard** is more than just a simple alert plugin; it is a comprehensive behavioral analysis tool designed to identify and document X-ray abuse while maintaining server performance.
 
-## Core Tracking & Detection
-- **Real-time Block Monitoring**: Tracks every block break for materials defined in the configuration.
-- **Configurable Thresholds**: Define exactly how many blocks of a specific type (e.g., Diamond Ore) a player can break within a time window before staff are alerted.
-- **Time Window Evaluation**: Automatically evaluates mining activity over a rolling time window (default 5 minutes).
-- **Y-Level Filtering**: Ignore block breaks above a certain Y-level to prevent false positives from surface mining.
-- **Creative Mode Filter**: Option to ignore players in Creative Mode.
-- **World Blacklisting**: Disable tracking in specific worlds (e.g., creative or resource worlds).
-- **Permission-based Bypasses**:
-    - **Global Bypass**: Exempt staff or trusted players from all tracking with `veinguard.bypass`.
-    - **Per-Material Bypass**: Exempt players from tracking for specific blocks using `veinguard.bypass.<MATERIAL>` (e.g., `veinguard.bypass.DIAMOND_ORE`).
-- **Tool Exceptions**: Ignore block breaks when using specific tools (e.g., Wooden Hoe).
+---
 
-## Advanced Alert System
-- **Multi-channel Alerts**:
-    - **In-game Chat**: Standard alerts sent to staff members.
-    - **Action Bar**: Non-intrusive alerts displayed above the hotbar, with an intelligent queuing system to prevent message overlap.
-    - **Console Logging**: All alerts can be logged to the server console for audit purposes.
-    - **Discord Integration**: Send real-time alerts to a Discord channel via Webhooks, including player name, block type, count, and coordinates.
-- **Alert Cooldowns**:
-    - **Per-Block Cooldown**: Prevent spam by setting a cooldown for each individual block type per player.
-    - **Per-Alert Cooldown**: Apply a global cooldown for all alerts for a player.
-- **Staff Join Notifications**: Notify staff members upon joining if any players currently exceed violation thresholds.
-- **Customizable Alert Sounds**: Play a configurable Bukkit sound for staff whenever an alert is triggered.
-- **Automated Commands**: Execute one or more server commands automatically when a player triggers an alert (e.g., messaging the player, broadcasting a warning, or logging to a file).
+## 🔍 Intelligent Detection Model
 
-## Staff Patrol System
-- **Automated Player Cycling**: Teleport through all online players at a configurable interval to monitor their activity in Spectator mode.
-- **Boss Bar Interface**: Displays a countdown to the next teleport, the name of the current player being patrolled, and the next player in the queue.
-- **Interactive Controls**:
-    - **Pause/Resume**: Stop the automated timer to investigate a player further.
-    - **Next/Back**: Manually skip to the next player or return to the previous one.
-- **Smart Queue Management**: Shuffles the player list and avoids immediate revisits to the same player.
-- **Automatic Cleanup**: Restores staff members to their original location and gamemode when the patrol stops or if they disconnect.
+### 📦 Mining Incident Model
+Introduced in v2.0.0, this model moves away from spammy "per-block" alerts to a structured "Incident" system.
+*   **Alert Aggregation:** Consecutive breaks of the same material are grouped into a single **Incident**.
+*   **Session Tracking:** Records the start and end time of a mining session, including the exact path taken (Coordinates A → Coordinates B).
+*   **Absolute Accuracy:** Even blocks broken during an alert cooldown are captured and added to the incident's total count.
+*   **Database Efficiency:** Highly optimized storage ensures a clean database even on high-traffic servers.
 
-## Player Reporting & Data Management
-- **Detailed History Reports**: View a comprehensive breakdown of a player's mining history for all tracked blocks using `/vg check <player>`.
-- **Violation Highlighting**: Reports clearly mark which blocks have exceeded their thresholds.
-- **Paginated Output**: Easy navigation of large reports or tracked block lists.
-- **In-game Management**:
-    - **Tracked Block Editor**: Add, remove, or modify tracked blocks and their thresholds in real-time via commands.
-    - **Data Resets**: Clear mining history for a single player or reset all data globally.
-    - **Alert Toggling**: Staff can mute alerts for themselves or for specific "suspect" players to reduce noise.
+### 🎯 Core Tracking Features
+*   **Real-Time Monitoring:** Tracks every break of your configured materials.
+*   **Rolling Time Windows:** Evaluates activity over a customizable window (default: 5 minutes).
+*   **Smart Filtering:**
+  *   **Y-Level:** Ignore breaks above a certain depth to focus on underground mining.
+  *   **Gamemode:** Automatically ignore players in Creative mode.
+  *   **World Blacklist:** Disable tracking in specific worlds (e.g., Creative or Resource worlds).
+  *   **Tool Exceptions:** Ignore mining done with specific tools (e.g., Silk Touch or hoes).
+*   **Granular Bypasses:** Use permissions to exempt staff or trusted players globally or for specific materials.
 
-## Integration & Compatibility
-- **Configurable Plugin Hooks**: Enable or disable integrations like **WorldGuard** via the configuration file to suit your server's needs.
-- **Cross-Version Support**: Fully compatible with Minecraft 1.18 through 26.1+ (Spigot, Paper, Purpur).
-- **Multi-module Architecture**: Decoupled API and Core modules for better maintainability and third-party integration.
-- **Lightweight Design**: Built for performance with asynchronous tasks where possible (e.g., Discord webhooks and data lookups).
-- **Comprehensive API**: Includes an experimental API for developers to hook into VeinGuard's tracking and alert systems.
-- **Localization**: Fully customizable `lang.yml` to translate every message and boss bar title.
-- **Update Checker**: Automatically notifies admins when a new version of VeinGuard is available.
+---
+
+## 📢 Multi-Channel Alert System
+Keep your staff informed through their preferred channels.
+
+*   **In-Game Notifications:** Choose between standard **Chat Messages** or non-intrusive **Action Bar** alerts.
+*   **Discord Webhooks:** Send detailed alerts (including player name, block type, count, and location) to your Discord staff channels.
+*   **Automated Actions:** Execute custom console commands (e.g., `/kick`, `/freeze`, or logging) immediately when a threshold is met.
+*   **Violation Level (VL) System:** Assign "suspicion scores" to materials. A player's VL grows as they trigger alerts and decays naturally over time.
+
+---
+
+## 🕵️ Staff & Investigation Tools
+
+### 🚁 Advanced Patrol System
+Monitor your players in Spectator mode without the manual effort.
+*   **Automated Cycling:** Automatically teleports you to the next online player at a set interval.
+*   **Interactive UI:** A Boss Bar shows you who you are watching, who is next, and how much time remains.
+*   **Full Control:** Pause the timer to investigate further, skip ahead, or go back to a previous player.
+
+### 📊 Reporting & Analytics
+*   **Real-Time Reports (`/vg check`):** Get an instant breakdown of a player's current mining rates.
+*   **Historical Database (`/vg history`):** Review past incidents for any player, even if they are offline.
+*   **Leaderboards (`/vg top`):** Identify the most frequent violators over any timeframe.
+*   **Violation Highlighting:** Reports clearly distinguish between normal activity and suspicious spikes.
+
+---
+
+## ⚙️ Integration & Performance
+*   **WorldGuard Support:** Use the `veinguard-check` flag to control tracking in specific regions.
+*   **Database Flexibility:** Support for **SQLite** (standard) and **MySQL/MariaDB** (for networks).
+*   **Optimized Performance:** All heavy operations (webhooks, database writes, and lookups) are handled asynchronously.
+*   **Hot-Reloading:** Change any setting or message in `config.yml` or `lang.yml` and apply it instantly with `/vg reload`.
+
+---
+
+*VeinGuard is continuously evolving. Join our [Discord](https://discord.gg/sW7zu4RXmD) to suggest new features or report bugs!*

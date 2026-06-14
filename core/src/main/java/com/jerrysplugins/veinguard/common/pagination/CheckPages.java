@@ -46,11 +46,16 @@ public class CheckPages {
 
         String header = plugin.getLocale().getMessage("report-header", sendToPlayer)
                 .replace("{player}", suspect.getName());
+        String vlMsg = plugin.getLocale().getMessage("report-vl", sendToPlayer)
+                .replace("{vl}", String.format("%.1f", plugin.getPlayerTracker().getViolationLevel(suspect.getUniqueId())));
         String footerTemplate = plugin.getLocale().getMessage("report-footer", sendToPlayer);
 
         if (reportMessages.isEmpty()) {
             if (sendToPlayer) playerSender.accept(null, header);
             else consoleSender.accept(Level.NONE, header);
+
+            if (sendToPlayer) playerSender.accept(null, vlMsg);
+            else consoleSender.accept(Level.NONE, vlMsg);
 
             String none = plugin.getLocale().getMessage("report-none", sendToPlayer)
                     .replace("{time}", String.valueOf(plugin.getConfigOptions().getCheckIntervalMinutes()));
@@ -74,6 +79,11 @@ public class CheckPages {
                 (ignoredPage, line) -> {
                     if (sendToPlayer) playerSender.accept(null, line);
                     else consoleSender.accept(Level.NONE, line);
+
+                    if (line.equals(header)) {
+                        if (sendToPlayer) playerSender.accept(null, vlMsg);
+                        else consoleSender.accept(Level.NONE, vlMsg);
+                    }
                 }
         );
     }

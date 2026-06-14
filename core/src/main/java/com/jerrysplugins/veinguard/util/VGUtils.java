@@ -38,4 +38,28 @@ public class VGUtils {
                 location.getBlockZ()
         );
     }
+
+    public static long parseTimeStringToMillis(String timeString) {
+        if (timeString == null || timeString.isBlank()) return -1;
+
+        long totalMillis = 0;
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("(\\d+)([smhd])");
+        java.util.regex.Matcher matcher = pattern.matcher(timeString.toLowerCase());
+
+        boolean matched = false;
+        while (matcher.find()) {
+            matched = true;
+            long amount = Long.parseLong(matcher.group(1));
+            String unit = matcher.group(2);
+
+            switch (unit) {
+                case "s" -> totalMillis += amount * 1000L;
+                case "m" -> totalMillis += amount * 60L * 1000L;
+                case "h" -> totalMillis += amount * 60L * 60L * 1000L;
+                case "d" -> totalMillis += amount * 24L * 60L * 60L * 1000L;
+            }
+        }
+
+        return matched ? totalMillis : -1;
+    }
 }

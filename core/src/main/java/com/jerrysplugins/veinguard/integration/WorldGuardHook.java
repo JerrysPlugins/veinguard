@@ -48,7 +48,7 @@ public class WorldGuardHook implements Hook {
             return true;
         } catch (NoClassDefFoundError | Exception ignored) {
             return false;
-            // WorldGuard not present or other error
+
         }
     }
 

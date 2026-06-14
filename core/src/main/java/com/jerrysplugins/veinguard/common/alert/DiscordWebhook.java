@@ -138,8 +138,28 @@ public final class DiscordWebhook {
     }
 
     private String escape(String input) {
-        return input == null ? "" :
-                input.replace("\\", "\\\\")
-                        .replace("\"", "\\\"");
+        if (input == null) return "";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            char ch = input.charAt(i);
+            switch (ch) {
+                case '"' -> sb.append("\\\"");
+                case '\\' -> sb.append("\\\\");
+                case '\b' -> sb.append("\\b");
+                case '\f' -> sb.append("\\f");
+                case '\n' -> sb.append("\\n");
+                case '\r' -> sb.append("\\r");
+                case '\t' -> sb.append("\\t");
+                default -> {
+                    if (ch < ' ') {
+                        String hex = Integer.toHexString(ch);
+                        sb.append("\\u").append("0".repeat(4 - hex.length())).append(hex);
+                    } else {
+                        sb.append(ch);
+                    }
+                }
+            }
+        }
+        return sb.toString();
     }
 }

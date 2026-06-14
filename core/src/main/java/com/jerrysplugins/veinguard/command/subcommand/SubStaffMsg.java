@@ -9,31 +9,33 @@ package com.jerrysplugins.veinguard.command.subcommand;
 import com.jerrysplugins.veinguard.VeinGuard;
 import com.jerrysplugins.veinguard.command.CommandManager;
 import com.jerrysplugins.veinguard.command.ISubCommand;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class SubResetAll implements ISubCommand {
+public class SubStaffMsg implements ISubCommand {
 
     private final VeinGuard plugin;
 
-    public SubResetAll(VeinGuard plugin) {
+    public SubStaffMsg(VeinGuard plugin) {
         this.plugin = plugin;
     }
 
     @Override
     public String getName() {
-        return "resetall";
+        return "staffmsg";
     }
 
     @Override
     public String getDescription() {
-        return "Reset all players block break history.";
+        return "Send a formatted message to all online staff with the notify permission.";
     }
 
     @Override
     public String getPermission() {
-        return "veinguard.command.resetall";
+        return "veinguard.command.staffmsg";
     }
 
     @Override
@@ -43,7 +45,7 @@ public class SubResetAll implements ISubCommand {
 
     @Override
     public String getUsage() {
-        return "resetall";
+        return "staffmsg <message>";
     }
 
     @Override
@@ -54,14 +56,19 @@ public class SubResetAll implements ISubCommand {
     @Override
     public void execute(CommandManager commandManager, CommandSender sender, String[] args, boolean isConsole) {
 
-        if (args.length != 1) {
+        if (args.length == 1) {
             commandManager.sendUsage(sender, getUsage(), isConsole);
             return;
         }
 
-        plugin.getPlayerTracker().resetAllData();
-        commandManager.sendMessage(sender, "reset-all", null);
+        String message = String.join(" ", java.util.Arrays.copyOfRange(args, 1, args.length));
+        String translated = plugin.getLocale().translateColorCodes(message);
 
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.hasPermission("veinguard.notify")) {
+                player.sendMessage(translated);
+            }
+        }
     }
 
     @Override

@@ -42,17 +42,20 @@ public class TrackedBlockPages {
 
         Map<Material, String> prettyNames = plugin.getConfigOptions().getPrettyNames();
         Map<Material, Integer> trackedBlocks = plugin.getConfigOptions().getTrackedBlocks();
+        Map<Material, Double> materialWeights = plugin.getConfigOptions().getMaterialWeights();
 
         List<String> messages = new ArrayList<>();
         int entryNumber = 1;
         for (Material material : trackedBlocks.keySet()) {
             int threshold = trackedBlocks.get(material);
+            double weight = materialWeights.getOrDefault(material, 1.0);
             String prettyName = prettyNames.getOrDefault(material, material.name());
 
             String entryMessage = plugin.getLocale().getMessage("tracked-blocks-list-entry", sendToPlayer)
                     .replace("{numEntry}", String.valueOf(entryNumber))
                     .replace("{material}", material.name())
                     .replace("{threshold}", String.valueOf(threshold))
+                    .replace("{weight}", String.format("%.1f", weight))
                     .replace("{prettyName}", prettyName);
 
             messages.add(entryMessage);

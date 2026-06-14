@@ -84,13 +84,14 @@ public class SubTrackedBlocks implements ISubCommand {
                     return;
                 }
 
-                if(args.length < 5) {
+                if(args.length < 4) {
                     commandManager.sendUsage(sender, getUsage(), isConsole);
                     return;
                 }
 
                 Material material;
                 int threshold;
+                String prettyName;
 
                 try {
                     material = Material.valueOf(args[2].toUpperCase());
@@ -113,13 +114,18 @@ public class SubTrackedBlocks implements ISubCommand {
                     return;
                 }
 
-                String prettyName = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
+                if (args.length > 4) {
+                    prettyName = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
+                } else {
+                    prettyName = material.name();
+                }
 
-                configOptions.addOrUpdateTrackedBlock(material, threshold,  prettyName);
+                configOptions.addOrUpdateTrackedBlock(material, threshold, 1.0, prettyName);
 
                 commandManager.sendMessage(sender, "tracked-blocks-added",
                         Map.of("{material}", material.name(),
                                 "{threshold}", String.valueOf(threshold),
+                                "{weight}", "1.0",
                                 "{prettyName}", prettyName)
                 );
             }
