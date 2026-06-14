@@ -49,7 +49,7 @@ public class MySQLDatabase extends Database {
             }
         }
 
-        String url = "jdbc:mysql:
+        String url = "jdbc:mysql://" + host + ":" + port + "/" + database;
         connection = DriverManager.getConnection(url, username, password);
     }
 
