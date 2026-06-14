@@ -26,6 +26,7 @@ Each command requires the appropriate permission to execute. Permissions should 
     * `veinguard.command.check`
     * `veinguard.command.help`
     * `veinguard.command.toggle-alerts`
+    * `veinguard.command.top`
     * `veinguard.command.tracked-blocks.list`
 
 ---
@@ -69,6 +70,19 @@ Displays basic plugin information.
 
 **Description:**  
 Displays a list of available VeinGuard commands along with brief usage information.
+
+---
+
+### `/veinguard history <player>`
+### `/veinguard history <player> <time>`
+### `/veinguard history <player> <page>`
+### `/veinguard history <player> <time> <page>`
+**Permission:** `veinguard.command.history`
+
+**Description:**  
+Displays the specified player’s alert history from the database.  
+You can filter by time (e.g., `1h`, `2d`, `7d`). Defaults to the configured time frame if not specified.
+Results are paginated for easy viewing.
 
 ---
 
@@ -117,6 +131,18 @@ Staff can skip to the next player, go back to the previous one, or pause/resume 
 
 ---
 
+### `/veinguard purge <time>`
+### `/veinguard purge <time> <player>`
+**Permission:** `veinguard.command.purge`
+
+**Description:**  
+Manually purge alert data from the database.  
+* `<time>`: Purge data older than this (e.g., `1h`, `30d`). In-game players are restricted to a minimum of `15d`.
+* `<player>`: (Optional) Purge data only for a specific player.
+Note: Console can purge any timeframe.
+
+---
+
 ### `/veinguard toggle-alerts`
 ### `/veinguard toggle-alerts <player>`
 **Permissions:**
@@ -155,6 +181,28 @@ Use with caution.
 
 ---
 
+### `/veinguard staffmsg <message>`
+**Permission:** `veinguard.command.staffmsg`
+
+**Description:**  
+Sends a formatted message to all online staff members who have the `veinguard.notify` permission.  
+Useful for automated alerts or coordination between moderators.
+
+---
+
+### `/veinguard top`
+### `/veinguard top <time>`
+### `/veinguard top <page>`
+### `/veinguard top <time> <page>`
+**Permission:** `veinguard.command.top`
+
+**Description:**  
+Displays a leaderboard of players with the most alerts.  
+You can filter by time (e.g., `1h`, `1d`, `7d`) to see recent top violators.  
+Results are paginated for easy viewing.
+
+---
+
 ### `/veinguard reload`
 **Permission:** `veinguard.command.reload`
 
@@ -171,7 +219,7 @@ Reloads VeinGuard and all associated configuration files without requiring a ful
 
 ---
 
-*Last updated for VeinGuard 1.1.5+*
+*Last updated for VeinGuard 2.0.0*
 
 ## Permission Overview
 
@@ -188,13 +236,17 @@ Regular players do not have access to any VeinGuard functionality unless permiss
 | `veinguard.update`                        | Receive plugin update notifications             |   ✔   |     ❌     |   ❌    |
 | `veinguard.command`                       | Access to base `/veinguard` command             |   ✔   |     ✔     |   ❌    |
 | `veinguard.command.help`                  | Access to `/veinguard help`                     |   ✔   |     ✔     |   ❌    |
+| `veinguard.command.history`               | View player alert history from database         |   ✔   |     ✔     |   ❌    |
 | `veinguard.command.check`                 | View player block-break reports                 |   ✔   |     ✔     |   ❌    |
 | `veinguard.command.msg`                   | Send formatted messages via VeinGuard           |   ✔   |     ❌     |   ❌    |
 | `veinguard.command.mute`                  | Globally mute alerts from a player              |   ✔   |     ❌     |   ❌    |
+| `veinguard.command.staffmsg`              | Send formatted messages to all online staff     |   ✔   |     ✔     |   ❌    |
 | `veinguard.command.unmute`                | Remove a global alert mute                      |   ✔   |     ❌     |   ❌    |
 | `veinguard.command.patrol`                | Automated player patrol for staff               |   ✔   |     ❌     |   ❌    |
+| `veinguard.command.purge`                 | Manually purge alert data from the database     |   ✔   |     ❌     |   ❌    |
 | `veinguard.command.toggle-alerts`         | Toggle alerts for yourself                      |   ✔   |     ✔     |   ❌    |
 | `veinguard.command.toggle-alerts.others`  | Toggle alerts for other staff members           |   ✔   |     ❌     |   ❌    |
+| `veinguard.command.top`                   | View top violators leaderboard                  |   ✔   |     ✔     |   ❌    |
 | `veinguard.command.tracked-blocks.add`    | Add a new tracked block                         |   ✔   |     ❌     |   ❌    |
 | `veinguard.command.tracked-blocks.list`   | List the current tracked blocks and their data  |   ✔   |     ✔     |   ❌    |
 | `veinguard.command.tracked-blocks.remove` | Remove a currently tracked block                |   ✔   |     ❌     |   ❌    |

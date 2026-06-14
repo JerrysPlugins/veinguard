@@ -1,5 +1,5 @@
 # VeinGuard Wiki
-Hello and welcome to the VeinGuard wiki for version 1.1.6.\
+Hello and welcome to the VeinGuard wiki for version 2.0.0.\
 This wiki will explain the functionality of the plugin as well as information on how to install the VeinGuard plugin, commands and permissions.
 
 ## Table of Contents

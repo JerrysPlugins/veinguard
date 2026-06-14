@@ -10,6 +10,12 @@ import com.jerrysplugins.veinguard.command.CommandManager;
 import com.jerrysplugins.veinguard.common.alert.AlertManager;
 import com.jerrysplugins.veinguard.common.ConfigOptions;
 import com.jerrysplugins.veinguard.common.PlayerTracker;
+import com.jerrysplugins.veinguard.database.Database;
+import com.jerrysplugins.veinguard.database.DatabaseCleanup;
+import com.jerrysplugins.veinguard.database.DatabaseQueries;
+import com.jerrysplugins.veinguard.database.DatabaseSchemaUpdater;
+import com.jerrysplugins.veinguard.database.MySQLDatabase;
+import com.jerrysplugins.veinguard.database.SQLiteDatabase;
 import com.jerrysplugins.veinguard.listener.VGListener;
 import com.jerrysplugins.veinguard.common.patrol.PatrolManager;
 import com.jerrysplugins.veinguard.integration.HookManager;
@@ -35,16 +41,20 @@ public final class VeinGuard extends JavaPlugin {
     private PlayerTracker playerTracker;
     private AlertManager alertManager;
     private PatrolManager patrolManager;
+    private DatabaseCleanup databaseCleanup;
     private HookManager hookManager;
     private CommandManager commandManager;
+
+    private Database database;
+    private DatabaseQueries databaseQueries;
 
     private UpdateService updateService;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final int CONFIG_VERSION = 7;
+    private final int CONFIG_VERSION = 11;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final int LANG_VERSION = 7;
+    private final int LANG_VERSION = 9;
 
     private String pluginName;
     private String pluginVersion;
@@ -79,6 +89,25 @@ public final class VeinGuard extends JavaPlugin {
         locale = new Locale(this);
         configOptions = new ConfigOptions(this);
 
+        if (configOptions.getDatabaseType().equalsIgnoreCase("MYSQL")) {
+            database = new MySQLDatabase(this);
+        } else {
+            database = new SQLiteDatabase(this);
+        }
+
+        databaseQueries = new DatabaseQueries(this);
+
+        try {
+            database.connect();
+            database.initialize();
+
+            new DatabaseSchemaUpdater(this).update(database);
+
+        } catch (Exception e) {
+            getLog().log(Level.ERROR, "Failed to connect to the database! Statistics tracking might not work correctly.");
+            e.printStackTrace();
+        }
+
         hookManager = new HookManager(this);
         hookManager.onLoad();
     }
@@ -94,6 +123,8 @@ public final class VeinGuard extends JavaPlugin {
 
         loadMetrics();
 
+        databaseCleanup.start();
+
         getLog().log(Level.SUCCESS, "Successfully enabled "
                 + pluginName + ", v"
                 + pluginVersion + ", by "
@@ -104,15 +135,27 @@ public final class VeinGuard extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (databaseCleanup != null) {
+            databaseCleanup.stop();
+        }
         if (patrolManager != null) {
             patrolManager.shutdown();
         }
         if (hookManager != null) {
             hookManager.shutdown();
         }
-        getAlertManager().getActionBarQueue().shutdown();
-        playerTracker.shutdown();
-        configOptions.shutdown();
+        if (alertManager != null) {
+            alertManager.getActionBarQueue().shutdown();
+        }
+        if (playerTracker != null) {
+            playerTracker.shutdown();
+        }
+        if (database != null) {
+            database.disconnect();
+        }
+        if (configOptions != null) {
+            configOptions.shutdown();
+        }
         getLog().log(Level.INFO, "Plugin disabled. Goodbye!");
     }
 
@@ -122,6 +165,8 @@ public final class VeinGuard extends JavaPlugin {
             langFile.reloadConfig();
             alertManager.getDiscordWebhook().reload();
             configOptions.reload();
+            databaseCleanup.stop();
+            databaseCleanup.start();
             return true;
         } catch (Exception e) {
             getLog().log(Level.ERROR, "There was an error while reloading!", e);
@@ -147,6 +192,7 @@ public final class VeinGuard extends JavaPlugin {
             playerTracker = new PlayerTracker(this);
             alertManager = new AlertManager(this);
             patrolManager = new PatrolManager(this);
+            databaseCleanup = new DatabaseCleanup(this);
             hookManager.onEnable();
             return true;
         } catch (Exception e) {
@@ -191,6 +237,9 @@ public final class VeinGuard extends JavaPlugin {
     public PatrolManager getPatrolManager() { return this.patrolManager; }
     public HookManager getHookManager() { return this.hookManager; }
     public CommandManager getCommandManager() { return this.commandManager; }
+
+    public Database getVGDatabase() { return this.database; }
+    public DatabaseQueries getDatabaseQueries() { return this.databaseQueries; }
 
     public UpdateService getUpdateService() { return this.updateService; }
 

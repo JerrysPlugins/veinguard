@@ -21,14 +21,15 @@ in-game-only: "This command can only be used by in-game players!"
 # -----------------------------------------------------------------------------
 # Staff Messages
 # -----------------------------------------------------------------------------
-staff-notify-chat: "&b{player} &cbroke &3{count} &b{material} &cin the last &b{time} &cminutes!"
-staff-notify-action-bar:  "&b{player} &cbroke &3{count} &b{material} &cin the last &b{time} &cminutes!"
+staff-notify-chat: "&b{player} &cbroke &3{count} &b{material} &cin the last &b{time} &cminutes! &8(&cVL: {vl}&8)"
+staff-notify-action-bar:  "&b{player} &cbroke &3{count} &b{material} &cin the last &b{time} &cminutes! &8(&cVL: {vl}&8)"
 staff-join-notify: "&cThere are &b{count} &cplayers with block violations!"
 
 # -----------------------------------------------------------------------------
 # Report Message
 # -----------------------------------------------------------------------------
 report-header: "&7---- < &c&lVein&b&lGuard &r&7Report / &3{player} &7> ----"
+report-vl: "&7Violation Level&f: &c{vl}"
 report-material-normal: "&7{material}&f: &8(&b{count}&7/&3{threshold}&8)"
 report-material-violation: "&c* {material}&f: &8(&c{count}&7/&3{threshold}&8)"
 report-none: "&7No tracked blocks broken in the last &b{time} &7minutes."
@@ -69,14 +70,14 @@ toggle-alerts-others-not-staff: "&b{player} &cdoesn't have permission to receive
 # -----------------------------------------------------------------------------
 # Tracked Blocks Messages
 # -----------------------------------------------------------------------------
-tracked-blocks-added: "&aNow tracking &b{material} &awith threshold of &b{threshold}&a."
+tracked-blocks-added: "&aNow tracking &b{material} &awith threshold of &b{threshold} &aand weight of &b{weight}&a."
 tracked-blocks-removed: "&aRemoved &b{material} &afrom tracking."
 tracked-blocks-not-tracked: "&cBlock &b{material} &cis not tracked!"
 tracked-blocks-invalid-material: "&b{material} &cis not a valid material for block!"
 tracked-blocks-invalid-threshold: "&b{threshold} &cis not a valid integer for threshold!"
 
 tracked-blocks-list-header: "&7---- < &b&lVein&c&lGuard &r&7Tracked Blocks > &7----"
-tracked-blocks-list-entry: "&8(&7{numEntry}.&8) &b{material} &7| &3{threshold} &7| &7{prettyName}"
+tracked-blocks-list-entry: "&8(&7{numEntry}.&8) &b{material} &7| &3{threshold} &7| &c{weight} &7| &7{prettyName}"
 tracked-blocks-list-none: "&7There are currently no tracked blocks."
 tracked-blocks-list-footer: "&7----------- &8(&7Page: &9{page} &7of &9{totalPages} &8) &7-----------"
 tracked-blocks-list-invalid-page: "&b{page} &cis not a valid page number!"
@@ -97,6 +98,34 @@ patrol-no-previous-player: "&cNo previous player in patrol history!"
 patrol-boss-bar-title: "&7Current: &b{current} &7| Next: &3{next} &7(&b{timer}s&7)"
 patrol-boss-bar-paused: "&e&lPAUSED &7| Patrolling: &b{current}"
 patrol-no-players: "&cNo other players online to patrol!"
+
+# -----------------------------------------------------------------------------
+# Top Command Messages
+# -----------------------------------------------------------------------------
+top-header: "&7---- < &b&lVein&c&lGuard &r&7Top Violators / &3{time} &7> ----"
+top-entry: "&8(&7{player}&8) &f- &b{count} &7Blocks Found"
+top-none: "&7No suspicious activity found for this time period."
+top-footer: "&7------------ &8(&7Page: &9{page} &7of &9{totalPages} &8) &7------------"
+top-invalid-page: "&b{page} &cis not a valid page number!"
+top-invalid-time: "&b{time} &cis not a valid time format! (e.g. 1h, 1d, 7d)"
+top-all-time: "All Time"
+
+# -----------------------------------------------------------------------------
+# History Command Messages
+# -----------------------------------------------------------------------------
+history-header: "&7---- < &b&lVein&c&lGuard &r&7History / &3{player} &7- &3{time} &7> ----"
+history-entry: "&8[&7{time}&8] &b{material} &f- &3{count} &7blocks &8(&7{duration}&8) &7@ &b{location}"
+history-none: "&7No alerts found for &b{player} &7within &b{time}&7."
+history-footer: "&7------------ &8(&7Page: &9{page} &7of &9{totalPages} &8) &7------------"
+history-invalid-page: "&b{page} &cis not a valid page number!"
+history-invalid-time: "&b{time} &cis not a valid time format! (e.g. 1h, 1d, 7d)"
+
+# -----------------------------------------------------------------------------
+# Purge Messages
+# -----------------------------------------------------------------------------
+purge-success: "&aSuccessfully purged &b{count} &arecords from the database!"
+purge-invalid-time: "&b{time} &cis not a valid time format! (e.g. 1h, 1d, 7d)"
+purge-min-time: "&cYou can only purge data older than 15 days!"
 
 # -----------------------------------------------------------------------------
 # Help Message

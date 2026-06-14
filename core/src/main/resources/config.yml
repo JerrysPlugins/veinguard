@@ -1,6 +1,6 @@
 #########################################################
 # VeinGuard - Configuration File & Options
-# Version: 1.1.6
+# Version: 2.0.0
 #
 # Useful Links:
 #   Wiki:       https://github.com/JerrysPlugins/veinguard/wiki
@@ -10,6 +10,31 @@
 #########################################################
 # DO NOT CHANGE
 config-version: 1
+
+# ===========================
+# Database Settings
+# ===========================
+
+# Choose the database type to store statistics.
+#   SQLITE - stores data in a local file (no setup required)
+#   MYSQL - stores data in a MySQL or MariaDB database (requires credentials)
+database-type: SQLITE
+
+mysql-settings:
+  host: "localhost"
+  port: 3306
+  database: "veinguard"
+  username: "root"
+  password: ""
+  table-prefix: "vg_"
+
+# Automatically purge old database records to keep the database size manageable.
+database-cleanup:
+  enabled: true
+  # How often the cleanup task should run in seconds. (3600 = 1 hour)
+  interval: 3600
+  # Data older than this will be deleted. (e.g., '30d' for 30 days)
+  retention: "30d"
 
 # ===========================
 # Tracking Settings
@@ -33,6 +58,42 @@ ignore-creative-mode: true
 ignore-above-y-level: 64
 
 # ===========================
+# Violation Level (VL) Settings
+# ===========================
+
+violation-settings:
+  # Enable the Violation Level system.
+  enabled: true
+  # Enable automated actions (commands) when a player reaches a VL threshold.
+  actions-enabled: true
+  # How often every player's VL is reduced in seconds. (60 = 1 minute)
+  decay-interval-seconds: 60
+  # How much VL is removed per interval.
+  decay-amount: 0.5
+  # Base VL points awarded when an alert is triggered.
+  initial-vl-on-alert: 1.0
+
+# Commands executed when a player reaches a specific VL threshold.
+#
+# Format:
+# violation-actions:
+#   THRESHOLD:
+#     - 'command1'
+#     - 'command2'
+#
+# Use decimal points for thresholds (e.g., 20.0 instead of 20) to ensure consistency.
+# Actions only trigger ONCE when a player crosses the threshold from below.
+#
+# Placeholders: {player}, {vl}, {prefix}=Plugin prefix
+violation-actions:
+  10.0:
+    - 'examplecmd vg msg {player} &cMake sure you are mining fairly!'
+  15.0:
+    - 'vg staffmsg {prefix}&b{player} has reached a high violation level!'
+  20.0:
+    - 'examplecmd kick {player} Suspicious mining activity. Mine fairly!'
+
+# ===========================
 # Command Pagination
 # ===========================
 
@@ -41,6 +102,19 @@ player-report-page-entries: 7
 
 # Maximum number of entries per page in the '/vg tracked-blocks list' command.
 tracked-blocks-page-entries: 7
+
+# Maximum number of entries per page in the '/vg top' command.
+top-alert-report-page-entries: 7
+
+# Maximum number of entries per page in the '/vg history' command.
+history-report-page-entries: 5
+
+# Default time frame for the '/vg history' command if none is specified. (e.g., '1h', '2d')
+history-report-default-time: "1h"
+
+# Date format for the '/vg history' command.
+# Refer to Java's SimpleDateFormat for valid patterns: https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html
+date-format: "MM/dd/yyyy HH:mm:ss"
 
 # ===========================
 # Alert Settings
@@ -160,6 +234,49 @@ tracked-blocks:
   - RAW_IRON_BLOCK:5:"Raw Iron Block"
   - RAW_COPPER_BLOCK:5:"Raw Copper Block"
   - RAW_GOLD_BLOCK:5:"Raw Gold Block"
+
+# Defines the violation weight multipliers for tracked blocks.
+# If a block is not listed here, it defaults to a weight of 1.0.
+#
+# Format:
+#   MATERIAL:WEIGHT
+#
+# - MATERIAL must be a valid Bukkit material name.
+# - WEIGHT is a decimal value that determines how much this material contributes to the player's Violation Level (VL).
+#
+# Example:
+#   'DIAMOND_ORE:2.5'
+#   Adds 2.5 to the player's VL for every alert triggered for Diamond Ore.
+tracked-blocks-violation-multipliers:
+  - DIAMOND_ORE:2.5
+  - EMERALD_ORE:3.0
+  - LAPIS_ORE:1.5
+  - REDSTONE_ORE:1.0
+  - GOLD_ORE:1.5
+  - IRON_ORE:0.5
+  - COPPER_ORE:0.3
+  - COAL_ORE:0.2
+
+  - DEEPSLATE_DIAMOND_ORE:2.5
+  - DEEPSLATE_EMERALD_ORE:3.0
+  - DEEPSLATE_LAPIS_ORE:1.5
+  - DEEPSLATE_REDSTONE_ORE:1.0
+  - DEEPSLATE_GOLD_ORE:1.5
+  - DEEPSLATE_IRON_ORE:0.5
+  - DEEPSLATE_COPPER_ORE:0.3
+  - DEEPSLATE_COAL_ORE:0.2
+
+  - ANCIENT_DEBRIS:4.0
+  - NETHER_GOLD_ORE:1.0
+  - NETHER_QUARTZ_ORE:0.5
+
+  - AMETHYST_BLOCK:1.0
+  - BUDDING_AMETHYST:2.0
+  - SPAWNER:5.0
+
+  - RAW_IRON_BLOCK:1.0
+  - RAW_COPPER_BLOCK:1.0
+  - RAW_GOLD_BLOCK:1.0
 
 # ===========================
 # Integrations

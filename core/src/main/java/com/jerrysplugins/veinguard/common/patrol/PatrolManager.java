@@ -132,7 +132,7 @@ public class PatrolManager {
         Player target = Bukkit.getPlayer(prevUuid);
 
         if (target == null || !target.isOnline()) {
-            // If the previous player is offline, try to go back further
+
             backPatrol(staff);
             return;
         }
@@ -213,7 +213,7 @@ public class PatrolManager {
         }
 
         session.setCurrentPlayer(nextUuid);
-        
+
         UUID peekNext = session.getPlayersToVisit().peek();
         session.setNextPlayer(peekNext);
 
@@ -223,8 +223,7 @@ public class PatrolManager {
     }
 
     private void updateBossBar(PatrolSession session) {
-        String currentName = Bukkit.getOfflinePlayer(session.getCurrentPlayer()).getName();
-        if (currentName == null) currentName = "Unknown";
+        String currentName = getName(session, session.getCurrentPlayer());
 
         if (session.isPaused()) {
             session.getBossBar().setColor(plugin.getConfigOptions().getPatrolPausedBarColor());
@@ -233,11 +232,7 @@ public class PatrolManager {
             session.getBossBar().setProgress(1.0);
         } else {
             session.getBossBar().setColor(plugin.getConfigOptions().getPatrollingBarColor());
-            String nextName = "None";
-            if (session.getNextPlayer() != null) {
-                nextName = Bukkit.getOfflinePlayer(session.getNextPlayer()).getName();
-                if (nextName == null) nextName = "Unknown";
-            }
+            String nextName = getName(session, session.getNextPlayer());
 
             session.getBossBar().setTitle(plugin.getLocale().getMessage("patrol-boss-bar-title", true)
                     .replace("{current}", currentName)
@@ -247,6 +242,24 @@ public class PatrolManager {
             double progress = (double) session.getSecondsRemaining() / plugin.getConfigOptions().getPatrolTeleportSeconds();
             session.getBossBar().setProgress(Math.max(0.0, Math.min(1.0, progress)));
         }
+    }
+
+    private String getName(PatrolSession session, UUID uuid) {
+        if (uuid == null) return "None";
+        String cached = session.getCachedName(uuid);
+        if (cached != null) return cached;
+
+        Player player = Bukkit.getPlayer(uuid);
+        String name;
+        if (player != null) {
+            name = player.getName();
+        } else {
+            name = Bukkit.getOfflinePlayer(uuid).getName();
+        }
+
+        if (name == null) name = "Unknown";
+        session.cacheName(uuid, name);
+        return name;
     }
 
     public void shutdown() {

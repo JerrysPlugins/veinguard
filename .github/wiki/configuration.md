@@ -9,7 +9,10 @@ Proper configuration ensures accurate tracking, alerts, and reporting of suspici
 
 | Option                        | Description                                                                                                                    | Default / Example Value                                                       |
 |-------------------------------|--------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| config-version                | Internal version of the config file. Do not change.                                                                            | 1                                                                             |
+| config-version                | Internal version of the config file. Do not change.                                                                            | 11                                                                            |
+| database-type                 | Choose the database type to store statistics: `SQLITE` or `MYSQL`.                                                             | SQLITE                                                                        |
+| mysql-settings                | Connection details for MySQL/MariaDB (host, port, database, username, password, table-prefix).                                 | See config file                                                               |
+| database-cleanup              | Configure automated purging of old alert records.                                                                              | See config file                                                               |
 | blocks-broken-in-last-minutes | Time window in minutes to count block breaks for alert thresholds.                                                             | 5                                                                             |
 | alert-cooldown-type           | Determines how alert cooldown is applied: `BLOCK` (per block type) or `ALERT` (per player).                                    | BLOCK                                                                         |
 | alert-cooldown-seconds        | Cooldown in seconds between alerts, based on alert-cooldown-type.                                                              | 30                                                                            |
@@ -17,6 +20,9 @@ Proper configuration ensures accurate tracking, alerts, and reporting of suspici
 | ignore-above-y-level          | Maximum Y-level to track block breaks; blocks above are ignored.                                                               | 64                                                                            |
 | player-report-page-entries    | Max number of entries per page for `/vg check <player> [page]`.                                                                | 7                                                                             |
 | tracked-blocks-page-entries   | Max number of entries per page for `/vg tracked-blocks list`.                                                                  | 7                                                                             |
+| top-alert-report-page-entries | Max number of entries per page for `/vg top`.                                                                                 | 10                                                                            |
+| history-report-page-entries   | Max number of entries per page for `/vg history`.                                                                             | 10                                                                            |
+| history-report-default-time   | Default time frame for `/vg history` if none specified.                                                                        | 1h                                                                            |
 | send-alerts-to-console        | Send alert messages to the console.                                                                                            | true                                                                          |
 | alert-delivery-type           | How alerts are delivered to staff: `CHAT`, `ACTION_BAR`, or `NONE`.                                                            | CHAT                                                                          |
 | staff-join-violation-alert    | Notify staff of current violations when they join.                                                                             | false                                                                         |
@@ -31,15 +37,79 @@ Proper configuration ensures accurate tracking, alerts, and reporting of suspici
 | patrol-teleport-seconds       | Seconds between each teleport during patrol.                                                                                   | 45                                                                            |
 | patrol-finish-action          | Action to take when all players have been visited: `LOOP` (restart) or `STOP` (end patrol).                                    | STOP                                                                          |
 | patrol-boss-bar               | Configures the patrol boss bar. Includes sub-options for patrolling color, paused color, and style.                            | `patrolling-color: BLUE, paused-color: YELLOW, style: SOLID`                   |
+| violation-settings           | Configures the Violation Level system (enabled, actions-enabled, decay, initial VL).                                           | See config file                                                               |
+| violation-actions            | Configured commands to run when specific VL thresholds are reached.                                                            | See config file                                                               |
 
 
+
+---
+
+## database-type
+
+**Description:**  
+Choose the database type to store alert history and statistics.
+- `SQLITE` — Stores data in a local file (`statistics.db`) within the plugin folder. No setup required.
+- `MYSQL` — Stores data in a remote MySQL or MariaDB database. Requires valid credentials in `mysql-settings`.
+
+**Default Value:**
+```yaml
+database-type: SQLITE
+```
+
+---
+
+## mysql-settings
+
+**Description:**  
+Connection settings for your MySQL/MariaDB server. Only used if `database-type` is set to `MYSQL`.
+
+**Options:**
+- `host` — The IP address or hostname of the database server.
+- `port` — The port number (default `3306`).
+- `database` — The name of the database to use.
+- `username` — The database user.
+- `password` — The password for the user.
+- `table-prefix` — Optional prefix for the database tables (default `vg_`).
+
+**Default Values:**
+```yaml
+mysql-settings:
+  host: "localhost"
+  port: 3306
+  database: "veinguard"
+  username: "root"
+  password: ""
+  table-prefix: "vg_"
+```
+
+---
+
+## database-cleanup
+
+**Description:**  
+Automatically purges old alert records from the database to ensure optimal performance and keep the database size manageable.
+
+**Options:**
+- `enabled` — Whether to enable the automated cleanup task (default `true`).
+- `interval` — How often the cleanup task runs, in seconds (default `3600` / 1 hour).
+- `retention` — How long to keep alert records. Supports time strings like `30d` (30 days), `7d`, `1y` (default `30d`).
+
+**Default Values:**
+```yaml
+database-cleanup:
+  enabled: true
+  interval: 3600
+  retention: "30d"
+```
 
 ---
 
 ## blocks-broken-in-last-minutes
 
 **Description:**  
-This setting defines the **time window (in minutes)** that VeinGuard uses to evaluate how many blocks a player has broken. The plugin counts the number of blocks broken within this period to determine if a player exceeds the alert thresholds defined in `tracked-blocks`.
+This setting defines the **time window (in minutes)** that VeinGuard uses for two main purposes:
+1. **Alert Thresholds**: It evaluates how many blocks a player has broken within this period to determine if a player exceeds the alert thresholds defined in `tracked-blocks`.
+2. **Mining Incidents**: It defines the gap allowed between alerts before a new "incident" is created. If a player triggers an alert within this time of a previous one (for the same material), it will be merged into the existing incident in the database.
 
 **Default Value:**
 ```yaml
@@ -129,6 +199,45 @@ This setting defines the **maximum number of entries displayed per page** when r
 **Default Value:**
 ```yaml
 tracked-blocks-page-entries: 7
+```
+
+---
+
+## top-alert-report-page-entries
+
+**Description:**  
+This setting defines the **maximum number of entries displayed per page** when running the command `/vg top`.
+- Helps keep the leaderboard readable by splitting top violators across multiple pages.
+
+**Default Value:**
+```yaml
+top-alert-report-page-entries: 10
+```
+
+---
+
+## history-report-page-entries
+
+**Description:**  
+This setting defines the **maximum number of entries displayed per page** when running the command `/vg history`.
+- Helps keep the history reports readable by splitting alert entries across multiple pages.
+
+**Default Value:**
+```yaml
+history-report-page-entries: 10
+```
+
+---
+
+## history-report-default-time
+
+**Description:**  
+This setting defines the **default time frame** used by the `/vg history` command if no time is specified by the user.
+- Supports time strings like `1h`, `12h`, `1d`, `7d`.
+
+**Default Value:**
+```yaml
+history-report-default-time: "1h"
 ```
 
 ---
@@ -368,26 +477,40 @@ patrol-boss-bar:
 
 ## Full Config File
 
-Below is the **complete default `config.yml`** for VeinGuard version 1.1.6.  
+Below is the **complete default `config.yml`** for VeinGuard version 2.0.0.  
 You can copy this as a reference when configuring your server.  
 All options are explained in the sections above.
 
 ```yaml
 #########################################################
 # VeinGuard - Configuration File & Options
-# Version: 1.1.6
+# Version: 2.0.0
 #
 # Useful Links:
 #   Wiki:       https://github.com/JerrysPlugins/veinguard/wiki
 #   Discord:    https://discord.com/invite/sW7zu4RXmD
-#   Issues:     https://github.com/JerrysPlugins/veinguard/issues
 #   GitHub:     https://github.com/JerrysPlugins/veinguard
-#   Modrinth:   https://modrinth.com/plugin/veinguard
-#   Spigot:     https://www.spigotmc.org/resources/veinguard-antixray-for-1-17-1-21.131871/
-#   Hangar:     https://hangar.papermc.io/JerrysPlugins/VeinGuard
+#   Issue Tracker:     https://github.com/JerrysPlugins/veinguard/issues
 #########################################################
 # DO NOT CHANGE
-config-version: 8
+config-version: 11
+
+# ===========================
+# Database Settings
+# ===========================
+
+# Choose the database type to store statistics.
+#   SQLITE - stores data in a local file (no setup required)
+#   MYSQL - stores data in a MySQL or MariaDB database (requires credentials)
+database-type: SQLITE
+
+mysql-settings:
+  host: "localhost"
+  port: 3306
+  database: "veinguard"
+  username: "root"
+  password: ""
+  table-prefix: "vg_"
 
 # ===========================
 # Tracking Settings
@@ -419,6 +542,9 @@ player-report-page-entries: 7
 
 # Maximum number of entries per page in the '/vg tracked-blocks list' command.
 tracked-blocks-page-entries: 7
+
+# Maximum number of entries per page in the '/vg top' command.
+top-alert-report-page-entries: 10
 
 # ===========================
 # Alert Settings
@@ -538,6 +664,83 @@ tracked-blocks:
   - RAW_IRON_BLOCK:5:"Raw Iron Block"
   - RAW_COPPER_BLOCK:5:"Raw Copper Block"
   - RAW_GOLD_BLOCK:5:"Raw Gold Block"
+
+# Defines the violation weight multipliers for tracked blocks.
+# If a block is not listed here, it defaults to a weight of 1.0.
+#
+# Format:
+#   MATERIAL:WEIGHT
+#
+# - MATERIAL must be a valid Bukkit material name.
+# - WEIGHT is a decimal value that determines how much this material contributes to the player's Violation Level (VL).
+#
+# Example:
+#   'DIAMOND_ORE:2.5'
+#   Adds 2.5 to the player's VL for every alert triggered for Diamond Ore.
+tracked-blocks-violation-multipliers:
+  - DIAMOND_ORE:2.5
+  - EMERALD_ORE:3.0
+  - LAPIS_ORE:1.5
+  - REDSTONE_ORE:1.0
+  - GOLD_ORE:1.5
+  - IRON_ORE:0.5
+  - COPPER_ORE:0.3
+  - COAL_ORE:0.2
+
+  - DEEPSLATE_DIAMOND_ORE:2.5
+  - DEEPSLATE_EMERALD_ORE:3.0
+  - DEEPSLATE_LAPIS_ORE:1.5
+  - DEEPSLATE_REDSTONE_ORE:1.0
+  - DEEPSLATE_GOLD_ORE:1.5
+  - DEEPSLATE_IRON_ORE:0.5
+  - DEEPSLATE_COPPER_ORE:0.3
+  - DEEPSLATE_COAL_ORE:0.2
+
+  - ANCIENT_DEBRIS:4.0
+  - NETHER_GOLD_ORE:1.0
+  - NETHER_QUARTZ_ORE:0.5
+
+  - AMETHYST_BLOCK:1.0
+  - BUDDING_AMETHYST:2.0
+  - SPAWNER:5.0
+
+  - RAW_IRON_BLOCK:1.0
+  - RAW_COPPER_BLOCK:1.0
+  - RAW_GOLD_BLOCK:1.0
+
+# ===========================
+# Violation Level (VL) Settings
+# ===========================
+
+# Enable the Violation Level system.
+violation-settings:
+  enabled: true
+  # Enable automated actions (commands) when a player reaches a VL threshold.
+  actions-enabled: true
+  # How often every player's VL is reduced in seconds. (60 = 1 minute)
+  decay-interval-seconds: 60
+  # How much VL is removed per interval.
+  decay-amount: 0.5
+  # Base VL points awarded when an alert is triggered.
+  initial-vl-on-alert: 1.0
+
+# Commands executed when a player reaches a specific VL threshold.
+#
+# Format:
+# violation-actions:
+#   THRESHOLD:
+#     - 'command1'
+#     - 'command2'
+#
+# Use decimal points for thresholds (e.g., 20.0 instead of 20) to ensure consistency.
+# Actions only trigger ONCE when a player crosses the threshold from below.
+#
+# Placeholders: {player}, {vl}
+violation-actions:
+  20.0:
+    - 'vg msg {player} &cYour mining activity is extremely suspicious. Staff have been notified.'
+  50.0:
+    - 'examplecmd broadcast &b{player} has reached a high violation level!'
 
 # ===========================
 # Integrations

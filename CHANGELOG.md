@@ -1,3 +1,62 @@
+## v2.0.0
+* Added a comprehensive Violation Level (VL) system to quantify the severity of suspicious mining activity.
+* Implemented the **Mining Incident Model** for database tracking, grouping consecutive alerts into single incident records for better accuracy and readability.
+* Added `last_x`, `last_y`, `last_z`, and `last_timestamp` to the database schema (Schema Version 4) to track the full range and duration of mining incidents.
+* Added `violation-settings` in `config.yml` to control VL decay and initial values.
+* Added `violation-actions` in `config.yml` to trigger automated console commands at specific VL thresholds.
+* Added material weights to `tracked-blocks-violation-multipliers` (moved from `tracked-blocks` for better configuration compatibility).
+* Updated `/vg check <player>` to display the player's active Violation Level.
+* Updated `/vg tracked-blocks list` to display material weights.
+* Updated `/vg tracked-blocks add` to support an optional weight parameter.
+* Implemented persistent VL storage in the database (Schema Version 3).
+* Added asynchronous VL decay task to gradually reduce player VL over time.
+* Added `{vl}` placeholder to alert messages and automated commands.
+* Added `actions-enabled` in `violation-settings` to toggle automated actions independently.
+* Added detailed instructions to the `violation-actions` section in `config.yml`.
+* Updated `/vg history <player> [time] [page]` command to view historical alert data from the database.
+* Added `/vg purge <time> [player]` command to manually purge old alert data from the database.
+* Added `/vg staffmsg <message>` command to send formatted messages to all online staff.
+* Added new configuration options for history command (default time frame, pagination).
+* Added automated database cleanup task to periodically purge old alert records.
+* Added new configuration options for database cleanup (enabled, interval, retention).
+* Implemented a persistent statistics system with support for both SQLite and MySQL/MariaDB.
+* Added new configuration options for database connectivity and table prefixes.
+* Implemented an automated database schema update system for seamless plugin upgrades.
+* Added a database migration utility to facilitate moving data between different SQL backends.
+* Implemented asynchronous alert logging to ensure zero impact on server performance.
+* Added automatic schema migration to convert existing MySQL timestamps to the new BIGINT format.
+* Added `/vg top [time] [page]` command and associated permission `veinguard.command.top` to view a leaderboard of top violators.
+* Added config option 'top-alert-report-page-entries' to control pagination for the top command.
+* Added database purge functionality to support future data maintenance commands.
+* Added utility for parsing complex time strings (e.g., '1m2d3h').
+* Added full localization support for the new history command in `lang.yml`.
+* Updated configuration to version 9 and language to version 8 to support new history command settings.
+* Verified and added standard copyright headers to all Java classes in the project.
+* Bumped version to 2.0.0 across all modules.
+* Standardized and unified timestamp handling across different database types (SQLite and MySQL) to ensure accurate and consistent time-based filtering.
+* Optimized database storage for both SQLite and MySQL by using numeric milliseconds (BIGINT) for timestamps, resolving previous chronological comparison issues.
+* Fixed a memory leak in `PlayerTracker` by ensuring empty data structures are removed from memory during cleanup.
+* Enhanced thread safety in `PlayerTracker` by migrating to `ConcurrentHashMap` for material tracking, preventing race conditions during asynchronous cleanup.
+* Improved task management in `PlayerTracker` by ensuring the background cleanup task is properly canceled on plugin shutdown.
+* Standardized data expiration logic in `PlayerTracker` to ensure consistent behavior between real-time and background cleanup.
+* Improved reliability of player and staff muting by using thread-safe collections.
+* Fixed a bug in the Mining Incident Model where new incidents incorrectly inherited the block count from previous, expired incidents.
+* Fixed a bug where Violation Level actions were not triggering because the check was performed before the level was incremented.
+* Fixed an inconsistency where alert messages showed an outdated Violation Level compared to the `/vg check` command.
+* Fully resolved the issue with Violation Level actions not triggering by implementing a deep-search configuration loading method (`getValues(true)`) that handles nested thresholds caused by Bukkit's path parsing of keys containing dots (e.g., `20.0`).
+* Optimized Violation Level actions to only trigger once when a threshold is crossed, preventing repetitive commands on every later alert.
+* Added extra debug logging for Violation Level action loading and execution to assist in future troubleshooting.
+* Fixed an `SQLException` ("database connection closed") occurring during plugin shutdown by ensuring that the database disconnects only after all other services have finished their operations.
+* Improved performance of the Patrol system by implementing name caching, reducing redundant player name lookups during Boss Bar updates.
+* Enhanced the `DatabaseMigrator` to include the `violations` table during database transfers, ensuring no data loss when switching SQL backends.
+* Refactored database logic to remove code duplication and improved polymorphism by moving dialect-specific queries to subclasses.
+* Reverted WorldGuard dependency to 7.0.9 due to incompatibilities with future Java versions.
+* Hardened Discord Webhook security and reliability by implementing robust JSON escaping for all alert data.
+* Synchronized the internal configuration and language versioning with the default resource files to prevent unnecessary update notifications on fresh installs.
+* Refined argument parsing for the `/vg tracked-blocks add` command to resolve ambiguity when handling optional weights and names starting with numbers.
+* Cleaned up the project `TODO.md` and removed superseded roadmap items.
+
+
 ## v1.1.6
 * Support for 26.1+
 * Updated WorldGuard dependency to v7.0.17.

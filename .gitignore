@@ -7,6 +7,10 @@ other/
 /RELEASE.md
 /CHANGELOG.md
 /DISCORD_ANNOUNCEMENT.md
+/README_OLD.md
+
+*.py
+*.ps1
 
 *.iml
 *.ipr

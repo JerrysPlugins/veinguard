@@ -2,6 +2,13 @@
 
 VeinGuard is a comprehensive X-ray detection and player monitoring tool for Minecraft servers. Below is a detailed list of all features provided by the plugin.
 
+## Mining Incident Model (New in v2.0.0)
+VeinGuard uses an intelligent **Incident-based model** for tracking player history, which is much more accurate than simple "per-alert" logging.
+- **Alert Aggregation**: Consecutive alerts for the same material are merged into a single "Incident" record if they occur within the tracking window.
+- **Session Tracking**: Tracks the exact duration of a mining session and the path taken (Start Location -> End Location).
+- **Absolute Accuracy**: Captures **every single block** broken during a session, even those broken during the alert cooldown period.
+- **Clean Database**: Prevents database bloat by storing one detailed record per mining session instead of hundreds of individual alerts.
+
 ## Core Tracking & Detection
 - **Real-time Block Monitoring**: Tracks every block break for materials defined in the configuration.
 - **Configurable Thresholds**: Define exactly how many blocks of a specific type (e.g., Diamond Ore) a player can break within a time window before staff are alerted.
@@ -37,15 +44,23 @@ VeinGuard is a comprehensive X-ray detection and player monitoring tool for Mine
 - **Automatic Cleanup**: Restores staff members to their original location and gamemode when the patrol stops or if they disconnect.
 
 ## Player Reporting & Data Management
-- **Detailed History Reports**: View a comprehensive breakdown of a player's mining history for all tracked blocks using `/vg check <player>`.
+- **Detailed History Reports**: View a comprehensive breakdown of a player's recent mining activity for all tracked blocks using `/vg check <player>`.
+- **Alert History Lookup**: Look up historical mining incidents from the database for any player with `/vg history <player> [time]`. This shows session duration and coordinates.
 - **Violation Highlighting**: Reports clearly mark which blocks have exceeded their thresholds.
 - **Paginated Output**: Easy navigation of large reports or tracked block lists.
+- **Top Violators Leaderboard**: View a ranked list of players based on the **total blocks found** over a specific time period using `/vg top`.
 - **In-game Management**:
-    - **Tracked Block Editor**: Add, remove, or modify tracked blocks and their thresholds in real-time via commands.
-    - **Data Resets**: Clear mining history for a single player or reset all data globally.
-    - **Alert Toggling**: Staff can mute alerts for themselves or for specific "suspect" players to reduce noise.
+- **Tracked Block Editor**: Add, remove, or modify tracked blocks, thresholds, and weights in real-time via commands.
+- **Data Resets**: Clear mining history for a single player or reset all data globally.
+- **Database Purge**: Manually purge old alert records from the database with `/vg purge <time> [player]`.
+- **Alert Toggling**: Staff can mute alerts for themselves or for specific "suspect" players to reduce noise.
 
 ## Integration & Compatibility
+- **Persistent Statistics System**: Store alert history in a local **SQLite** database or a remote **MySQL/MariaDB** server for network-wide synchronization.
+- **Automated Database Maintenance**:
+    - **Schema Updates**: Automatically upgrades the database structure when you update the plugin.
+    - **Data Migration**: Utility to move data between SQLite and MySQL.
+    - **Automatic Purging**: Keep your database clean by automatically purging old records based on a configurable retention period.
 - **Configurable Plugin Hooks**: Enable or disable integrations like **WorldGuard** via the configuration file to suit your server's needs.
 - **Cross-Version Support**: Fully compatible with Minecraft 1.18 through 26.1+ (Spigot, Paper, Purpur).
 - **Multi-module Architecture**: Decoupled API and Core modules for better maintainability and third-party integration.

@@ -57,7 +57,7 @@ public class SubTrackedBlocks implements ISubCommand {
 
     @Override
     public String getUsage() {
-        return "tracked-blocks <add|list|remove> (?list [page]) <block> <threshold> <pretty-name>";
+        return "tracked-blocks <add|list|remove> (?list [page]) <block> <threshold> [weight] <pretty-name>";
     }
 
     @Override
@@ -91,6 +91,8 @@ public class SubTrackedBlocks implements ISubCommand {
 
                 Material material;
                 int threshold;
+                double weight = 1.0;
+                String prettyName;
 
                 try {
                     material = Material.valueOf(args[2].toUpperCase());
@@ -113,13 +115,28 @@ public class SubTrackedBlocks implements ISubCommand {
                     return;
                 }
 
-                String prettyName = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
+                int nameStartIndex = 4;
+                if (args.length >= 6) {
+                    try {
+                        weight = Double.parseDouble(args[4]);
+                        nameStartIndex = 5;
+                    } catch (NumberFormatException ignored) {
 
-                configOptions.addOrUpdateTrackedBlock(material, threshold,  prettyName);
+                    }
+                }
+
+                if (args.length > nameStartIndex) {
+                    prettyName = String.join(" ", Arrays.copyOfRange(args, nameStartIndex, args.length));
+                } else {
+                    prettyName = material.name();
+                }
+
+                configOptions.addOrUpdateTrackedBlock(material, threshold, weight, prettyName);
 
                 commandManager.sendMessage(sender, "tracked-blocks-added",
                         Map.of("{material}", material.name(),
                                 "{threshold}", String.valueOf(threshold),
+                                "{weight}", String.valueOf(weight),
                                 "{prettyName}", prettyName)
                 );
             }

@@ -24,7 +24,6 @@ public class SubReset implements ISubCommand {
         this.plugin = plugin;
     }
 
-
     @Override
     public String getName() {
         return "reset";

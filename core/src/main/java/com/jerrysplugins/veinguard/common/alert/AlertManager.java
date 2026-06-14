@@ -16,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,7 +37,8 @@ public class AlertManager {
         this.actionBarQueue = new ActionBarQueue(plugin, this);
     }
 
-    public void sendAlert(Player suspect, Material material, Location location, int count) {
+    public void sendAlert(Player suspect, Material material, Location location, int count, int incidentCount, double oldVl, double newVl) {
+        long timestamp = System.currentTimeMillis();
 
         if (plugin.getPlayerTracker().isPlayerMuted(suspect)) return;
 
@@ -44,14 +46,38 @@ public class AlertManager {
         Bukkit.getPluginManager().callEvent(veinguardAlertEvent);
         if (veinguardAlertEvent.isCancelled()) return;
 
-        sendStaffAlerts(suspect, material, count);
-        sendConsoleAlert(suspect, material, count);
-        sendDiscordAlert(suspect, material, count, location);
+        sendStaffAlerts(suspect, material, count, newVl);
+        sendConsoleAlert(suspect, material, count, newVl);
+        sendDiscordAlert(suspect, material, count, location, newVl);
 
-        dispatchAlertCommandsAsync(suspect, material, location, count);
+        logAlertToDatabaseAsync(suspect, material, location, incidentCount, timestamp);
+
+        dispatchAlertCommandsAsync(suspect, material, location, count, newVl);
+        checkViolationActions(suspect, oldVl, newVl);
     }
 
-    private void sendStaffAlerts(Player suspect, Material material, int count) {
+    private void logAlertToDatabaseAsync(Player suspect, Material material, Location location, int count, long timestamp) {
+        if (plugin.getVGDatabase() == null || !plugin.getVGDatabase().isConnected()) return;
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            String worldName = location.getWorld() != null ? location.getWorld().getName() : "Unknown";
+            plugin.getVGDatabase().logAlertToIncident(
+                    suspect.getUniqueId(),
+                    suspect.getName(),
+                    material.name(),
+                    count,
+                    worldName,
+                    location.getBlockX(),
+                    location.getBlockY(),
+                    location.getBlockZ(),
+                    timestamp,
+                    plugin.getConfigOptions().getCheckIntervalMs(),
+                    plugin.getConfigOptions().getDbTablePrefix()
+            );
+        });
+    }
+
+    private void sendStaffAlerts(Player suspect, Material material, int count, double vl) {
 
         AlertDeliveryType alertDeliveryType = configOptions.getAlertDeliveryType();
 
@@ -62,6 +88,7 @@ public class AlertManager {
                 .replace("{player}", suspect.getName())
                 .replace("{count}", String.valueOf(count))
                 .replace("{material}", configOptions.getPrettyName(material))
+                .replace("{vl}", String.format("%.1f", vl))
                 .replace("{time}", String.valueOf(configOptions.getCheckIntervalMinutes()));
 
         switch (alertDeliveryType) {
@@ -77,25 +104,26 @@ public class AlertManager {
         }
     }
 
-    private void sendConsoleAlert(Player suspect, Material material, int count) {
+    private void sendConsoleAlert(Player suspect, Material material, int count, double vl) {
         if (!configOptions.isSendAlertConsole()) return;
 
         String message = plugin.getLocale().getMessage("staff-notify-chat", false)
                 .replace("{player}", suspect.getName())
                 .replace("{count}", String.valueOf(count))
                 .replace("{material}", configOptions.getPrettyName(material))
+                .replace("{vl}", String.format("%.1f", vl))
                 .replace("{time}", String.valueOf(configOptions.getCheckIntervalMinutes()));
 
         plugin.getLog().log(Level.INFO, message);
     }
 
-    private void sendDiscordAlert(Player suspect, Material material, int count, Location location) {
+    private void sendDiscordAlert(Player suspect, Material material, int count, Location location, double vl) {
         discordWebhook.sendDiscordWebhookAsync(
                 suspect.getName(),
                 configOptions.getPrettyName(material),
                 count,
                 configOptions.getCheckIntervalMinutes(),
-                VGUtils.getPrettyLocation(location)
+                VGUtils.getPrettyLocation(location) + " (VL: " + String.format("%.1f", vl) + ")"
         );
     }
 
@@ -109,7 +137,7 @@ public class AlertManager {
         );
     }
 
-    public void dispatchAlertCommandsAsync(Player suspect, Material material, Location location, int count) {
+    public void dispatchAlertCommandsAsync(Player suspect, Material material, Location location, int count, double vl) {
         Set<String> commands = plugin.getConfigOptions().getAlertCommands();
         if (commands == null || commands.isEmpty()) return;
 
@@ -122,7 +150,8 @@ public class AlertManager {
                 "{world}", worldName,
                 "{x}", String.valueOf(location.getBlockX()),
                 "{y}", String.valueOf(location.getBlockY()),
-                "{z}", String.valueOf(location.getBlockZ())
+                "{z}", String.valueOf(location.getBlockZ()),
+                "{vl}", String.format("%.1f", vl)
         );
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
@@ -136,6 +165,32 @@ public class AlertManager {
                 );
             }
         });
+    }
+
+    private void checkViolationActions(Player suspect, double oldVl, double newVl) {
+        if (!configOptions.isViolationEnabled() || !configOptions.isViolationActionsEnabled()) return;
+
+        Map<Double, List<String>> actions = configOptions.getViolationActions();
+        if (actions.isEmpty()) return;
+
+        Map<String, String> placeholders = Map.of(
+                "{player}", suspect.getName(),
+                "{vl}", String.format("%.1f", newVl),
+                "{prefix}", plugin.getLocale().getMessage("plugin-prefix", true)
+        );
+
+        for (Map.Entry<Double, List<String>> entry : actions.entrySet()) {
+            double threshold = entry.getKey();
+
+            if (newVl >= threshold && oldVl < threshold) {
+                plugin.getLog().log(Level.DEBUG, "Triggering violation actions for " + suspect.getName() + " at threshold " + threshold);
+                for (String command : entry.getValue()) {
+                    String parsedCommand = VGUtils.applyPlaceholders(command, placeholders);
+                    Bukkit.getScheduler().runTask(plugin, () ->
+                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), parsedCommand));
+                }
+            }
+        }
     }
 
     public boolean canReceiveAlerts(Player player) {

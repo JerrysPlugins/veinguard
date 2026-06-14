@@ -69,7 +69,7 @@ public class SubToggleAlerts implements ISubCommand {
         Player target;
 
         if (args.length == 2) {
-            if (player != null && !player.hasPermission("veinguard.toggle-alerts.others")) {
+            if (player != null && !player.hasPermission("veinguard.command.toggle-alerts.others")) {
                 commandManager.sendMessage(sender, "no-permission", null);
                 return;
             }
@@ -113,7 +113,7 @@ public class SubToggleAlerts implements ISubCommand {
     public List<String> tabComplete(CommandSender sender, String[] args) {
 
         if (args.length == 2 && sender instanceof Player player) {
-            if (player.hasPermission("veinguard.toggle-alerts.others")) {
+            if (player.hasPermission("veinguard.command.toggle-alerts.others")) {
                 return Bukkit.getOnlinePlayers().stream()
                         .map(Player::getName)
                         .toList();
