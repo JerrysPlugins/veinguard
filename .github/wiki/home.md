@@ -1,26 +1,44 @@
-# VeinGuard Wiki
-Hello and welcome to the VeinGuard wiki for version 2.0.0.\
-This wiki will explain the functionality of the plugin as well as information on how to install the VeinGuard plugin, commands and permissions.
+# 🏠 Welcome to the VeinGuard Wiki
 
-## Table of Contents
+Welcome to the official documentation for **VeinGuard v2.0.0**. This wiki is designed to help you install, configure, and master our behavioral anti-xray solution.
 
-| Page                                                                                               | Description |
-|----------------------------------------------------------------------------------------------------|-------------|
-| [Features](https://github.com/JerrysPlugins/veinguard/wiki/Features) | Detailed list of all features provided by the VeinGuard plugin. |
-| [Commands & Permissions](https://github.com/JerrysPlugins/veinguard/wiki/Commands-and-Permissions) | Detailed list of all commands and required permissions for VeinGuard. |
-| [Installation](https://github.com/JerrysPlugins/veinguard/wiki/Installation)                       | Step-by-step guide to install VeinGuard on Spigot, Paper, and Bukkit servers. |
-| [Configuration](https://github.com/JerrysPlugins/veinguard/wiki/Configuration) | Detailed guide to all VeinGuard `config.yml` options, including general settings, alert commands, tools & worlds, and tracked blocks. |
-| [Bugs & Issues](https://github.com/JerrysPlugins/veinguard/wiki/Bugs-&-Issues)                     | Guide for reporting bugs, common causes, and tips to avoid issues. |
-| [Supported Versions](https://github.com/JerrysPlugins/veinguard/wiki/Supported-Versions)           | Information on which Minecraft versions and server wrappers are compatible with VeinGuard. |
+---
 
+## 📚 Table of Contents
 
-# Open Source & License
+Explore the various sections of our documentation:
 
-VeinGuard is fully open source and released under the [MIT License](https://opensource.org/licenses/MIT).
+| Page | Description |
+| :--- | :--- |
+| 🛡️ **[Features](https://github.com/JerrysPlugins/veinguard/wiki/Features)** | A deep dive into the detection logic, alert systems, and staff tools. |
+| 🔑 **[Commands & Permissions](https://github.com/JerrysPlugins/veinguard/wiki/Commands-and-Permissions)** | Complete reference for all plugin commands and permission nodes. |
+| 🚀 **[Installation Guide](https://github.com/JerrysPlugins/veinguard/wiki/Installation)** | Easy step-by-step instructions for getting started. |
+| ⚙️ **[Configuration](https://github.com/JerrysPlugins/veinguard/wiki/Configuration)** | Detailed breakdown of `config.yml` and `lang.yml`. |
+| 🐛 **[Bugs & Issues](https://github.com/JerrysPlugins/veinguard/wiki/Bugs-&-Issues)** | How to troubleshoot common problems and report bugs effectively. |
+| ✅ **[Supported Versions](https://github.com/JerrysPlugins/veinguard/wiki/Supported-Versions)** | Check compatibility with your server software and version. |
 
-You are free to:
-- View, modify, and use the source code for personal or server use.
-- Create your own private versions of the plugin.
-- Redistribute the plugin, including modified versions, as long as you include the original copyright notice and license.
+---
 
-All official updates and releases are managed by the original author.
+## 📜 Open Source & Licensing
+
+VeinGuard is an open-source project released under the **[MIT License](https://opensource.org/licenses/MIT)**.
+
+**You are free to:**
+*   View, modify, and use the source code for personal or commercial use.
+*   Redistribute the plugin and its source code.
+*   Contribute to the project via Pull Requests.
+
+> [!IMPORTANT]
+> When redistributing or modifying the code, you must include the original copyright notice and license.
+
+---
+
+## 💬 Community & Support
+
+*   **Discord:** [Join our Support Server](https://discord.gg/sW7zu4RXmD) for real-time help and updates.
+*   **Issues:** Report bugs or suggest features on our [GitHub Issue Tracker](https://github.com/JerrysPlugins/veinguard/issues).
+*   **Metrics:** View our anonymous usage statistics on [bStats](https://bstats.org/plugin/bukkit/VeinGuard/28893).
+
+---
+
+*Thank you for choosing VeinGuard to protect your server!*

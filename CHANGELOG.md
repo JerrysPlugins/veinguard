@@ -1,3 +1,17 @@
+## v2.0.0-PUBLISH
+*   Violation Level (VL) System: A new suspicion-based scoring system that tracks player behavior over time and triggers automated actions when thresholds are met.
+*   Mining Incident Model: Intelligent alert grouping that combines consecutive breaks into single sessions for cleaner logs and more accurate investigation.
+*   New Investigation Commands:
+    *   `/vg history <player>`: View a player's past mining sessions from the persistent database.
+    *   `/vg top`: See a leaderboard of the most active/suspicious players on your server.
+    *   `/vg purge`: Easily manage database size by removing old historical records.
+    *   `/vg staffmsg`: Coordinate with other staff members instantly.
+*   MySQL & MariaDB Support: Synchronize mining data across your entire network with full MySQL support alongside the standard SQLite.
+*   Discord Integration: Improved webhook reliability with secure data escaping and detailed alert formatting.
+*   Automated Database Cleanup: New background tasks to keep your database optimized automatically.
+*   In-Game Management: Add, remove, or list tracked blocks and manage multipliers directly through commands.
+*   Performance Optimizations: Asynchronous logging and database operations ensure zero impact on server TPS.
+
 ## v2.0.0
 * Added a comprehensive Violation Level (VL) system to quantify the severity of suspicious mining activity.
 * Implemented the **Mining Incident Model** for database tracking, grouping consecutive alerts into single incident records for better accuracy and readability.
@@ -7,7 +21,7 @@
 * Added material weights to `tracked-blocks-violation-multipliers` (moved from `tracked-blocks` for better configuration compatibility).
 * Updated `/vg check <player>` to display the player's active Violation Level.
 * Updated `/vg tracked-blocks list` to display material weights.
-* Updated `/vg tracked-blocks add` to support an optional weight parameter.
+* Updated `/vg tracked-blocks add` to support in-game block tracking management.
 * Implemented persistent VL storage in the database (Schema Version 3).
 * Added asynchronous VL decay task to gradually reduce player VL over time.
 * Added `{vl}` placeholder to alert messages and automated commands.
@@ -53,7 +67,7 @@
 * Reverted WorldGuard dependency to 7.0.9 due to incompatibilities with future Java versions.
 * Hardened Discord Webhook security and reliability by implementing robust JSON escaping for all alert data.
 * Synchronized the internal configuration and language versioning with the default resource files to prevent unnecessary update notifications on fresh installs.
-* Refined argument parsing for the `/vg tracked-blocks add` command to resolve ambiguity when handling optional weights and names starting with numbers.
+* Refined argument parsing for the `/vg tracked-blocks add` command.
 * Cleaned up the project `TODO.md` and removed superseded roadmap items.
 
 

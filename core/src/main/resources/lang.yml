@@ -70,7 +70,7 @@ toggle-alerts-others-not-staff: "&b{player} &cdoesn't have permission to receive
 # -----------------------------------------------------------------------------
 # Tracked Blocks Messages
 # -----------------------------------------------------------------------------
-tracked-blocks-added: "&aNow tracking &b{material} &awith threshold of &b{threshold} &aand weight of &b{weight}&a."
+tracked-blocks-added: "&aNow tracking &b{material} &awith threshold of &b{threshold}&a."
 tracked-blocks-removed: "&aRemoved &b{material} &afrom tracking."
 tracked-blocks-not-tracked: "&cBlock &b{material} &cis not tracked!"
 tracked-blocks-invalid-material: "&b{material} &cis not a valid material for block!"
@@ -103,7 +103,7 @@ patrol-no-players: "&cNo other players online to patrol!"
 # Top Command Messages
 # -----------------------------------------------------------------------------
 top-header: "&7---- < &b&lVein&c&lGuard &r&7Top Violators / &3{time} &7> ----"
-top-entry: "&8(&7{player}&8) &f- &b{count} &7Blocks Found"
+top-entry: "&8(&7{player}&8) &f- &b{count} &7Blocks Found, &3{alerts} &7Alerts"
 top-none: "&7No suspicious activity found for this time period."
 top-footer: "&7------------ &8(&7Page: &9{page} &7of &9{totalPages} &8) &7------------"
 top-invalid-page: "&b{page} &cis not a valid page number!"

@@ -33,7 +33,7 @@ public class DatabaseQueries {
         String prefix = plugin.getConfigOptions().getDbTablePrefix();
         String tableName = (prefix == null || prefix.isBlank()) ? "vg_alerts" : prefix + "alerts";
 
-        StringBuilder queryBuilder = new StringBuilder("SELECT uuid, MAX(player_name) as player_name, SUM(count) as total_count FROM ");
+        StringBuilder queryBuilder = new StringBuilder("SELECT uuid, MAX(player_name) as player_name, SUM(count) as total_count, COUNT(*) as alert_count FROM ");
         queryBuilder.append(tableName);
 
         if (sinceMillis > 0) {
@@ -52,10 +52,11 @@ public class DatabaseQueries {
                     String uuidStr = rs.getString("uuid");
                     String name = rs.getString("player_name");
                     int count = rs.getInt("total_count");
+                    int alertCount = rs.getInt("alert_count");
 
                     try {
                         UUID uuid = UUID.fromString(uuidStr);
-                        topPlayers.add(new TopEntry(name, uuid, count));
+                        topPlayers.add(new TopEntry(name, uuid, count, alertCount));
                     } catch (IllegalArgumentException e) {
                     }
                 }
@@ -67,7 +68,7 @@ public class DatabaseQueries {
         return topPlayers;
     }
 
-    public record TopEntry(String playerName, UUID uuid, int totalBlocks) {}
+    public record TopEntry(String playerName, UUID uuid, int totalBlocks, int alertCount) {}
 
     public List<AlertHistoryEntry> getPlayerAlertHistory(String nameOrUuid, long sinceMillis) {
         List<AlertHistoryEntry> history = new ArrayList<>();

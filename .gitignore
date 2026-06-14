@@ -2,12 +2,14 @@
 .idea/
 oldjars/
 other/
-/README_SPIGOT.md
+/README_SPIGOT_OLD.md
+/README_SPIGOT_OLD.md
 /TODO.md
 /RELEASE.md
 /CHANGELOG.md
 /DISCORD_ANNOUNCEMENT.md
 /README_OLD.md
+/GITHUB_RELEASE.md
 
 *.py
 *.ps1

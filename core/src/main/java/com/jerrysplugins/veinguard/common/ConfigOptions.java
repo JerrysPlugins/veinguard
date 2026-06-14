@@ -143,8 +143,8 @@ public class ConfigOptions {
 
         maxReportPageEntries = config.getInt("player-report-page-entries", 7);
         maxTrackedListPageEntries = config.getInt("tracked-blocks-page-entries", 7);
-        maxTopReportPageEntries = config.getInt("top-alert-report-page-entries", 10);
-        maxHistoryPageEntries = config.getInt("history-report-page-entries", 10);
+        maxTopReportPageEntries = config.getInt("top-alert-report-page-entries", 7);
+        maxHistoryPageEntries = config.getInt("history-report-page-entries", 5);
 
         defaultHistoryTime = config.getString("history-report-default-time", "1h");
         dateFormat = config.getString("date-format", "yyyy-MM-dd HH:mm:ss");

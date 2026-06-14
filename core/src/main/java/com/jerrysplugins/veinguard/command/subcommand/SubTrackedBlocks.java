@@ -57,7 +57,7 @@ public class SubTrackedBlocks implements ISubCommand {
 
     @Override
     public String getUsage() {
-        return "tracked-blocks <add|list|remove> (?list [page]) <block> <threshold> [weight] <pretty-name>";
+        return "tracked-blocks <add|list|remove> (?list [page]) <block> <threshold> <pretty-name>";
     }
 
     @Override
@@ -84,14 +84,13 @@ public class SubTrackedBlocks implements ISubCommand {
                     return;
                 }
 
-                if(args.length < 5) {
+                if(args.length < 4) {
                     commandManager.sendUsage(sender, getUsage(), isConsole);
                     return;
                 }
 
                 Material material;
                 int threshold;
-                double weight = 1.0;
                 String prettyName;
 
                 try {
@@ -115,28 +114,18 @@ public class SubTrackedBlocks implements ISubCommand {
                     return;
                 }
 
-                int nameStartIndex = 4;
-                if (args.length >= 6) {
-                    try {
-                        weight = Double.parseDouble(args[4]);
-                        nameStartIndex = 5;
-                    } catch (NumberFormatException ignored) {
-
-                    }
-                }
-
-                if (args.length > nameStartIndex) {
-                    prettyName = String.join(" ", Arrays.copyOfRange(args, nameStartIndex, args.length));
+                if (args.length > 4) {
+                    prettyName = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
                 } else {
                     prettyName = material.name();
                 }
 
-                configOptions.addOrUpdateTrackedBlock(material, threshold, weight, prettyName);
+                configOptions.addOrUpdateTrackedBlock(material, threshold, 1.0, prettyName);
 
                 commandManager.sendMessage(sender, "tracked-blocks-added",
                         Map.of("{material}", material.name(),
                                 "{threshold}", String.valueOf(threshold),
-                                "{weight}", String.valueOf(weight),
+                                "{weight}", "1.0",
                                 "{prettyName}", prettyName)
                 );
             }

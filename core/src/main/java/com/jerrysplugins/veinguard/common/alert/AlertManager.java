@@ -78,10 +78,10 @@ public class AlertManager {
     }
 
     private void sendStaffAlerts(Player suspect, Material material, int count, double vl) {
-
         AlertDeliveryType alertDeliveryType = configOptions.getAlertDeliveryType();
+        if (alertDeliveryType == AlertDeliveryType.NONE) return;
 
-        if(alertDeliveryType == AlertDeliveryType.NONE) return;
+        if (plugin.getPlayerTracker().isPlayerMuted(suspect)) return;
 
         String pluginPrefix = plugin.getLocale().getMessage("plugin-prefix", true);
         String alertMessage = plugin.getLocale().getMessage("staff-notify-chat", true)

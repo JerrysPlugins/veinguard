@@ -53,7 +53,8 @@ public class TopPlayerPages {
                 page,
                 entry -> plugin.getLocale().getMessage("top-entry", isPlayer)
                         .replace("{player}", entry.playerName())
-                        .replace("{count}", String.valueOf(entry.totalBlocks())),
+                        .replace("{count}", String.valueOf(entry.totalBlocks()))
+                        .replace("{alerts}", String.valueOf(entry.alertCount())),
                 header,
                 footerTemplate.replace("{page}", String.valueOf(page))
                         .replace("{totalPages}", String.valueOf(pageHandler.getTotalPages())),

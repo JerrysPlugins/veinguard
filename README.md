@@ -157,14 +157,14 @@ To better understand how VeinGuard protects your server, let's walk through a ty
 | `/vg help [page]` | `veinguard.command.help` | Displays a detailed list of all available commands and their usage. | `/vg help 2` |
 | `/vg check <player>` | `veinguard.command.check` | Opens a real-time report of a player's recent mining activity, including exact block counts. | `/vg check Notch` |
 | `/vg history <player> [time]` | `veinguard.command.history` | Retrieves historical mining incidents from the database for investigation of offline players. | `/vg history Notch 24h` |
-| `/vg top [time]` | `veinguard.command.top` | Displays a leaderboard of players with the highest violation levels or block counts. | `/vg top 7d` |
+| `/vg top [time]` | `veinguard.command.top` | Displays a leaderboard of players with the highest violation levels, block counts, and total alerts triggered. | `/vg top 7d` |
 | `/vg patrol <action>` | `veinguard.command.patrol` | Manage the automated staff patrol: `start`, `stop`, `pause`, `resume`, `next`, or `back`. | `/vg patrol start` |
 | `/vg msg <player> <msg>` | `veinguard.command.msg` | Sends a formatted plugin message to a player (useful for automated violation actions). | `/vg msg Notch Fair play only!` |
 | `/vg staffmsg <msg>` | `veinguard.command.staffmsg` | Broadcasts an administrative message to all staff members with notification permissions. | `/vg staffmsg Checking Notch.` |
 | `/vg mute <player>` | `veinguard.command.mute` | Silences all future alert notifications for a specific player (e.g., for trusted members). | `/vg mute Notch` |
 | `/vg unmute <player>` | `veinguard.command.unmute` | Restores alert notifications for a previously muted player. | `/vg unmute Notch` |
 | `/vg toggle-alerts [player]` | `veinguard.command.toggle-alerts` | Toggles your own alert visibility or manages it for another staff member. | `/vg toggle-alerts` |
-| `/vg tracked-blocks <add/list/remove>` | `veinguard.command.tracked-blocks.[add/list/remove]` | Real-time management of which blocks are being monitored by the system. | `/vg tracked-blocks list` |
+| `/vg tracked-blocks <add/list/remove>` | `veinguard.command.tracked-blocks.[add/list/remove]` | Real-time management of which blocks are being monitored by the system. | `/vg tracked-blocks add DIAMOND_ORE 15 Diamond Ore` |
 | `/vg reload` | `veinguard.command.reload` | Hot-reloads all configuration and language files without requiring a server restart. | `/vg reload` |
 | `/vg reset <player>` | `veinguard.command.reset` | Completely clears a specific player's current break history and Violation Level (VL). | `/vg reset Notch` |
 | `/vg resetall` | `veinguard.command.resetall` | Wipes active tracking data and VL scores for all online players simultaneously. | `/vg resetall` |
