@@ -41,7 +41,7 @@ public class UpdateService implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         this.announceNewVersion = plugin.getVGConfig().getBoolean("show-update-notice", true);
 
-        this.latestVersionUrl = "https:
+        this.latestVersionUrl = "https://raw.githubusercontent.com/JerrysPlugins/veinguard/refs/heads/master/version.txt";
         this.currentVersion = plugin.getPluginVersion();
         this.currentVersionChannel = ReleaseChannel.fromVersionString(currentVersion);
 

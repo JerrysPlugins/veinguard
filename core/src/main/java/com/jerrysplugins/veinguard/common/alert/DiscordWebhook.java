@@ -94,7 +94,7 @@ public final class DiscordWebhook {
             long minutes,
             String location
     ) {
-        String avatarUrl = "https:
+        String avatarUrl = "https://mc-heads.net/avatar/" + escape(playerName) + "/64";
 
         return """
         {
