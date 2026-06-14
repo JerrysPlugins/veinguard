@@ -56,9 +56,11 @@ public class MySQLDatabase extends Database {
     @Override
     public void initialize() {
         String prefix = plugin.getConfigOptions().getDbTablePrefix();
-        String tableName = (prefix == null || prefix.isBlank()) ? "vg_alerts" : prefix + "alerts";
+        String alertsTable = (prefix == null || prefix.isBlank()) ? "vg_alerts" : prefix + "alerts";
+        String violationsTable = (prefix == null || prefix.isBlank()) ? "vg_violations" : prefix + "violations";
+
         try (Statement statement = connection.createStatement()) {
-            statement.execute("CREATE TABLE IF NOT EXISTS " + tableName + " (" +
+            statement.execute("CREATE TABLE IF NOT EXISTS " + alertsTable + " (" +
                     "id INT AUTO_INCREMENT PRIMARY KEY," +
                     "uuid VARCHAR(36) NOT NULL," +
                     "player_name VARCHAR(16) NOT NULL," +
@@ -73,6 +75,12 @@ public class MySQLDatabase extends Database {
                     "last_z INT," +
                     "timestamp BIGINT," +
                     "last_timestamp BIGINT" +
+                    ")");
+
+            statement.execute("CREATE TABLE IF NOT EXISTS " + violationsTable + " (" +
+                    "uuid VARCHAR(36) PRIMARY KEY," +
+                    "violation_level DOUBLE NOT NULL," +
+                    "last_update BIGINT NOT NULL" +
                     ")");
 
             plugin.getLog().log(Level.INFO, "MySQL database initialized.");

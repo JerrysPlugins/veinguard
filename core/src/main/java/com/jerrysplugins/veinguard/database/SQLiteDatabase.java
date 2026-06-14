@@ -52,9 +52,11 @@ public class SQLiteDatabase extends Database {
     @Override
     public void initialize() {
         String prefix = plugin.getConfigOptions().getDbTablePrefix();
-        String tableName = (prefix == null || prefix.isBlank()) ? "vg_alerts" : prefix + "alerts";
+        String alertsTable = (prefix == null || prefix.isBlank()) ? "vg_alerts" : prefix + "alerts";
+        String violationsTable = (prefix == null || prefix.isBlank()) ? "vg_violations" : prefix + "violations";
+
         try (Statement statement = connection.createStatement()) {
-            statement.execute("CREATE TABLE IF NOT EXISTS " + tableName + " (" +
+            statement.execute("CREATE TABLE IF NOT EXISTS " + alertsTable + " (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "uuid TEXT NOT NULL," +
                     "player_name TEXT NOT NULL," +
@@ -69,6 +71,12 @@ public class SQLiteDatabase extends Database {
                     "last_z INTEGER," +
                     "timestamp BIGINT," +
                     "last_timestamp BIGINT" +
+                    ")");
+
+            statement.execute("CREATE TABLE IF NOT EXISTS " + violationsTable + " (" +
+                    "uuid TEXT PRIMARY KEY," +
+                    "violation_level REAL NOT NULL," +
+                    "last_update BIGINT NOT NULL" +
                     ")");
 
             plugin.getLog().log(Level.INFO, "SQLite database initialized.");
